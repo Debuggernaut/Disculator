@@ -45,19 +45,33 @@ namespace Disculator
 			Raycalculate();
 		}
 
+		private String F(float input)
+		{
+			return input.ToString("#,#.#");
+		}
+
 		private void Raycalculate()
 		{
 			String[] spellColumns = new String[]
 			{
-				"blah"
+				"Spell Name",
+				"Base Heal",
+				"Cast Time",
+				"HPS",
+				"HPM",
+				"Average Heal",
+				"Mana",
+				"MPS"
 			};
 
+			Spell plea = new Spell("Plea (0 Atonements)", 2.25f, 1.5f, 3960, 1.0f, this);
+			Spell smend = new Spell("Shadow Mend (Heavy Incoming Damage)", 7.5f, 1.5f, 8800, 1.2f, this);
 			HealSpells = new Spell[]
 			{
-				new Spell("Plea (0 Atonements)", 2.25f, 1.5f, 3960, 1.0f, this),
+				plea,
 				new Spell("Plea (3 Atonements)", 2.25f, 1.5f, 3960*3, 1.0f, this),
 				new Spell("Plea (6 Atonements)", 2.25f, 1.5f, 3960*6, 1.0f, this),
-				new Spell("Shadow Mend (Heavy Incoming Damage)", 7.5f, 1.5f, 8800, 1.2f, this),
+				smend,
 				//new Spell("Plea", 2.25f, 1.5f, 8800, 1.0f, this),
 				//new Spell("Plea", 2.25f, 1.5f, 8800, 1.0f, this),
 				//new Spell("Plea", 2.25f, 1.5f, 8800, 1.0f, this),
@@ -89,7 +103,73 @@ namespace Disculator
 
 			this.outbox.Text = sb.ToString();
 
+			if (SpellGrid.ColumnDefinitions.Count == 0)
+			{
+				for (int c = 0; c < spellColumns.Length; c++)
+					SpellGrid.ColumnDefinitions.Add(new ColumnDefinition());
+
+				for (int r = 0; r < HealSpells.Length+1; r++)
+					SpellGrid.RowDefinitions.Add(new RowDefinition());
+				
+			}
+
 			this.SpellGrid.Children.Clear();
+			for (int c = 0; c < spellColumns.Length; c++)
+			{
+
+				TextBlock t = new TextBlock();
+				//t.Style = (Style) Application.Current.Resources["TitularLine"];
+				t.Style = (Style)this.Resources["TitularLine"];
+				t.Text = spellColumns[c];
+
+				SpellGrid.Children.Add(t);
+
+				t.SetValue(Grid.ColumnProperty, c);
+				t.SetValue(Grid.RowProperty, 0);
+			}
+
+			for (int s = 0; s < HealSpells.Length; s++)
+			{
+				for (int c = 0; c < spellColumns.Length; c++)
+				{
+
+					TextBlock t = new TextBlock();
+					switch (c)
+					{
+						case 0:
+							t.Text = HealSpells[s].Name;
+							break;
+						case 1:
+							t.Text = F(HealSpells[s].BaseEffect());
+							break;
+						case 2:
+							t.Text = F(HealSpells[s].CastTime());
+							break;
+						case 3:
+							t.Text = F(HealSpells[s].EffectPerSecond());
+							break;
+						case 4:
+							t.Text = F(HealSpells[s].EffectPerMana());
+							break;
+						case 5:
+							t.Text = F(HealSpells[s].AvgEffect());
+							break;
+						case 6:
+							t.Text = F(HealSpells[s].Mana);
+							break;
+						case 7:
+							t.Text = F(HealSpells[s].ManaPerSecond());
+							break;
+						default:
+							t.Text = "???";
+							break;
+					}
+
+					SpellGrid.Children.Add(t);
+					t.SetValue(Grid.ColumnProperty, c);
+					t.SetValue(Grid.RowProperty, s+1);
+				}
+			}
 		}
 
 		private void recalc_Click(object sender, RoutedEventArgs e)

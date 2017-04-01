@@ -33,7 +33,7 @@ namespace Disculator
 			Name = name;
 			Scaler = scaler;
 			BaseCastTime = basecasttime;
-			mana = Mana;
+			Mana = mana;
 			ExtraScaler = extrascaler;
 			M = m;
 
