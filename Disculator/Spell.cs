@@ -56,7 +56,7 @@ namespace Disculator
 
 		public float BaseEffect()
 		{
-			return Scaler * M.scaledSpellPower;
+			return Scaler * M.scaledSpellPower * ExtraScaler;
 		}
 
 		public float AvgEffect()

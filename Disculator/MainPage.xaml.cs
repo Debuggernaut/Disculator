@@ -36,6 +36,13 @@ namespace Disculator
 
 		public float scaledSpellPower;
 
+		public float DarkestShadows = 1.1f; //10/3% Shadow Mend per point
+		public float BurstOfLight = 1.2f; //5% PW:Radiance per point
+		public float ShieldOfFaith = 1.2f; //5% bonus to PW:Shield per point
+		public float Confession = 1.12f; //4% to Penance per point
+
+		public float Skjoldr = 1.15f; //Legendary wrists, +15% to PW:Shield
+
 		public Spell[] HealSpells;
 		public Spell[] DamageSpells;
 
@@ -72,56 +79,7 @@ namespace Disculator
 				"DPM",
 				"MPS"
 			};
-
-			plea = new Spell("Plea (0 Atonements)", 2.25f, 1.5f, 3960, 1.0f, this);
-			smend = new Spell("Shadow Mend (Heavy Incoming Damage)", 7.5f, 1.5f, 8800, 1.2f, this);
-			HealSpells = new Spell[]
-			{
-				plea,
-				new Spell("Plea (3 Atonements)", 2.25f, 1.5f, 3960*3, 1.0f, this),
-				new Spell("Plea (6 Atonements)", 2.25f, 1.5f, 3960*6, 1.0f, this),
-				smend,
-
-
-				plea,
-				new Spell("Plea (3 Atonements)", 2.25f, 1.5f, 3960*3, 1.0f, this),
-				new Spell("Plea (6 Atonements)", 2.25f, 1.5f, 3960*6, 1.0f, this),
-				smend,
-				plea,
-				new Spell("Plea (3 Atonements)", 2.25f, 1.5f, 3960*3, 1.0f, this),
-				new Spell("Plea (6 Atonements)", 2.25f, 1.5f, 3960*6, 1.0f, this),
-				smend,
-				plea,
-				new Spell("Plea (3 Atonements)", 2.25f, 1.5f, 3960*3, 1.0f, this),
-				new Spell("Plea (6 Atonements)", 2.25f, 1.5f, 3960*6, 1.0f, this),
-				smend,
-				plea,
-				new Spell("Plea (3 Atonements)", 2.25f, 1.5f, 3960*3, 1.0f, this),
-				new Spell("Plea (6 Atonements)", 2.25f, 1.5f, 3960*6, 1.0f, this),
-				smend,
-				plea,
-				new Spell("Plea (3 Atonements)", 2.25f, 1.5f, 3960*3, 1.0f, this),
-				new Spell("Plea (6 Atonements)", 2.25f, 1.5f, 3960*6, 1.0f, this),
-				smend,
-				plea,
-				new Spell("Plea (3 Atonements)", 2.25f, 1.5f, 3960*3, 1.0f, this),
-				new Spell("Plea (6 Atonements)", 2.25f, 1.5f, 3960*6, 1.0f, this),
-				smend,
-				plea,
-				new Spell("Plea (3 Atonements)", 2.25f, 1.5f, 3960*3, 1.0f, this),
-				new Spell("Plea (6 Atonements)", 2.25f, 1.5f, 3960*6, 1.0f, this),
-				smend,
-				plea,
-				new Spell("Plea (3 Atonements)", 2.25f, 1.5f, 3960*3, 1.0f, this),
-				new Spell("Plea (6 Atonements)", 2.25f, 1.5f, 3960*6, 1.0f, this),
-				smend,
-				//new Spell("Plea", 2.25f, 1.5f, 8800, 1.0f, this),
-				//new Spell("Plea", 2.25f, 1.5f, 8800, 1.0f, this),
-				//new Spell("Plea", 2.25f, 1.5f, 8800, 1.0f, this),
-				//new Spell("Plea", 2.25f, 1.5f, 8800, 1.0f, this),
-				//new Spell("Plea", 2.25f, 1.5f, 8800, 1.0f, this),
-			};
-
+			
 			this.InitializeComponent();
 			Raycalculate();
 		}
@@ -146,6 +104,22 @@ namespace Disculator
 			verPercent = verRating / 475f / 100f;
 
 			scaledSpellPower = intellect * (1 + verPercent) * 1.05f * 1.1f;
+
+			plea = new Spell("Plea (0 Atonements)", 2.25f, 1.5f, 3960, 1.0f, this);
+			smend = new Spell("Shadow Mend (Heavy Incoming Damage)", 7.5f, 1.5f, 30800, DarkestShadows, this);
+			HealSpells = new Spell[]
+			{
+				plea,
+				new Spell("Plea (6 Atonements)", 2.25f, 1.5f, 3960*6, 1.0f, this),
+				smend,
+
+				new Spell("Plea (3 Atonements)", 2.25f, 1.5f, 3960*3, 1.0f, this),
+				new Spell("Power Word: Shield", 5.5f, 1.5f, 22000, ShieldOfFaith*Skjoldr, this),
+				new Spell("Penitent Penance", 9f, 2.0f, 22000, Confession, this),
+				new Spell("Shadow Mend (Grace)", 7.55f, 1.5f, 30800, DarkestShadows * 1.3f, this),
+				new Spell("Power Word: Shield (Grace)", 5.5f, 1.5f, 22000, ShieldOfFaith*Skjoldr*1.3f, this),
+
+			};
 
 			this.critpercentbox.Text = critPercent.ToString("P");
 			this.hastepercentbox.Text = hastePercent.ToString("P");
