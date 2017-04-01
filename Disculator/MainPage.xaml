@@ -1,0 +1,106 @@
+﻿<Page
+    x:Class="Disculator.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Disculator"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d" RequestedTheme="Dark"
+	Background="#FF1E1E1E" Foreground="#FFE4E4E4" >
+
+	<Page.Resources>
+		<SolidColorBrush x:Key="darkBG" Color="#FF1E1E1E"/>
+		<SolidColorBrush x:Key="GoldText" Color="#FFE4CE6E"/>
+		<SolidColorBrush x:Key="lightText" Color="#FFE4E4E4"/>
+
+		<!--A Style that affects all TextBlocks-->
+		<Style TargetType="TextBlock">
+			<Setter Property="FontFamily" Value="Segoe UI"/>
+			<Setter Property="FontSize" Value="16"/>
+			<Setter Property="Padding" Value="3" />
+		</Style>
+
+		<!--A Style that extends the previous TextBlock Style-->
+		<!--This is a "named style" with an x:Key of TitleText-->
+		<Style TargetType="TextBlock"
+           x:Key="BigData">
+			<Setter Property="FontSize" Value="24"/>
+			<!--hoho, makes text look like it's on fire
+			<Setter Property="Foreground">
+				<Setter.Value>
+					<LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+						<LinearGradientBrush.GradientStops>
+							<GradientStop Offset="0.0" Color="#FF0000" />
+							<GradientStop Offset="1.0" Color="#FFFF00" />
+						</LinearGradientBrush.GradientStops>
+					</LinearGradientBrush>
+				</Setter.Value>
+			</Setter>-->
+		</Style>
+
+		<Style BasedOn="{StaticResource BaseTextBlockStyle}"
+           TargetType="TextBlock"
+           x:Key="ExtraImportantFactoid">
+			<Setter Property="FontSize" Value="28"/>
+			<Setter Property="Foreground" Value="{StaticResource GoldText}"></Setter>
+		</Style>
+
+		<Style BasedOn="{StaticResource BaseTextBlockStyle}"
+           TargetType="TextBlock"
+           x:Key="TitularLine">
+			<Setter Property="Foreground" Value="{StaticResource GoldText}"></Setter>
+			<Setter Property="VerticalAlignment" Value="Bottom"/>
+			<Setter Property="HorizontalAlignment" Value="Right"/>
+			<Setter Property="TextAlignment" Value="Center"/>
+		</Style>
+
+		<Style BasedOn="{StaticResource BaseTextBlockStyle}"
+           TargetType="TextBlock"
+           x:Key="Statistic">
+			<Setter Property="VerticalAlignment" Value="Top"/>
+			<Setter Property="HorizontalAlignment" Value="Right"/>
+			<Setter Property="TextAlignment" Value="Right"/>
+		</Style>
+	</Page.Resources>
+
+	<Pivot Background="{StaticResource darkBG}">
+		<Pivot.Title>
+			<StackPanel>
+				<TextBlock Text="Raymar's Quality Discount Disc Calculator" FontWeight="Bold" FontSize="28" Foreground="{StaticResource GoldText}" />
+			</StackPanel>
+		</Pivot.Title>
+			<PivotItem Header="Stats">
+				<StackPanel>
+					<Button x:Name="recalc" Content="Recalculate" HorizontalAlignment="Left" VerticalAlignment="Top" Click="recalc_Click"/>
+					<StackPanel Orientation="Horizontal">
+						<TextBlock TextWrapping="Wrap" Text="Int" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
+						<TextBox x:Name="intbox" Text="39262" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
+					</StackPanel>
+					<StackPanel Orientation="Horizontal">
+						<TextBlock TextWrapping="Wrap" Text="Crit" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
+						<TextBox x:Name="critbox" Text="6934" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
+						<TextBlock x:Name="critpercentbox" TextWrapping="Wrap" Text="X%" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
+					</StackPanel>
+					<StackPanel Orientation="Horizontal">
+						<TextBlock TextWrapping="Wrap" Text="Haste" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
+						<TextBox x:Name="hastebox" Text="4434" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
+						<TextBlock x:Name="hastepercentbox" TextWrapping="Wrap" Text="X%" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
+					</StackPanel>
+					<StackPanel Orientation="Horizontal">
+						<TextBlock TextWrapping="Wrap" Text="Mastery" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
+						<TextBox x:Name="masterybox" Text="5388" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
+						<TextBlock x:Name="masterypercentbox" TextWrapping="Wrap" Text="X%" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
+					</StackPanel>
+					<StackPanel Orientation="Horizontal">
+						<TextBlock TextWrapping="Wrap" Text="Versatility" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
+						<TextBox x:Name="verbox" Text="3394" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
+						<TextBlock x:Name="verpercentbox" TextWrapping="Wrap" Text="X%" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
+					</StackPanel>
+					<TextBlock x:Name="outbox" TextWrapping="Wrap" Text="" Height="310" />
+				</StackPanel>
+			</PivotItem>
+			<PivotItem Header="Item2">Blah</PivotItem>
+		<PivotItem Header="Tab3">
+		</PivotItem>
+	</Pivot>
+</Page>
