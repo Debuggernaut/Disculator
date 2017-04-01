@@ -165,6 +165,7 @@ namespace Disculator
 							break;
 					}
 
+					t.Style = (Style)this.Resources["Statistic"];
 					SpellGrid.Children.Add(t);
 					t.SetValue(Grid.ColumnProperty, c);
 					t.SetValue(Grid.RowProperty, s+1);
