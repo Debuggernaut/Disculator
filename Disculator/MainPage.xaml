@@ -99,7 +99,9 @@
 					<TextBlock x:Name="outbox" TextWrapping="Wrap" Text="" Height="310" />
 				</StackPanel>
 			</PivotItem>
-			<PivotItem Header="Item2">Blah</PivotItem>
+			<PivotItem Header="Spells">
+			<Grid Name="SpellGrid"></Grid>
+			</PivotItem>
 		<PivotItem Header="Tab3">
 		</PivotItem>
 	</Pivot>
