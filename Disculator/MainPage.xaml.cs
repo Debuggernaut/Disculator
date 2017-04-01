@@ -39,20 +39,14 @@ namespace Disculator
 		public Spell[] HealSpells;
 		public Spell[] DamageSpells;
 
+		String[] HealColumns;
+		String[] DamageColumns;
+		Spell plea;
+		Spell smend;
+
 		public MainPage()
 		{
-			this.InitializeComponent();
-			Raycalculate();
-		}
-
-		private String F(float input)
-		{
-			return input.ToString("#,#.#");
-		}
-
-		private void Raycalculate()
-		{
-			String[] spellColumns = new String[]
+			HealColumns = new String[]
 			{
 				"Spell Name",
 				"Base Heal",
@@ -64,8 +58,23 @@ namespace Disculator
 				"MPS"
 			};
 
-			Spell plea = new Spell("Plea (0 Atonements)", 2.25f, 1.5f, 3960, 1.0f, this);
-			Spell smend = new Spell("Shadow Mend (Heavy Incoming Damage)", 7.5f, 1.5f, 8800, 1.2f, this);
+			DamageColumns = new String[]
+			{
+				"Spell Name",
+				"Base Dmg",
+				"Cast Time",
+				"DPS",
+				"HPM (1)",
+				"HPM (5)",
+				"HPM (7)",
+				"HPM (15)",
+				"Mana",
+				"DPM",
+				"MPS"
+			};
+
+			plea = new Spell("Plea (0 Atonements)", 2.25f, 1.5f, 3960, 1.0f, this);
+			smend = new Spell("Shadow Mend (Heavy Incoming Damage)", 7.5f, 1.5f, 8800, 1.2f, this);
 			HealSpells = new Spell[]
 			{
 				plea,
@@ -78,6 +87,18 @@ namespace Disculator
 				//new Spell("Plea", 2.25f, 1.5f, 8800, 1.0f, this),
 				//new Spell("Plea", 2.25f, 1.5f, 8800, 1.0f, this),
 			};
+
+			this.InitializeComponent();
+			Raycalculate();
+		}
+
+		private String F(float input)
+		{
+			return input.ToString("#,#.#");
+		}
+
+		private void Raycalculate()
+		{
 
 			intellect = int.Parse(this.intbox.Text);
 			critRating = int.Parse(this.critbox.Text);
@@ -103,26 +124,31 @@ namespace Disculator
 
 			this.outbox.Text = sb.ToString();
 
-			if (SpellGrid.ColumnDefinitions.Count == 0)
-			{
-				for (int c = 0; c < spellColumns.Length; c++)
-					SpellGrid.ColumnDefinitions.Add(new ColumnDefinition());
+			PopulateHealGrid();
+		}
 
-				for (int r = 0; r < HealSpells.Length+1; r++)
-					SpellGrid.RowDefinitions.Add(new RowDefinition());
-				
+		private void PopulateHealGrid()
+		{
+			if (HealGrid.ColumnDefinitions.Count == 0)
+			{
+				for (int c = 0; c < HealColumns.Length; c++)
+					HealGrid.ColumnDefinitions.Add(new ColumnDefinition());
+
+				for (int r = 0; r < HealSpells.Length + 1; r++)
+					HealGrid.RowDefinitions.Add(new RowDefinition());
+
 			}
 
-			this.SpellGrid.Children.Clear();
-			for (int c = 0; c < spellColumns.Length; c++)
+			this.HealGrid.Children.Clear();
+			for (int c = 0; c < HealColumns.Length; c++)
 			{
 
 				TextBlock t = new TextBlock();
 				//t.Style = (Style) Application.Current.Resources["TitularLine"];
 				t.Style = (Style)this.Resources["TitularLine"];
-				t.Text = spellColumns[c];
+				t.Text = HealColumns[c];
 
-				SpellGrid.Children.Add(t);
+				HealGrid.Children.Add(t);
 
 				t.SetValue(Grid.ColumnProperty, c);
 				t.SetValue(Grid.RowProperty, 0);
@@ -130,7 +156,7 @@ namespace Disculator
 
 			for (int s = 0; s < HealSpells.Length; s++)
 			{
-				for (int c = 0; c < spellColumns.Length; c++)
+				for (int c = 0; c < HealColumns.Length; c++)
 				{
 
 					TextBlock t = new TextBlock();
@@ -166,9 +192,9 @@ namespace Disculator
 					}
 
 					t.Style = (Style)this.Resources["Statistic"];
-					SpellGrid.Children.Add(t);
+					HealGrid.Children.Add(t);
 					t.SetValue(Grid.ColumnProperty, c);
-					t.SetValue(Grid.RowProperty, s+1);
+					t.SetValue(Grid.RowProperty, s + 1);
 				}
 			}
 		}

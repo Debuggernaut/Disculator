@@ -69,39 +69,44 @@
 				<TextBlock Text="Raymar's Quality Discount Disc Calculator" FontWeight="Bold" FontSize="28" Foreground="{StaticResource GoldText}" />
 			</StackPanel>
 		</Pivot.Title>
-			<PivotItem Header="Stats">
-				<StackPanel>
-					<Button x:Name="recalc" Content="Recalculate" HorizontalAlignment="Left" VerticalAlignment="Top" Click="recalc_Click"/>
-					<StackPanel Orientation="Horizontal">
-						<TextBlock TextWrapping="Wrap" Text="Int" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
-						<TextBox x:Name="intbox" Text="39262" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
-					</StackPanel>
-					<StackPanel Orientation="Horizontal">
-						<TextBlock TextWrapping="Wrap" Text="Crit" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
-						<TextBox x:Name="critbox" Text="6934" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
-						<TextBlock x:Name="critpercentbox" TextWrapping="Wrap" Text="X%" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
-					</StackPanel>
-					<StackPanel Orientation="Horizontal">
-						<TextBlock TextWrapping="Wrap" Text="Haste" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
-						<TextBox x:Name="hastebox" Text="4434" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
-						<TextBlock x:Name="hastepercentbox" TextWrapping="Wrap" Text="X%" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
-					</StackPanel>
-					<StackPanel Orientation="Horizontal">
-						<TextBlock TextWrapping="Wrap" Text="Mastery" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
-						<TextBox x:Name="masterybox" Text="5388" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
-						<TextBlock x:Name="masterypercentbox" TextWrapping="Wrap" Text="X%" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
-					</StackPanel>
-					<StackPanel Orientation="Horizontal">
-						<TextBlock TextWrapping="Wrap" Text="Versatility" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
-						<TextBox x:Name="verbox" Text="3394" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
-						<TextBlock x:Name="verpercentbox" TextWrapping="Wrap" Text="X%" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
-					</StackPanel>
-					<TextBlock x:Name="outbox" TextWrapping="Wrap" Text="" Height="310" />
+		<PivotItem Header="Stats">
+			<StackPanel>
+				<Button x:Name="recalc" Content="Recalculate" HorizontalAlignment="Left" VerticalAlignment="Top" Click="recalc_Click"/>
+				<StackPanel Orientation="Horizontal">
+					<TextBlock TextWrapping="Wrap" Text="Int" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
+					<TextBox x:Name="intbox" Text="39262" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
 				</StackPanel>
-			</PivotItem>
-			<PivotItem Header="Spells">
-			<Grid Name="SpellGrid"></Grid>
-			</PivotItem>
+				<StackPanel Orientation="Horizontal">
+					<TextBlock TextWrapping="Wrap" Text="Crit" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
+					<TextBox x:Name="critbox" Text="6934" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
+					<TextBlock x:Name="critpercentbox" TextWrapping="Wrap" Text="X%" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
+				</StackPanel>
+				<StackPanel Orientation="Horizontal">
+					<TextBlock TextWrapping="Wrap" Text="Haste" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
+					<TextBox x:Name="hastebox" Text="4434" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
+					<TextBlock x:Name="hastepercentbox" TextWrapping="Wrap" Text="X%" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
+				</StackPanel>
+				<StackPanel Orientation="Horizontal">
+					<TextBlock TextWrapping="Wrap" Text="Mastery" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
+					<TextBox x:Name="masterybox" Text="5388" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
+					<TextBlock x:Name="masterypercentbox" TextWrapping="Wrap" Text="X%" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
+				</StackPanel>
+				<StackPanel Orientation="Horizontal">
+					<TextBlock TextWrapping="Wrap" Text="Versatility" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
+					<TextBox x:Name="verbox" Text="3394" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
+					<TextBlock x:Name="verpercentbox" TextWrapping="Wrap" Text="X%" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
+				</StackPanel>
+				<TextBlock x:Name="outbox" TextWrapping="Wrap" Text="" Height="310" />
+			</StackPanel>
+		</PivotItem>
+		<PivotItem Header="Spells">
+			<ScrollViewer VerticalAlignment="Stretch">
+				<RelativePanel>
+					<Grid Name="HealGrid"></Grid>
+					<Grid Name="DmgGrid"></Grid>
+				</RelativePanel>
+			</ScrollViewer>
+		</PivotItem>
 		<PivotItem Header="Tab3">
 		</PivotItem>
 	</Pivot>
