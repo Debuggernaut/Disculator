@@ -52,6 +52,7 @@
 			<Setter Property="VerticalAlignment" Value="Bottom"/>
 			<Setter Property="HorizontalAlignment" Value="Right"/>
 			<Setter Property="TextAlignment" Value="Center"/>
+			<Setter Property="Margin" Value="10" />
 		</Style>
 
 		<Style BasedOn="{StaticResource BaseTextBlockStyle}"
@@ -60,6 +61,7 @@
 			<Setter Property="VerticalAlignment" Value="Top"/>
 			<Setter Property="HorizontalAlignment" Value="Right"/>
 			<Setter Property="TextAlignment" Value="Right"/>
+			<Setter Property="Margin" Value="10" />
 		</Style>
 	</Page.Resources>
 
@@ -102,7 +104,7 @@
 		<PivotItem Header="Spells">
 			<ScrollViewer VerticalAlignment="Stretch">
 				<RelativePanel>
-					<Grid Name="HealGrid"></Grid>
+					<Grid Name="HealGrid" Padding="10"></Grid>
 					<Grid Name="DmgGrid"></Grid>
 				</RelativePanel>
 			</ScrollViewer>
