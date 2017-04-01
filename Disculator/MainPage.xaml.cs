@@ -112,12 +112,21 @@ namespace Disculator
 				plea,
 				new Spell("Plea (6 Atonements)", 2.25f, 1.5f, 3960*6, 1.0f, this),
 				smend,
-
-				new Spell("Plea (3 Atonements)", 2.25f, 1.5f, 3960*3, 1.0f, this),
+				
 				new Spell("Power Word: Shield", 5.5f, 1.5f, 22000, ShieldOfFaith*Skjoldr, this),
 				new Spell("Penitent Penance", 9f, 2.0f, 22000, Confession, this),
+				new Spell("Clarity of Will", 9f, 2f, 30800, 1.0f, this),
+
+				new Spell("Power Word: Radiance", 2.5f*3, 2.5f, 71500, BurstOfLight, this),
+				new Spell("Shadow Covenant (Fully Efficient Somehow)", 4.5f*5, 2.5f, 71500, BurstOfLight, this),
+				new Spell("Shadow Covenant", 4.5f*5f/2f, 1.5f, 71500, BurstOfLight, this),
+				//new Spell("Power Word: Radiance (each)", 2.5f, 2.5f, 71500, BurstOfLight, this),
+				new Spell("Divine Star (6+ targets)", 0.9f*6, 1.5f, 27500, 1, this),
+				new Spell("Halo (6+ targets)", 2.87f*6, 1.5f, 39600, 1, this),
+
 				new Spell("Shadow Mend (Grace)", 7.55f, 1.5f, 30800, DarkestShadows * 1.3f, this),
 				new Spell("Power Word: Shield (Grace)", 5.5f, 1.5f, 22000, ShieldOfFaith*Skjoldr*1.3f, this),
+				new Spell("Penitent Penance (Grace)", 9f, 2.0f, 22000, Confession*1.3f, this),
 
 			};
 

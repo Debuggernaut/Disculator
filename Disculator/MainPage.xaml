@@ -101,15 +101,21 @@
 				<TextBlock x:Name="outbox" TextWrapping="Wrap" Text="" Height="310" />
 			</StackPanel>
 		</PivotItem>
-		<PivotItem Header="Spells">
+		<PivotItem Header="Heals">
 			<ScrollViewer VerticalAlignment="Stretch">
 				<RelativePanel>
 					<Grid Name="HealGrid" Padding="10"></Grid>
+				</RelativePanel>
+			</ScrollViewer>
+		</PivotItem>
+		<PivotItem Header="Deeps">
+			<ScrollViewer VerticalAlignment="Stretch">
+				<RelativePanel>
 					<Grid Name="DmgGrid"></Grid>
 				</RelativePanel>
 			</ScrollViewer>
 		</PivotItem>
-		<PivotItem Header="Tab3">
+		<PivotItem Header="Rotations">
 		</PivotItem>
 	</Pivot>
 </Page>
