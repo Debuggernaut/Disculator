@@ -43,13 +43,22 @@ namespace Disculator
 
 		public float Skjoldr = 1.15f; //Legendary wrists, +15% to PW:Shield
 
+		public float AvgAtonements;
+
 		public Spell[] HealSpells;
 		public Spell[] DamageSpells;
 
 		String[] HealColumns;
 		String[] DamageColumns;
-		Spell plea;
-		Spell smend;
+		Spell Plea;
+		Spell Smend;
+		Spell SmiteAbsorb;
+
+		Spell Smite;
+		Spell Penance;
+		Spell Swp;
+		Spell Ptw;
+
 
 		public MainPage()
 		{
@@ -71,10 +80,8 @@ namespace Disculator
 				"Base Dmg",
 				"Cast\r\nTime",
 				"DPS",
-				"HPM (1)",
-				"HPM (5)",
-				"HPM (7)",
-				"HPM (15)",
+				"HPS",
+				"HPM",
 				"Mana",
 				"DPM",
 				"MPS"
@@ -86,6 +93,16 @@ namespace Disculator
 
 		private String F(float input)
 		{
+			if (input > 30*1000f)
+			{
+				return (input/1000f).ToString("#,#") + "K";
+			}
+
+			if (input < 100)
+			{
+				return input.ToString("#,#.##");
+			}
+
 			return input.ToString("#,#.#");
 		}
 
@@ -98,6 +115,8 @@ namespace Disculator
 			masteryRating = int.Parse(this.masterybox.Text);
 			verRating = int.Parse(this.verbox.Text);
 
+			AvgAtonements = int.Parse(this.atonementsbox.Text);
+
 			critPercent = (critRating / 400f + 5f) / 100f;
 			hastePercent = hasteRating / 375f / 100f;
 			masteryPercent = (masteryRating * 3f / 800f + 12f) / 100f;
@@ -105,17 +124,20 @@ namespace Disculator
 
 			scaledSpellPower = intellect * (1 + verPercent) * 1.05f * 1.1f;
 
-			plea = new Spell("Plea (0 Atonements)", 2.25f, 1.5f, 3960, 1.0f, this);
-			smend = new Spell("Shadow Mend (Heavy Incoming Damage)", 7.5f, 1.5f, 30800, DarkestShadows, this);
+			Plea = new Spell("Plea (0 Atonements)", 2.25f, 1.5f, 3960, 1.0f, this);
+			Smend = new Spell("Shadow Mend (Heavy Incoming Damage)", 7.5f, 1.5f, 30800, DarkestShadows, this);
+			SmiteAbsorb = new Spell("Smite Absorb", 2.25f, 1.5f, 11000, 1.0f, this);
 			HealSpells = new Spell[]
 			{
-				plea,
+				Plea,
 				new Spell("Plea (6 Atonements)", 2.25f, 1.5f, 3960*6, 1.0f, this),
-				smend,
+				Smend,
 				
 				new Spell("Power Word: Shield", 5.5f, 1.5f, 22000, ShieldOfFaith*Skjoldr, this),
 				new Spell("Penitent Penance", 9f, 2.0f, 22000, Confession, this),
 				new Spell("Clarity of Will", 9f, 2f, 30800, 1.0f, this),
+
+				SmiteAbsorb,
 
 				new Spell("Power Word: Radiance", 2.5f*3, 2.5f, 71500, BurstOfLight, this),
 				new Spell("Shadow Covenant (Fully Efficient Somehow)", 4.5f*5, 2.5f, 71500, BurstOfLight, this),
@@ -130,6 +152,13 @@ namespace Disculator
 
 			};
 
+			
+			Smite = new Spell("Smite", 2.88f* 1.15f, 1.5f, 11000, 1, this);
+			DamageSpells = new Spell[]
+			{
+				Smite,
+			};
+
 			this.critpercentbox.Text = critPercent.ToString("P");
 			this.hastepercentbox.Text = hastePercent.ToString("P");
 			this.masterypercentbox.Text = masteryPercent.ToString("P");
@@ -142,6 +171,82 @@ namespace Disculator
 			this.outbox.Text = sb.ToString();
 
 			PopulateHealGrid();
+			PopulateDamageGrid();
+		}
+
+		private void PopulateDamageGrid()
+		{
+			if (DmgGrid.ColumnDefinitions.Count == 0)
+			{
+				for (int c = 0; c < DamageColumns.Length; c++)
+					DmgGrid.ColumnDefinitions.Add(new ColumnDefinition());
+
+				for (int r = 0; r < DamageSpells.Length + 1; r++)
+					DmgGrid.RowDefinitions.Add(new RowDefinition());
+
+			}
+
+			this.DmgGrid.Children.Clear();
+			for (int c = 0; c < DamageColumns.Length; c++)
+			{
+
+				TextBlock t = new TextBlock();
+				//t.Style = (Style) Application.Current.Resources["TitularLine"];
+				t.Style = (Style)this.Resources["TitularLine"];
+				t.Text = DamageColumns[c];
+
+				DmgGrid.Children.Add(t);
+
+				t.SetValue(Grid.ColumnProperty, c);
+				t.SetValue(Grid.RowProperty, 0);
+			}
+
+			for (int s = 0; s < DamageSpells.Length; s++)
+			{
+				for (int c = 0; c < DamageColumns.Length; c++)
+				{
+
+					TextBlock t = new TextBlock();
+					switch (c)
+					{
+						case 0:
+							t.Text = DamageSpells[s].Name;
+							break;
+						case 1:
+							t.Text = F(DamageSpells[s].BaseEffect());
+							break;
+						case 2:
+							t.Text = F(DamageSpells[s].CastTime());
+							break;
+						case 3:
+							t.Text = F(DamageSpells[s].EffectPerSecond());
+							break;
+						case 4:
+							t.Text = F(DamageSpells[s].AtonementEffect()*AvgAtonements / DamageSpells[s].CastTime());
+							break;
+						case 5:
+							t.Text = F(DamageSpells[s].AtonementEffect() * AvgAtonements / DamageSpells[s].Mana);
+							break;
+						case 6:
+							t.Text = F(DamageSpells[s].Mana);
+							break;
+						case 7:
+							t.Text = F(DamageSpells[s].AvgEffect() / DamageSpells[s].Mana);
+							break;
+						case 8:
+							t.Text = F(DamageSpells[s].ManaPerSecond());
+							break;
+						default:
+							t.Text = "???";
+							break;
+					}
+
+					t.Style = (Style)this.Resources["Statistic"];
+					DmgGrid.Children.Add(t);
+					t.SetValue(Grid.ColumnProperty, c);
+					t.SetValue(Grid.RowProperty, s + 1);
+				}
+			}
 		}
 
 		private void PopulateHealGrid()
