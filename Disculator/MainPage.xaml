@@ -132,10 +132,12 @@
 		</PivotItem>
 		<PivotItem Header="Rotations">
 			<ScrollViewer VerticalAlignment="Stretch">
-				<RelativePanel>
+				<StackPanel>
 					<Button Click="Button_Click">Long Run</Button>
-					<TextBlock x:Name="RotationBox" TextWrapping="Wrap"></TextBlock>
-				</RelativePanel>
+					<RelativePanel>
+						<TextBlock x:Name="RotationBox" TextWrapping="Wrap"></TextBlock>
+					</RelativePanel>
+				</StackPanel>
 			</ScrollViewer>
 		</PivotItem>
 	</Pivot>

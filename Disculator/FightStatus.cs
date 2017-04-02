@@ -115,9 +115,12 @@ namespace Disculator
 			ds.Raycalculate();
 			Reset();
 
+			float PenanceCooldown;
+
 			float startTime = 0f;
 			for (CastNum = 0, Time = 0f; Time < LONGTIME; CastNum++)
 			{
+				//Apply DoT damage from the last round through here
 				if (DotExpires > Time)
 				{
 					TotalDamage += ds.PtwDPS * (Time - startTime);
@@ -125,25 +128,8 @@ namespace Disculator
 					TankHealing += Atonements * ds.PtwDPS * (Time - startTime) * 0.4f * (1 + ds.masteryPercent);
 				}
 
-				startTime = Time;
-
-				if (DotExpires > Time)
-				{
-					//CastNum Purge the Wicked
-					Time += ds.Ptw.CastTime();
-
-					DotExpires = Time + 20f;
-
-					TotalDamage += ds.Ptw.AvgEffect() - ds.PtwDot.AvgEffect();
-					TankHealing += ds.Ptw.AtonementEffect() - ds.PtwDot.AtonementEffect();
-					TotalHealing += Atonements * (ds.Ptw.AtonementEffect() - ds.PtwDot.AtonementEffect());
-					ManaSpent += ds.Ptw.Mana;
-					Log(sb, ": Casting Purge the Wicked");
-					
-					continue;
-				}
-
-				for (int i = 0; i < Atonements; i++)
+				//Clean up Atonements
+				for (int i = 0; i < AtonementExpirations.Length; i++)
 				{
 					if (AtonementExpirations[i] < Time)
 					{
@@ -151,6 +137,32 @@ namespace Disculator
 						Atonements--;
 					}
 				}
+
+				startTime = Time;
+
+				if ((DotExpires - Time) <= 6f)
+				{
+					//Purge the Wicked needs some special logic, so
+					// use castspell just for time/mana
+					CastSpell(ds.Ptw);
+
+					if (DotExpires > Time)
+					{
+						DotExpires += 20f;
+					}
+					else
+					{
+						DotExpires = Time + 20f;
+					}
+
+					TotalDamage += ds.Ptw.AvgEffect() - ds.PtwDot.AvgEffect();
+					TankHealing += ds.Ptw.AtonementEffect() - ds.PtwDot.AtonementEffect();
+					TotalHealing += Atonements * (ds.Ptw.AtonementEffect() - ds.PtwDot.AtonementEffect());
+					Log(sb, ": Casting Purge the Wicked");
+					
+					continue;
+				}
+
 
 				if (Atonements == 0 && StackedAtonement == true)
 				{
