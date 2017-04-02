@@ -53,6 +53,13 @@ namespace Disculator
 		public float PtwDPS = 0f;
 		public float SwpDPS = 0f;
 
+		public float PenanceCD = 9f;
+		public float PwsCD = 7.5f;
+
+		//Modeling Power of the Dark Side as a 1m cooldown effect
+		// rather than trying to actually model procs per minute
+		public float PowerOfTheDarkSideCD = 60f;
+
 		public Spell LightsWrath;
 
 		public Spell ShadowfiendSwing;

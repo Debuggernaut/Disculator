@@ -27,6 +27,11 @@ namespace Disculator
 
 		public float[] AtonementExpirations;
 		public float DotExpires = 999f;
+		
+		float PenanceReady = 0f;
+		float DarkSideReady = 0f;
+		float PwsReady = 0f;
+		bool BurstUp = false;
 
 		public bool fullLog = false;
 
@@ -44,6 +49,11 @@ namespace Disculator
 			ManaSpent = 0f;
 			DotCast = false;
 			StackedAtonement = false;
+
+			PenanceReady = 0f;
+			DarkSideReady = 0f;
+			PwsReady = 0f;
+			BurstUp = false;
 
 			Deeps = 0f;
 			Heeps = 0f;
@@ -107,6 +117,111 @@ namespace Disculator
 
 		public StringBuilder LongRunEasyRotation(Disculator ds)
 		{
+			StringBuilder sb = new StringBuilder();
+
+			sb.AppendLine("Let Atonemenet fall off, plea to 6, maintain PtW, spam Smite");
+
+			ds.Raycalculate();
+			Reset();
+
+
+			float startTime = 0f;
+			for (CastNum = 0, Time = 0f; Time < LONGTIME; CastNum++)
+			{
+				//Apply DoT damage from the last round through here
+				if (DotExpires > Time)
+				{
+					TotalDamage += ds.PtwDPS * (Time - startTime);
+					TankHealing += ds.PtwDPS * (Time - startTime) * 0.4f * (1 + ds.masteryPercent);
+					TankHealing += Atonements * ds.PtwDPS * (Time - startTime) * 0.4f * (1 + ds.masteryPercent);
+				}
+
+				//Clean up Atonements
+				for (int i = 0; i < AtonementExpirations.Length; i++)
+				{
+					if (AtonementExpirations[i] < Time)
+					{
+						AtonementExpirations[i] = 999f;
+						Atonements--;
+					}
+				}
+
+				startTime = Time;
+
+				if ((DotExpires - Time) <= 6f)
+				{
+					//Purge the Wicked needs some special logic, so
+					// use castspell just for time/mana
+					CastSpell(ds.Ptw);
+
+					if (DotExpires > Time)
+					{
+						DotExpires += 20f;
+					}
+					else
+					{
+						DotExpires = Time + 20f;
+					}
+
+					TotalDamage += ds.Ptw.AvgEffect() - ds.PtwDot.AvgEffect();
+					TankHealing += ds.Ptw.AtonementEffect() - ds.PtwDot.AtonementEffect();
+					TotalHealing += Atonements * (ds.Ptw.AtonementEffect() - ds.PtwDot.AtonementEffect());
+					Log(sb, ": Casting Purge the Wicked");
+
+					continue;
+				}
+
+
+				if (Atonements == 0 && StackedAtonement == true)
+				{
+					StackedAtonement = false;
+				}
+
+				if (!StackedAtonement)
+				{
+					AtonementExpirations[Atonements] = Time + AtonementDuration;
+					//CastNum Plea
+					ManaSpent += ds.Plea.Mana * (Atonements + 1);
+					if (Atonements == 0)
+					{
+						TankHealing += ds.Plea.AvgEffect();
+					}
+					TotalHealing += ds.Plea.AvgEffect();
+
+					Atonements++;
+					Time += ds.Plea.CastTime();
+					StackedAtonement = (Atonements == 6);
+					Log(sb, ": Casting Plea");
+					continue;
+				}
+
+
+
+				DamageSpell(ds.Smite);
+				TankHealing += ds.SmiteAbsorb.AvgEffect();
+				TotalHealing += ds.SmiteAbsorb.AvgEffect();
+				Log(sb, ": Casting Smite");
+
+			}
+
+
+			Deeps = TotalDamage / Time;
+			Heeps = TotalHealing / Time;
+			TankHeeps = TankHealing / Time;
+
+			sb.AppendLine("Period: " + F(Time) + "s, " +
+					"DPS: " + F(Deeps) + ", " +
+					"HPS: " + F(Heeps) + ", " +
+					"Tank HPS: " + F(TankHeeps) + ", " +
+					"MPS: " + F(ManaSpent / Time) + ", " +
+					"HPM: " + F(TotalHealing / ManaSpent)
+					);
+
+			return sb;
+		}
+
+		public StringBuilder LongRun_PenanceAndShield(Disculator ds)
+		{
 
 			StringBuilder sb = new StringBuilder();
 
@@ -115,7 +230,6 @@ namespace Disculator
 			ds.Raycalculate();
 			Reset();
 
-			float PenanceCooldown;
 
 			float startTime = 0f;
 			for (CastNum = 0, Time = 0f; Time < LONGTIME; CastNum++)

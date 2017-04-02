@@ -140,5 +140,30 @@
 				</StackPanel>
 			</ScrollViewer>
 		</PivotItem>
+		<PivotItem Header="About">
+			<ScrollViewer VerticalAlignment="Stretch">
+				<StackPanel Orientation="Horizontal">
+					<TextBlock VerticalAlignment="Stretch" Width="500" TextWrapping="Wrap">OK dudes, real talk here.  The Discipline Priest is probably the most complicated spec that Blizzard has ever designed.<LineBreak/>
+<LineBreak/>
+Throughout the whole history of WoW, healing has had a pretty simple priority list.  You've got some combination of these attributes on each of 8 or fewer spellds:<LineBreak/>
+<LineBreak/>
+- Most efficient<LineBreak/>
+- Inefficient<LineBreak/>
+- High throughput<LineBreak/>
+- Low throughput<LineBreak/>
+- Raidwide AoE<LineBreak/>
+- Small AoE<LineBreak/>
+<LineBreak />
+On Legion Holy Paladins, for example, you've got:  Holy Shock (Super high throughput, super high efficiency, cooldown).  Holy Light (Low throughput, high efficiency), Flash of Light (High throughput, low efficiency), and Light of Dawn (AoE).  Plus some stuff for on the move, raid cooldowns, blah blah blah.  The important point here is that you can skim over a paragraph-long guide and basically get the jist of how to play.<LineBreak/>
+<LineBreak />
+That's not the case for Disc priests.  If you just spam shit at random, you're going to do zero healing, run out of mana, or both!<LineBreak/>
+<LineBreak />
+What I'm trying to do here is work out a set of optimal spell rotations/priority lists/strategies for what to do in low-throughput situations, tank healing, big AoE bursts, etc.<LineBreak/>
+<LineBreak />
+Right now the prevailing wisdom is that Disc priests aren't main healers, and they should lurk around in the back doing nothing for most of the time on longer fights, then pop out and Light's Wrath combo the whole raid (stack atonements with Power Word: Radiance, then blast everyone with a Light's Wrath + Shadowfiend + Penance) to top them off every couple of minutes.  Surprisingly enough, this actually works fairly well and if timed properly it will result in a Disc priest outhealing another healer, since even a dude in fresh dungeon/leveling gear can crank out 1-2M healing to everyone in the raid.  I'm hoping to find a strategy that lets us contribute meaningfully in between combos or even without big combos like that.</TextBlock>
+					<TextBlock> </TextBlock>
+				</StackPanel>
+			</ScrollViewer>
+		</PivotItem>
 	</Pivot>
 </Page>
