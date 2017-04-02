@@ -261,15 +261,41 @@ namespace Disculator
 		{
 
 			FightStatus fs = new FightStatus();
-			StringBuilder sb = fs.Rotate(ds);
+			StringBuilder sb = fs.EasyRotation(ds);
 
 			this.RotationBox.Text = sb.ToString();
+
+			Disculator dOrig = ds.clone();
+
+			Disculator dHasty = dOrig.clone();
+			dHasty.hasteRating += 2000;
+			fs = new FightStatus();
+			sb = fs.EasyRotation(dHasty);
+			this.RotationBox.Text += sb.ToString();
+
+			Disculator dCrit = dOrig.clone();
+			dCrit.critRating += 2000;
+			fs = new FightStatus();
+			sb = fs.EasyRotation(dCrit);
+			this.RotationBox.Text += sb.ToString();
+
+
+			dOrig.masteryRating += 2000;
+			fs = new FightStatus();
+			sb = fs.EasyRotation(dOrig);
+			this.RotationBox.Text += sb.ToString();
 		}
-		
+
 
 		private void recalc_Click(object sender, RoutedEventArgs e)
 		{
 			Raycalculate();
+		}
+
+		private void Button_Click(object sender, RoutedEventArgs e)
+		{
+			FightStatus fs = new FightStatus();
+			this.RotationBox.Text = fs.LongRunEasyRotation(ds).ToString();
 		}
 	}
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Disculator
 {
-	public class Disculator
+	public class Disculator 
 	{
 		public int intellect;
 		public int critRating;
@@ -63,11 +63,16 @@ namespace Disculator
 
 		public int ShadowfiendSwings;
 
-		public Disculator()
+		public Disculator clone()
 		{
-
+			return (Disculator) this.MemberwiseClone();
 		}
 
+		public Disculator()
+		{
+			
+		}
+		
 		public void Raycalculate()
 		{
 
