@@ -131,6 +131,11 @@
 			</ScrollViewer>
 		</PivotItem>
 		<PivotItem Header="Rotations">
+			<ScrollViewer VerticalAlignment="Stretch">
+				<RelativePanel>
+					<TextBlock x:Name="RotationBox" TextWrapping="Wrap"></TextBlock>
+				</RelativePanel>
+			</ScrollViewer>
 		</PivotItem>
 	</Pivot>
 </Page>

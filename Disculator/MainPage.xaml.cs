@@ -66,6 +66,10 @@ namespace Disculator
 		Spell Ptw;
 		Spell SwpDot;
 		Spell PtwDot;
+
+		float PtwDPS = 0f;
+		float SwpDPS = 0f;
+
 		Spell LightsWrath;
 
 		Spell ShadowfiendSwing;
@@ -185,6 +189,9 @@ namespace Disculator
 			Swp = new Spell("Shadow Word: Pain (total)", 3.42f * (1 + hastePercent) + 0.38f, 1.5f, 24200, allDamageBonus*EdgeOfDarkAndLight, this);
 			PtwDot = new Spell("Purge the Wicked (DoT)", 4.8f * (1 + hastePercent), 1.5f, 22000, allDamageBonus * EdgeOfDarkAndLight, this);
 			SwpDot = new Spell("Shadow Word: Pain (DoT)", 3.42f * (1 + hastePercent), 1.5f, 24200, allDamageBonus * EdgeOfDarkAndLight, this);
+
+			PtwDPS = PtwDot.AvgEffect() / 20f;
+			SwpDPS = SwpDot.AvgEffect() / 18f;
 			LightsWrath = new Spell("Light's Wrath", 7f, 2.5f, 0, allDamageBonus, this);
 
 			MindbenderSwing = new Spell("Mindbender (One Swing)", 1.5f, 12f / 8f / (1 + hastePercent), -5500, allDamageBonus, this);
@@ -223,6 +230,8 @@ namespace Disculator
 
 			PopulateHealGrid();
 			PopulateDamageGrid();
+
+			Rotations();
 		}
 
 		private void PopulateDamageGrid()
@@ -370,6 +379,101 @@ namespace Disculator
 					t.SetValue(Grid.RowProperty, s + 1);
 				}
 			}
+		}
+
+		private void Rotations()
+		{
+			StringBuilder sb = new StringBuilder();
+
+			float AtonementDuration = 15f;
+			int cast = 0;
+			float time = 0f;
+			sb.AppendLine("Let Atonemenet fall off, plea to 6, hit PtW, spam Smite");
+
+			float totalHealing = 0f;
+			float totalDamage = 0f;
+			float tankHealing = 0f;
+			int atonements = 0;
+			float manaSpent = 0f;
+			bool dotCast = false;
+			bool stackedAtonement = false;
+
+			float[] atonementExpirations = new float[6];
+			float dotExpires = 999f;
+			for (cast=0, time=0f; time < (AtonementDuration + Plea.CastTime()*6); cast++)
+			{
+				if (!stackedAtonement)
+				{
+					atonementExpirations[atonements] = time + AtonementDuration;
+					//Cast Plea
+					manaSpent += Plea.Mana * (atonements + 1);
+					if (atonements == 0)
+					{
+						tankHealing += Plea.AvgEffect();
+					}
+					totalHealing += Plea.AvgEffect();
+
+					atonements++;
+					time += Plea.CastTime();
+					stackedAtonement = (atonements == 6);
+					sb.AppendLine(F(time) + "s: " + F(totalHealing) + "," + F(totalDamage) + "," + atonements.ToString() + 
+						": Casting Plea");
+					continue;
+				}
+
+				if (!dotCast)
+				{
+					//cast Purge the Wicked
+					time += Ptw.CastTime();
+
+					dotExpires = time + 20f;
+
+					totalDamage += Ptw.AvgEffect() - PtwDot.AvgEffect();
+					tankHealing += Ptw.AtonementEffect() - PtwDot.AtonementEffect();
+					totalHealing += atonements * ( Ptw.AtonementEffect() - PtwDot.AtonementEffect() );
+					manaSpent += Ptw.Mana;
+					sb.AppendLine(F(time) + "s: " + F(totalHealing) + "," + F(totalDamage) + "," + atonements.ToString() +
+						": Casting Purge the Wicked");
+					dotCast = true;
+					continue;
+				}
+
+				for (int i=0; i < atonements; i++)
+				{
+					if (atonementExpirations[i] < time)
+					{
+						atonementExpirations[i] = 999f;
+						atonements--;
+					}
+				}
+
+				time += Smite.CastTime();
+
+				if (dotExpires > time)
+				{
+					totalDamage += PtwDPS * Smite.CastTime();
+					tankHealing += PtwDPS * Smite.CastTime() * 0.4f * (1 + this.masteryPercent);
+					tankHealing += atonements * PtwDPS * Smite.CastTime() * 0.4f * (1 + this.masteryPercent);
+				}
+
+				totalDamage += Smite.AvgEffect();
+				tankHealing += Smite.AtonementEffect() + SmiteAbsorb.AvgEffect();
+				totalHealing += atonements * Smite.AtonementEffect() + SmiteAbsorb.AvgEffect();
+				manaSpent += Smite.Mana;
+				sb.AppendLine(F(time) + "s: " + F(totalHealing) + "," + F(totalDamage) + "," + atonements.ToString() +
+					": Casting Smite");
+
+			}
+
+			sb.AppendLine("Period: " + F(time) + "s, " +
+				"DPS: " + F(totalDamage / time) + ", " +
+				"HPS: " + F(totalHealing / time) + ", " +
+				"Tank HPS: " + F(tankHealing / time) + ", " +
+				"MPS: " + F(manaSpent / time) + ", " +
+				"HPM: " + F(totalHealing / manaSpent)
+				);
+
+			this.RotationBox.Text = sb.ToString();
 		}
 
 		private void recalc_Click(object sender, RoutedEventArgs e)
