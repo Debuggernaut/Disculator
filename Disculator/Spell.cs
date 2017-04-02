@@ -15,7 +15,7 @@ namespace Disculator
 		public float Mana;
 		public float ExtraScaler;
 
-		public MainPage M;
+		public Disculator M;
 
 		public Spell()
 		{
@@ -28,7 +28,7 @@ namespace Disculator
 			float basecasttime,
 			float mana,
 			float extrascaler,
-			MainPage m)
+			Disculator m)
 		{
 			Name = name;
 			Scaler = scaler;
