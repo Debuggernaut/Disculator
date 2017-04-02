@@ -103,6 +103,10 @@
 					<TextBox x:Name="pointsbox" Text="37" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
 					<TextBlock x:Name="artifactDamageBonusPercent" TextWrapping="Wrap" Text="X%" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
 				</StackPanel>
+				<StackPanel Orientation="Horizontal">
+					<TextBlock TextWrapping="Wrap" Text="Mindbender Swings:" Margin="10,10,0,0" Width="150" VerticalAlignment="Center"/>
+					<TextBlock x:Name="MindbenderSwingsBox" TextWrapping="Wrap" Text="8?" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
+				</StackPanel>
 				<TextBlock x:Name="outbox" TextWrapping="Wrap" Text="" Height="310" />
 			</StackPanel>
 		</PivotItem>
@@ -115,13 +119,14 @@
 		</PivotItem>
 		<PivotItem Header="Deeps">
 			<ScrollViewer VerticalAlignment="Stretch">
-				<StackPanel>
+				<StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
 					<StackPanel Orientation="Horizontal">
 						<TextBlock TextWrapping="Wrap" Text="Average Atonements" Margin="10,10,0,0" VerticalAlignment="Center"/>
 						<TextBox x:Name="atonementsbox" Text="6" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="15" InputScope="Number" TextAlignment="Center"/>
 						<Button x:Name="recalc2" Content="Recalculate" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="center" Click="recalc_Click"/>
 					</StackPanel>
 					<Grid Name="DmgGrid"></Grid>
+					<TextBlock TextWrapping="Wrap" Text="Healing on this page is only that done through atonement, the Smite absorb and Halo/Divine Star heals aren't counted" Margin="50,10,0,0" VerticalAlignment="Center"/>
 				</StackPanel>
 			</ScrollViewer>
 		</PivotItem>

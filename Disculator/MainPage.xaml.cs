@@ -188,15 +188,17 @@ namespace Disculator
 			LightsWrath = new Spell("Light's Wrath", 7f, 2.5f, 0, allDamageBonus, this);
 
 			MindbenderSwing = new Spell("Mindbender (One Swing)", 1.5f, 12f / 8f / (1 + hastePercent), -5500, allDamageBonus, this);
-			MindbenderSwing = new Spell("Shadowfiend (One Swing)", 2.0f, 12f / 8f / (1 + hastePercent), -5500, allDamageBonus, this);
+			ShadowfiendSwing = new Spell("Shadowfiend (One Swing)", 2.0f, 12f / 8f / (1 + hastePercent), -5500, allDamageBonus, this);
 
-			Mindbender = new Spell("Mindbender (Full Duration)", ShadowfiendSwings * 1.5f, 12f, -5500 * ShadowfiendSwings, allDamageBonus, this);
-			Shadowfiend = new Spell("Shadowfiend (Full Duration)", ShadowfiendSwings * 2.0f, 12f, 0, allDamageBonus, this);
+			Mindbender = new Spell("Mindbender (Full Duration)", ShadowfiendSwings * 1.5f, 1.5f, -5500 * ShadowfiendSwings, allDamageBonus, this);
+			Shadowfiend = new Spell("Shadowfiend (Full Duration)", ShadowfiendSwings * 2.0f, 1.5f, 0, allDamageBonus, this);
 
 			DamageSpells = new Spell[]
 			{
 				Smite, CastigatedPenance, RegularPenance, Ptw, Swp, LightsWrath,
 				PtwDot, SwpDot,
+				MindbenderSwing, ShadowfiendSwing,
+				Mindbender, Shadowfiend,
 				new Spell("Power Word: Solace", powerWordSolaceKludge*3f, 1.5f, -11000, allDamageBonus, this),
 				new Spell("Divine Star", 1.45f, 1.5f, 27500, allDamageBonus, this),
 				new Spell("Halo", 4.31f, 1.5f, 1, allDamageBonus, this),
@@ -210,6 +212,8 @@ namespace Disculator
 			this.verpercentbox.Text = verPercent.ToString("P");
 
 			this.artifactDamageBonusPercent.Text = allDamageBonus.ToString("P");
+
+			this.MindbenderSwingsBox.Text = ShadowfiendSwings.ToString();
 
 			StringBuilder sb = new StringBuilder();
 
