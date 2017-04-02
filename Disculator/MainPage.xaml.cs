@@ -36,10 +36,15 @@ namespace Disculator
 
 		public float scaledSpellPower;
 
+		public int artifactTraits;
+		public float allDamageBonus;
+
 		public float DarkestShadows = 1.1f; //10/3% Shadow Mend per point
 		public float BurstOfLight = 1.2f; //5% PW:Radiance per point
 		public float ShieldOfFaith = 1.2f; //5% bonus to PW:Shield per point
 		public float Confession = 1.12f; //4% to Penance per point
+
+		public float EdgeOfDarkAndLight = 1.15f; //5% to SWP/PtW per point
 
 		public float Skjoldr = 1.15f; //Legendary wrists, +15% to PW:Shield
 
@@ -55,10 +60,21 @@ namespace Disculator
 		Spell SmiteAbsorb;
 
 		Spell Smite;
-		Spell Penance;
+		Spell CastigatedPenance;
+		Spell RegularPenance;
 		Spell Swp;
 		Spell Ptw;
+		Spell SwpDot;
+		Spell PtwDot;
+		Spell LightsWrath;
 
+		Spell ShadowfiendSwing;
+		Spell MindbenderSwing;
+
+		Spell Shadowfiend;
+		Spell Mindbender;
+
+		int ShadowfiendSwings;
 
 		public MainPage()
 		{
@@ -117,12 +133,20 @@ namespace Disculator
 
 			AvgAtonements = int.Parse(this.atonementsbox.Text);
 
+			artifactTraits = int.Parse(this.pointsbox.Text);
+			allDamageBonus = 1.0f;
+			for (int i = 0; i < artifactTraits; i++)
+				allDamageBonus = allDamageBonus * 1.0065f;
+
 			critPercent = (critRating / 400f + 5f) / 100f;
 			hastePercent = hasteRating / 375f / 100f;
 			masteryPercent = (masteryRating * 3f / 800f + 12f) / 100f;
 			verPercent = verRating / 475f / 100f;
 
 			scaledSpellPower = intellect * (1 + verPercent) * 1.05f * 1.1f;
+
+			//Rounds up to the next number of swings
+			ShadowfiendSwings = (int) Math.Ceiling( 8f*(1+hastePercent));
 
 			Plea = new Spell("Plea (0 Atonements)", 2.25f, 1.5f, 3960, 1.0f, this);
 			Smend = new Spell("Shadow Mend (Heavy Incoming Damage)", 7.5f, 1.5f, 30800, DarkestShadows, this);
@@ -152,17 +176,40 @@ namespace Disculator
 
 			};
 
-			
-			Smite = new Spell("Smite", 2.88f* 1.15f, 1.5f, 11000, 1, this);
+			float powerWordSolaceKludge = 1.15f; //For some reason, Power Word: Solace does 15% more damage than it seems like it should
+			float castigation = 4f / 3f;
+			Smite = new Spell("Smite", 2.88f * 1.15f, 1.5f, 11000, allDamageBonus, this);
+			CastigatedPenance = new Spell("Penance (Castigated)", 1.9f * 3f, 2.0f, 30800, allDamageBonus*Confession * castigation, this);
+			RegularPenance = new Spell("Penance (Standard)", 1.9f * 3f, 2.0f, 30800, allDamageBonus * Confession, this);
+			Ptw = new Spell("Purge the Wicked (total)", 4.8f*(1 + hastePercent) + 1f, 1.5f, 22000, allDamageBonus * EdgeOfDarkAndLight, this);
+			Swp = new Spell("Shadow Word: Pain (total)", 3.42f * (1 + hastePercent) + 0.38f, 1.5f, 24200, allDamageBonus*EdgeOfDarkAndLight, this);
+			PtwDot = new Spell("Purge the Wicked (DoT)", 4.8f * (1 + hastePercent), 1.5f, 22000, allDamageBonus * EdgeOfDarkAndLight, this);
+			SwpDot = new Spell("Shadow Word: Pain (DoT)", 3.42f * (1 + hastePercent), 1.5f, 24200, allDamageBonus * EdgeOfDarkAndLight, this);
+			LightsWrath = new Spell("Light's Wrath", 7f, 2.5f, 0, allDamageBonus, this);
+
+			MindbenderSwing = new Spell("Mindbender (One Swing)", 1.5f, 12f / 8f / (1 + hastePercent), -5500, allDamageBonus, this);
+			MindbenderSwing = new Spell("Shadowfiend (One Swing)", 2.0f, 12f / 8f / (1 + hastePercent), -5500, allDamageBonus, this);
+
+			Mindbender = new Spell("Mindbender (Full Duration)", ShadowfiendSwings * 1.5f, 12f, -5500 * ShadowfiendSwings, allDamageBonus, this);
+			Shadowfiend = new Spell("Shadowfiend (Full Duration)", ShadowfiendSwings * 2.0f, 12f, 0, allDamageBonus, this);
+
 			DamageSpells = new Spell[]
 			{
-				Smite,
+				Smite, CastigatedPenance, RegularPenance, Ptw, Swp, LightsWrath,
+				PtwDot, SwpDot,
+				new Spell("Power Word: Solace", powerWordSolaceKludge*3f, 1.5f, -11000, allDamageBonus, this),
+				new Spell("Divine Star", 1.45f, 1.5f, 27500, allDamageBonus, this),
+				new Spell("Halo", 4.31f, 1.5f, 1, allDamageBonus, this),
+				//new Spell("Power Word: Solace", 3f, 1.5f, -11000, allDamageBonus, this),
+				//new Spell("Power Word: Solace", 3f, 1.5f, -11000, allDamageBonus, this),
 			};
 
 			this.critpercentbox.Text = critPercent.ToString("P");
 			this.hastepercentbox.Text = hastePercent.ToString("P");
 			this.masterypercentbox.Text = masteryPercent.ToString("P");
 			this.verpercentbox.Text = verPercent.ToString("P");
+
+			this.artifactDamageBonusPercent.Text = allDamageBonus.ToString("P");
 
 			StringBuilder sb = new StringBuilder();
 
