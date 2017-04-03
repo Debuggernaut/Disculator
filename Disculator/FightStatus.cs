@@ -27,7 +27,7 @@ namespace Disculator
 
 		public float[] AtonementExpirations;
 		public float DotExpires = 999f;
-		
+
 		float PenanceReady = 0f;
 		float DarkSideReady = 0f;
 		float ShieldReady = 0f;
@@ -88,8 +88,8 @@ namespace Disculator
 		private void Log(StringBuilder sb, String s)
 		{
 			if (fullLog)
-			sb.AppendLine(F(Time) + "s: " + F(TotalHealing) + "," + F(TotalDamage)
-				+ "," + Atonements.ToString() + s);
+				sb.AppendLine(F(Time) + "s: " + F(TotalHealing) + "," + F(TotalDamage)
+					+ "," + Atonements.ToString() + s);
 		}
 
 		private void CastSpell(Spell theSpell, float bonusHaste)
@@ -133,7 +133,7 @@ namespace Disculator
 
 		private void AddAtonement()
 		{
-			for (int i=0; i<AtonementExpirations.Length; i++)
+			for (int i = 0; i < AtonementExpirations.Length; i++)
 			{
 				if (AtonementExpirations[i] == 9001f)
 				{
@@ -155,6 +155,95 @@ namespace Disculator
 					Atonements--;
 				}
 			}
+		}
+
+		private void CastPlea(StringBuilder sb, Disculator ds)
+		{
+			ManaSpent += ds.Plea.Mana * (Atonements + 1);
+			Time += ds.Plea.CastTime();
+
+			//Cast Plea
+			if (Atonements == 0)
+			{
+				TankHealing += ds.Plea.AvgEffect();
+			}
+			TotalHealing += ds.Plea.AvgEffect();
+
+			AddAtonement();
+			BurstUp = true;
+		}
+
+		private bool CastShield(StringBuilder sb, Disculator ds)
+		{
+			//Power Word: Shield on cooldown
+			if (Time > ShieldReady)
+			{
+				HealSpell(ds.Shield, 1);
+				if (Atonements == 0)
+				{
+					AddAtonement();
+				}
+				else
+				{
+					AtonementExpirations[0] = Time + AtonementDuration;
+				}
+				BurstUp = true;
+
+				ShieldReady = Time + ds.ShieldCD;
+
+				Log(sb, ": Casting Power Word: Shield");
+				return true;
+			}
+
+			return false;
+		}
+
+		private bool ApplyPurge(StringBuilder sb, Disculator ds)
+		{
+			//Cast Purge when it falls off
+			if ((DotExpires - Time) <= 6f)
+			{
+				//Purge the Wicked needs some special logic, so
+				// use castspell just for time/mana
+				CastSpell(ds.Ptw);
+
+				if (DotExpires > Time)
+				{
+					DotExpires += 20f;
+				}
+				else
+				{
+					DotExpires = Time + 20f;
+				}
+
+				TotalDamage += ds.Ptw.AvgEffect() - ds.PtwDot.AvgEffect();
+				TankHealing += ds.Ptw.AtonementEffect() - ds.PtwDot.AtonementEffect();
+				TotalHealing += Atonements * (ds.Ptw.AtonementEffect() - ds.PtwDot.AtonementEffect());
+				Log(sb, ": Casting Purge the Wicked");
+
+				return true;
+			}
+			return false;
+		}
+
+		private bool CastPenance(StringBuilder sb, Disculator ds)
+		{
+			//Penance so long as you're not restacking Atonements
+			if (PenanceReady < Time)
+			{
+				DamageSpell(ds.CastigatedPenance, BurstUp ? ds.BurstOfLight : 1.0f, DarkSideUp ? 1.5f : 1.0f);
+				BurstUp = false;
+				if (DarkSideUp)
+				{
+					DarkSideReady = Time + ds.PowerOfTheDarkSideCD;
+					DarkSideUp = false;
+				}
+				PenanceReady = Time + ds.PenanceCD;
+				Log(sb, ": Casting Penance");
+				return true;
+			}
+
+			return false;
 		}
 
 		public static float LONGTIME = 500f;
@@ -229,7 +318,7 @@ namespace Disculator
 					Log(sb, ": Casting Plea");
 					continue;
 				}
-				
+
 				if (BurstUp)
 				{
 					DamageSpell(ds.Smite, ds.BurstOfLight);
@@ -270,7 +359,7 @@ namespace Disculator
 
 			//ds.Raycalculate(); //Allow the caller to tweak things
 			Reset();
-			
+
 			float startTime = 0f;
 			for (CastNum = 0, Time = 0f; Time < LONGTIME; CastNum++)
 			{
@@ -292,49 +381,11 @@ namespace Disculator
 				//--------- Begin Priority List ------------
 				startTime = Time;
 
-				//Cast Purge when it falls off
-				if ((DotExpires - Time) <= 6f)
-				{
-					//Purge the Wicked needs some special logic, so
-					// use castspell just for time/mana
-					CastSpell(ds.Ptw);
+				//Maintain Purge the Wicked
+				if (ApplyPurge(sb, ds)) continue;
 
-					if (DotExpires > Time)
-					{
-						DotExpires += 20f;
-					}
-					else
-					{
-						DotExpires = Time + 20f;
-					}
-
-					TotalDamage += ds.Ptw.AvgEffect() - ds.PtwDot.AvgEffect();
-					TankHealing += ds.Ptw.AtonementEffect() - ds.PtwDot.AtonementEffect();
-					TotalHealing += Atonements * (ds.Ptw.AtonementEffect() - ds.PtwDot.AtonementEffect());
-					Log(sb, ": Casting Purge the Wicked");
-					
-					continue;
-				}
-
-				//Power Word: Shield on cooldown
-				if (Time > ShieldReady)
-				{
-					HealSpell(ds.Shield, 1);
-					if (Atonements == 0)
-					{
-						AddAtonement();
-					}
-					else
-					{
-						AtonementExpirations[0] = Time + AtonementDuration;
-					}
-					BurstUp = true;
-
-					ShieldReady = Time + ds.ShieldCD;
-					
-					Log(sb, ": Casting Power Word: Shield");
-					continue;
-				}
+				//Cast Shield on cooldown
+				if (CastShield(sb, ds)) continue;
 
 				//-------- Stack Atonement to 6 ---------
 				if (Atonements < 2 && StackedAtonement == true)
@@ -343,38 +394,12 @@ namespace Disculator
 				}
 				else
 				{
-					//Penance so long as you're not restacking Atonements
-					if (PenanceReady < Time)
-					{
-						if (BurstUp)
-						{
-							DamageSpell(ds.CastigatedPenance, ds.BurstOfLight);
-							BurstUp = false;
-						}
-						else
-						{
-							DamageSpell(ds.CastigatedPenance);
-						}
-						PenanceReady = Time + ds.PenanceCD;
-						Log(sb, ": Casting Penance");
-						continue;
-					}
+					if (CastPenance(sb, ds)) continue;
 				}
 
 				if (!StackedAtonement)
 				{
-					ManaSpent += ds.Plea.Mana * (Atonements + 1);
-					Time += ds.Plea.CastTime();
-
-					//Cast Plea
-					if (Atonements == 0)
-					{
-						TankHealing += ds.Plea.AvgEffect();
-					}
-					TotalHealing += ds.Plea.AvgEffect();
-
-					AddAtonement();
-					BurstUp = true;
+					CastPlea(sb, ds);
 					StackedAtonement = (Atonements >= 6);
 					Log(sb, ": Casting Plea");
 					continue;
@@ -385,14 +410,9 @@ namespace Disculator
 					DarkSideUp = true;
 					DarkSideReady = Time + ds.PowerOfTheDarkSideCD;
 				}
-				
-				DamageSpell(ds.Smite, BurstUp ? ds.BurstOfLight : 1.0f, DarkSideUp?1.5f:1.0f);
+
+				DamageSpell(ds.Smite, BurstUp ? ds.BurstOfLight : 1.0f);
 				BurstUp = false;
-				if (DarkSideUp)
-				{
-					DarkSideReady = Time + ds.PowerOfTheDarkSideCD;
-					DarkSideUp = false;
-				}
 
 				TankHealing += ds.SmiteAbsorb.AvgEffect();
 				TotalHealing += ds.SmiteAbsorb.AvgEffect();
@@ -414,6 +434,11 @@ namespace Disculator
 					);
 
 			return sb;
+		}
+
+		public StringBuilder SmiteWeave(Disculator ds)
+		{
+			return null;
 		}
 
 		public StringBuilder EasyRotation(Disculator ds)
