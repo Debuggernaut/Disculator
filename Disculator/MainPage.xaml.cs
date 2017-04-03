@@ -295,7 +295,8 @@ namespace Disculator
 		private void Button_Click(object sender, RoutedEventArgs e)
 		{
 			FightStatus fs = new FightStatus();
-			this.RotationBox.Text = fs.LongRunEasyRotation(ds).ToString();
+			this.RotationBox.Text = fs.LongRun_PenanceAndShield(ds).ToString();
+			this.RotationBox.Text += fs.LongRunEasyRotation(ds).ToString();
 		}
 	}
 }

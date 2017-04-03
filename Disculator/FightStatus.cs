@@ -30,8 +30,10 @@ namespace Disculator
 		
 		float PenanceReady = 0f;
 		float DarkSideReady = 0f;
-		float PwsReady = 0f;
+		float ShieldReady = 0f;
+
 		bool BurstUp = false;
+		bool DarkSideUp = false;
 
 		public bool fullLog = false;
 
@@ -52,7 +54,7 @@ namespace Disculator
 
 			PenanceReady = 0f;
 			DarkSideReady = 0f;
-			PwsReady = 0f;
+			ShieldReady = 0f;
 			BurstUp = false;
 
 			Deeps = 0f;
@@ -90,17 +92,28 @@ namespace Disculator
 				+ "," + Atonements.ToString() + s);
 		}
 
+		private void CastSpell(Spell theSpell, float bonusHaste)
+		{
+			Time += theSpell.CastTime() / bonusHaste;
+			ManaSpent += theSpell.Mana;
+		}
+
 		private void CastSpell(Spell theSpell)
 		{
-			Time += theSpell.CastTime();
-			ManaSpent += theSpell.Mana;
+			CastSpell(theSpell, 1.0f);
 		}
 
 		private void DamageSpell(Spell theSpell)
 		{
-			CastSpell(theSpell);
+			DamageSpell(theSpell, 1.0f);
+		}
+
+		private void DamageSpell(Spell theSpell, float bonusHaste)
+		{
+			CastSpell(theSpell, bonusHaste);
 
 			TotalDamage += theSpell.AvgEffect();
+			//Assumes we always have an atonement up on at least one tank
 			TankHealing += theSpell.AtonementEffect();
 			TotalHealing += Atonements * theSpell.AtonementEffect();
 		}
@@ -113,13 +126,39 @@ namespace Disculator
 			TotalHealing += theSpell.AvgEffect();
 		}
 
+		private void AddAtonement()
+		{
+			for (int i=0; i<AtonementExpirations.Length; i++)
+			{
+				if (AtonementExpirations[i] == 9001f)
+				{
+					AtonementExpirations[i] = Time + AtonementDuration;
+					break;
+				}
+			}
+			Atonements++;
+		}
+
+		private void ExpireAtonements()
+		{
+			//Clean up Atonements
+			for (int i = 0; i < AtonementExpirations.Length; i++)
+			{
+				if (AtonementExpirations[i] < Time)
+				{
+					AtonementExpirations[i] = 9001f;
+					Atonements--;
+				}
+			}
+		}
+
 		public static float LONGTIME = 500f;
 
 		public StringBuilder LongRunEasyRotation(Disculator ds)
 		{
 			StringBuilder sb = new StringBuilder();
 
-			sb.AppendLine("Let Atonemenet fall off, plea to 6, maintain PtW, spam Smite");
+			sb.AppendLine("Let Atonement fall off, plea to 6, maintain PtW, spam Smite");
 
 			ds.Raycalculate();
 			Reset();
@@ -136,15 +175,7 @@ namespace Disculator
 					TankHealing += Atonements * ds.PtwDPS * (Time - startTime) * 0.4f * (1 + ds.masteryPercent);
 				}
 
-				//Clean up Atonements
-				for (int i = 0; i < AtonementExpirations.Length; i++)
-				{
-					if (AtonementExpirations[i] < Time)
-					{
-						AtonementExpirations[i] = 999f;
-						Atonements--;
-					}
-				}
+				ExpireAtonements();
 
 				startTime = Time;
 
@@ -179,7 +210,6 @@ namespace Disculator
 
 				if (!StackedAtonement)
 				{
-					AtonementExpirations[Atonements] = Time + AtonementDuration;
 					//CastNum Plea
 					ManaSpent += ds.Plea.Mana * (Atonements + 1);
 					if (Atonements == 0)
@@ -188,16 +218,22 @@ namespace Disculator
 					}
 					TotalHealing += ds.Plea.AvgEffect();
 
-					Atonements++;
+					AddAtonement();
 					Time += ds.Plea.CastTime();
 					StackedAtonement = (Atonements == 6);
 					Log(sb, ": Casting Plea");
 					continue;
 				}
-
-
-
-				DamageSpell(ds.Smite);
+				
+				if (BurstUp)
+				{
+					DamageSpell(ds.Smite, ds.BurstOfLight);
+					BurstUp = false;
+				}
+				else
+				{
+					DamageSpell(ds.Smite);
+				}
 				TankHealing += ds.SmiteAbsorb.AvgEffect();
 				TotalHealing += ds.SmiteAbsorb.AvgEffect();
 				Log(sb, ": Casting Smite");
@@ -225,12 +261,11 @@ namespace Disculator
 
 			StringBuilder sb = new StringBuilder();
 
-			sb.AppendLine("Let Atonemenet fall off, plea to 6, maintain PtW, spam Smite");
+			sb.AppendLine("Maintain 6 Atonements, use Penance and PW:Shield on cooldown");
 
 			ds.Raycalculate();
 			Reset();
-
-
+			
 			float startTime = 0f;
 			for (CastNum = 0, Time = 0f; Time < LONGTIME; CastNum++)
 			{
@@ -242,18 +277,17 @@ namespace Disculator
 					TankHealing += Atonements * ds.PtwDPS * (Time - startTime) * 0.4f * (1 + ds.masteryPercent);
 				}
 
-				//Clean up Atonements
-				for (int i = 0; i < AtonementExpirations.Length; i++)
+				ExpireAtonements();
+
+				if (Time > DarkSideReady && !DarkSideUp)
 				{
-					if (AtonementExpirations[i] < Time)
-					{
-						AtonementExpirations[i] = 999f;
-						Atonements--;
-					}
+					DarkSideUp = true;
 				}
 
+				//--------- Begin Priority List ------------
 				startTime = Time;
 
+				//Cast Purge when it falls off
 				if ((DotExpires - Time) <= 6f)
 				{
 					//Purge the Wicked needs some special logic, so
@@ -277,33 +311,79 @@ namespace Disculator
 					continue;
 				}
 
+				//Power Word: Shield on cooldown
+				if (Time > ShieldReady)
+				{
+					HealSpell(ds.Shield, 1);
+					if (Atonements == 0)
+					{
+						AddAtonement();
+					}
+					else
+					{
+						AtonementExpirations[0] = Time + AtonementDuration;
+					}
+					BurstUp = true;
 
-				if (Atonements == 0 && StackedAtonement == true)
+					ShieldReady = Time + ds.ShieldCD;
+					
+					Log(sb, ": Casting Power Word: Shield");
+					continue;
+				}
+
+				//-------- Stack Atonement to 6 ---------
+				if (Atonements < 2 && StackedAtonement == true)
 				{
 					StackedAtonement = false;
+				}
+				else
+				{
+					//Penance so long as you're not restacking Atonements
+					if (PenanceReady < Time)
+					{
+						if (BurstUp)
+						{
+							DamageSpell(ds.CastigatedPenance, ds.BurstOfLight);
+							BurstUp = false;
+						}
+						else
+						{
+							DamageSpell(ds.CastigatedPenance);
+						}
+						PenanceReady = Time + ds.PenanceCD;
+						Log(sb, ": Casting Penance");
+						continue;
+					}
 				}
 
 				if (!StackedAtonement)
 				{
-					AtonementExpirations[Atonements] = Time + AtonementDuration;
-					//CastNum Plea
 					ManaSpent += ds.Plea.Mana * (Atonements + 1);
+					Time += ds.Plea.CastTime();
+
+					//Cast Plea
 					if (Atonements == 0)
 					{
 						TankHealing += ds.Plea.AvgEffect();
 					}
 					TotalHealing += ds.Plea.AvgEffect();
 
-					Atonements++;
-					Time += ds.Plea.CastTime();
-					StackedAtonement = (Atonements == 6);
+					AddAtonement();
+					BurstUp = true;
+					StackedAtonement = (Atonements >= 6);
 					Log(sb, ": Casting Plea");
 					continue;
 				}
-
 				
-
-				DamageSpell(ds.Smite);
+				if (BurstUp)
+				{
+					DamageSpell(ds.Smite, ds.BurstOfLight);
+					BurstUp = false;
+				}
+				else
+				{
+					DamageSpell(ds.Smite);
+				}
 				TankHealing += ds.SmiteAbsorb.AvgEffect();
 				TotalHealing += ds.SmiteAbsorb.AvgEffect();
 				Log(sb, ": Casting Smite");
@@ -330,7 +410,7 @@ namespace Disculator
 		{
 			StringBuilder sb = new StringBuilder();
 
-			sb.AppendLine("Let Atonemenet fall off, plea to 6, hit PtW, spam Smite");
+			sb.AppendLine("Let Atonement fall off, plea to 6, hit PtW, spam Smite");
 
 			Reset();
 

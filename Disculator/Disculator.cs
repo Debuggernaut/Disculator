@@ -41,6 +41,7 @@ namespace Disculator
 		public Spell Plea;
 		public Spell Smend;
 		public Spell SmiteAbsorb;
+		public Spell Shield;
 
 		public Spell Smite;
 		public Spell CastigatedPenance;
@@ -54,7 +55,8 @@ namespace Disculator
 		public float SwpDPS = 0f;
 
 		public float PenanceCD = 9f;
-		public float PwsCD = 7.5f;
+		public float ShieldCD = 7.5f;
+		public float SolaceCD = 12f;
 
 		//Modeling Power of the Dark Side as a 1m cooldown effect
 		// rather than trying to actually model procs per minute
@@ -97,16 +99,22 @@ namespace Disculator
 			//Rounds up to the next number of swings
 			ShadowfiendSwings = (int)Math.Ceiling(8f * (1 + hastePercent));
 
+			//Scale cooldowns appropriately:
+			ShieldCD = 7.5f / (1 + hastePercent);
+			PowerOfTheDarkSideCD = 60f / (1 + hastePercent);
+			SolaceCD = 12f / (1 + hastePercent);
+
 			Plea = new Spell("Plea (0 Atonements)", 2.25f, 1.5f, 3960, 1.0f, this);
 			Smend = new Spell("Shadow Mend (Heavy Incoming Damage)", 7.5f, 1.5f, 30800, DarkestShadows, this);
 			SmiteAbsorb = new Spell("Smite Absorb", 2.25f, 1.5f, 11000, 1.0f, this);
+			Shield = new Spell("Power Word: Shield", 5.5f, 1.5f, 22000, ShieldOfFaith * Skjoldr, this);
 			HealSpells = new Spell[]
 			{
 				Plea,
 				new Spell("Plea (6 Atonements)", 2.25f, 1.5f, 3960*6, 1.0f, this),
 				Smend,
 
-				new Spell("Power Word: Shield", 5.5f, 1.5f, 22000, ShieldOfFaith*Skjoldr, this),
+				Shield,
 				new Spell("Penitent Penance", 9f, 2.0f, 22000, Confession, this),
 				new Spell("Clarity of Will", 9f, 2f, 30800, 1.0f, this),
 
