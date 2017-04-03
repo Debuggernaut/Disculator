@@ -297,6 +297,14 @@ namespace Disculator
 			FightStatus fs = new FightStatus();
 			this.RotationBox.Text = fs.LongRun_PenanceAndShield(ds).ToString();
 			this.RotationBox.Text += fs.LongRunEasyRotation(ds).ToString();
+
+			this.RotationBox.Text += "(Shield Discipline)\r\n";
+			ds.Shield.Mana = 11000;
+			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds).ToString();
+
+			this.RotationBox.Text += "(No Dark Side)\r\n";
+			ds.PowerOfTheDarkSideCD = 9001f;
+			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds).ToString();
 		}
 	}
 }

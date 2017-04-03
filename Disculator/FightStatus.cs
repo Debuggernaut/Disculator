@@ -110,12 +110,17 @@ namespace Disculator
 
 		private void DamageSpell(Spell theSpell, float bonusHaste)
 		{
+			DamageSpell(theSpell, bonusHaste, 1.0f);
+		}
+
+		private void DamageSpell(Spell theSpell, float bonusHaste, float bonusDamage)
+		{
 			CastSpell(theSpell, bonusHaste);
 
-			TotalDamage += theSpell.AvgEffect();
+			TotalDamage += theSpell.AvgEffect() * bonusDamage;
 			//Assumes we always have an atonement up on at least one tank
-			TankHealing += theSpell.AtonementEffect();
-			TotalHealing += Atonements * theSpell.AtonementEffect();
+			TankHealing += theSpell.AtonementEffect() * bonusDamage;
+			TotalHealing += Atonements * theSpell.AtonementEffect() * bonusDamage;
 		}
 
 		private void HealSpell(Spell theSpell, int targets)
@@ -160,7 +165,7 @@ namespace Disculator
 
 			sb.AppendLine("Let Atonement fall off, plea to 6, maintain PtW, spam Smite");
 
-			ds.Raycalculate();
+			//ds.Raycalculate(); //Allow the caller to tweak things
 			Reset();
 
 
@@ -263,7 +268,7 @@ namespace Disculator
 
 			sb.AppendLine("Maintain 6 Atonements, use Penance and PW:Shield on cooldown");
 
-			ds.Raycalculate();
+			//ds.Raycalculate(); //Allow the caller to tweak things
 			Reset();
 			
 			float startTime = 0f;
@@ -374,16 +379,21 @@ namespace Disculator
 					Log(sb, ": Casting Plea");
 					continue;
 				}
+
+				if (Time > DarkSideReady)
+				{
+					DarkSideUp = true;
+					DarkSideReady = Time + ds.PowerOfTheDarkSideCD;
+				}
 				
-				if (BurstUp)
+				DamageSpell(ds.Smite, BurstUp ? ds.BurstOfLight : 1.0f, DarkSideUp?1.5f:1.0f);
+				BurstUp = false;
+				if (DarkSideUp)
 				{
-					DamageSpell(ds.Smite, ds.BurstOfLight);
-					BurstUp = false;
+					DarkSideReady = Time + ds.PowerOfTheDarkSideCD;
+					DarkSideUp = false;
 				}
-				else
-				{
-					DamageSpell(ds.Smite);
-				}
+
 				TankHealing += ds.SmiteAbsorb.AvgEffect();
 				TotalHealing += ds.SmiteAbsorb.AvgEffect();
 				Log(sb, ": Casting Smite");
