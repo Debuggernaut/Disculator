@@ -373,9 +373,10 @@ namespace Disculator
 
 				ExpireAtonements();
 
-				if (Time > DarkSideReady && !DarkSideUp)
+				if (Time > DarkSideReady)
 				{
 					DarkSideUp = true;
+					DarkSideReady = Time + ds.PowerOfTheDarkSideCD;
 				}
 
 				//--------- Begin Priority List ------------
@@ -405,12 +406,6 @@ namespace Disculator
 					continue;
 				}
 
-				if (Time > DarkSideReady)
-				{
-					DarkSideUp = true;
-					DarkSideReady = Time + ds.PowerOfTheDarkSideCD;
-				}
-
 				DamageSpell(ds.Smite, BurstUp ? ds.BurstOfLight : 1.0f);
 				BurstUp = false;
 
@@ -438,7 +433,90 @@ namespace Disculator
 
 		public StringBuilder SmiteWeave(Disculator ds)
 		{
-			return null;
+			StringBuilder sb = new StringBuilder();
+
+			sb.AppendLine("Maintain 6 Atonements, use Penance and PW:Shield on cooldown, but use every Burst of Light");
+
+			//ds.Raycalculate(); //Allow the caller to tweak things
+			Reset();
+
+			float startTime = 0f;
+			for (CastNum = 0, Time = 0f; Time < LONGTIME; CastNum++)
+			{
+				//Apply DoT damage from the last round through here
+				if (DotExpires > Time)
+				{
+					TotalDamage += ds.PtwDPS * (Time - startTime);
+					TankHealing += ds.PtwDPS * (Time - startTime) * 0.4f * (1 + ds.masteryPercent);
+					TankHealing += Atonements * ds.PtwDPS * (Time - startTime) * 0.4f * (1 + ds.masteryPercent);
+				}
+
+				ExpireAtonements();
+				
+				if (Time > DarkSideReady)
+				{
+					DarkSideUp = true;
+					DarkSideReady = Time + ds.PowerOfTheDarkSideCD;
+				}
+
+				//--------- Begin Priority List ------------
+				startTime = Time;
+
+				//Maintain Purge the Wicked
+				if (ApplyPurge(sb, ds)) continue;
+
+				if (BurstUp)
+				{
+					if (CastPenance(sb, ds)) continue;
+
+					DamageSpell(ds.Smite, BurstUp ? ds.BurstOfLight : 1.0f);
+					BurstUp = false;
+
+					TankHealing += ds.SmiteAbsorb.AvgEffect();
+					TotalHealing += ds.SmiteAbsorb.AvgEffect();
+					continue;
+				}
+
+				//Cast Shield on cooldown
+				if (CastShield(sb, ds)) continue;
+
+				//-------- Stack Atonement to 6 ---------
+				if (Atonements < 2 && StackedAtonement == true)
+				{
+					StackedAtonement = false;
+				}
+
+				if (!StackedAtonement)
+				{
+					CastPlea(sb, ds);
+					StackedAtonement = (Atonements >= 6);
+					Log(sb, ": Casting Plea");
+					continue;
+				}
+
+				DamageSpell(ds.Smite, BurstUp ? ds.BurstOfLight : 1.0f);
+				BurstUp = false;
+
+				TankHealing += ds.SmiteAbsorb.AvgEffect();
+				TotalHealing += ds.SmiteAbsorb.AvgEffect();
+				Log(sb, ": Casting Smite");
+
+			}
+
+
+			Deeps = TotalDamage / Time;
+			Heeps = TotalHealing / Time;
+			TankHeeps = TankHealing / Time;
+
+			sb.AppendLine("Period: " + F(Time) + "s, " +
+					"DPS: " + F(Deeps) + ", " +
+					"HPS: " + F(Heeps) + ", " +
+					"Tank HPS: " + F(TankHeeps) + ", " +
+					"MPS: " + F(ManaSpent / Time) + ", " +
+					"HPM: " + F(TotalHealing / ManaSpent)
+					);
+
+			return sb;
 		}
 
 		public StringBuilder EasyRotation(Disculator ds)
@@ -525,5 +603,262 @@ namespace Disculator
 
 			return sb;
 		}
+
+		public StringBuilder RePleaAt4(Disculator ds)
+		{
+
+			StringBuilder sb = new StringBuilder();
+
+			sb.AppendLine("Maintain 6 Atonements, use Penance and PW:Shield on cooldown, recast plea below 5 atonements");
+
+			//ds.Raycalculate(); //Allow the caller to tweak things
+			Reset();
+
+			float startTime = 0f;
+			for (CastNum = 0, Time = 0f; Time < LONGTIME; CastNum++)
+			{
+				//Apply DoT damage from the last round through here
+				if (DotExpires > Time)
+				{
+					TotalDamage += ds.PtwDPS * (Time - startTime);
+					TankHealing += ds.PtwDPS * (Time - startTime) * 0.4f * (1 + ds.masteryPercent);
+					TankHealing += Atonements * ds.PtwDPS * (Time - startTime) * 0.4f * (1 + ds.masteryPercent);
+				}
+
+				if (Time > DarkSideReady)
+				{
+					DarkSideUp = true;
+					DarkSideReady = Time + ds.PowerOfTheDarkSideCD;
+				}
+
+				ExpireAtonements();
+
+				if (Time > DarkSideReady && !DarkSideUp)
+				{
+					DarkSideUp = true;
+				}
+
+				//--------- Begin Priority List ------------
+				startTime = Time;
+
+				//Maintain Purge the Wicked
+				if (ApplyPurge(sb, ds)) continue;
+
+				//Cast Shield on cooldown
+				if (CastShield(sb, ds)) continue;
+
+				//-------- Stack Atonement to 6 ---------
+				if (Atonements < 5 && StackedAtonement == true)
+				{
+					StackedAtonement = false;
+				}
+				else
+				{
+					if (CastPenance(sb, ds)) continue;
+				}
+
+				if (!StackedAtonement)
+				{
+					CastPlea(sb, ds);
+					StackedAtonement = (Atonements >= 6);
+					Log(sb, ": Casting Plea");
+					continue;
+				}
+
+				DamageSpell(ds.Smite, BurstUp ? ds.BurstOfLight : 1.0f);
+				BurstUp = false;
+
+				TankHealing += ds.SmiteAbsorb.AvgEffect();
+				TotalHealing += ds.SmiteAbsorb.AvgEffect();
+				Log(sb, ": Casting Smite");
+
+			}
+
+
+			Deeps = TotalDamage / Time;
+			Heeps = TotalHealing / Time;
+			TankHeeps = TankHealing / Time;
+
+			sb.AppendLine("Period: " + F(Time) + "s, " +
+					"DPS: " + F(Deeps) + ", " +
+					"HPS: " + F(Heeps) + ", " +
+					"Tank HPS: " + F(TankHeeps) + ", " +
+					"MPS: " + F(ManaSpent / Time) + ", " +
+					"HPM: " + F(TotalHealing / ManaSpent)
+					);
+
+			return sb;
+		}
+
+		public StringBuilder RePleaAt4_NoShieldOrPenance(Disculator ds)
+		{
+
+			StringBuilder sb = new StringBuilder();
+
+			sb.AppendLine("Maintain 6 Atonements, No Penance/Shield, recast plea below 5 atonements");
+
+			//ds.Raycalculate(); //Allow the caller to tweak things
+			Reset();
+
+			float startTime = 0f;
+			for (CastNum = 0, Time = 0f; Time < LONGTIME; CastNum++)
+			{
+				//Apply DoT damage from the last round through here
+				if (DotExpires > Time)
+				{
+					TotalDamage += ds.PtwDPS * (Time - startTime);
+					TankHealing += ds.PtwDPS * (Time - startTime) * 0.4f * (1 + ds.masteryPercent);
+					TankHealing += Atonements * ds.PtwDPS * (Time - startTime) * 0.4f * (1 + ds.masteryPercent);
+				}
+
+				ExpireAtonements();
+
+				if (Time > DarkSideReady && !DarkSideUp)
+				{
+					DarkSideUp = true;
+				}
+
+				//--------- Begin Priority List ------------
+				startTime = Time;
+
+				//Maintain Purge the Wicked
+				if (ApplyPurge(sb, ds)) continue;
+
+				////Cast Shield on cooldown
+				//if (CastShield(sb, ds)) continue;
+
+				//-------- Stack Atonement to 6 ---------
+				if (Atonements < 5 && StackedAtonement == true)
+				{
+					StackedAtonement = false;
+				}
+				else
+				{
+					//if (CastPenance(sb, ds)) continue;
+				}
+
+				if (!StackedAtonement)
+				{
+					CastPlea(sb, ds);
+					StackedAtonement = (Atonements >= 6);
+					Log(sb, ": Casting Plea");
+					continue;
+				}
+
+				if (Time > DarkSideReady)
+				{
+					DarkSideUp = true;
+					DarkSideReady = Time + ds.PowerOfTheDarkSideCD;
+				}
+
+				DamageSpell(ds.Smite, BurstUp ? ds.BurstOfLight : 1.0f);
+				BurstUp = false;
+
+				TankHealing += ds.SmiteAbsorb.AvgEffect();
+				TotalHealing += ds.SmiteAbsorb.AvgEffect();
+				Log(sb, ": Casting Smite");
+
+			}
+
+
+			Deeps = TotalDamage / Time;
+			Heeps = TotalHealing / Time;
+			TankHeeps = TankHealing / Time;
+
+			sb.AppendLine("Period: " + F(Time) + "s, " +
+					"DPS: " + F(Deeps) + ", " +
+					"HPS: " + F(Heeps) + ", " +
+					"Tank HPS: " + F(TankHeeps) + ", " +
+					"MPS: " + F(ManaSpent / Time) + ", " +
+					"HPM: " + F(TotalHealing / ManaSpent)
+					);
+
+			return sb;
+		}
+
+		public StringBuilder SMendInsteadOfPlea(Disculator ds)
+		{
+			return SMendInsteadOfPlea(ds, 6);
+		}
+
+		public StringBuilder SMendInsteadOfPlea(Disculator ds, int TargetAtonements)
+		{
+			StringBuilder sb = new StringBuilder();
+
+			sb.AppendLine("Maintain " + TargetAtonements + " Atonements, Use Penance/Shield on cooldown, use Shadow Mend instead of Plea");
+
+			//ds.Raycalculate(); //Allow the caller to tweak things
+			Reset();
+
+			float startTime = 0f;
+			for (CastNum = 0, Time = 0f; Time < LONGTIME; CastNum++)
+			{
+				//Apply DoT damage from the last round through here
+				if (DotExpires > Time)
+				{
+					TotalDamage += ds.PtwDPS * (Time - startTime);
+					TankHealing += ds.PtwDPS * (Time - startTime) * 0.4f * (1 + ds.masteryPercent);
+					TankHealing += Atonements * ds.PtwDPS * (Time - startTime) * 0.4f * (1 + ds.masteryPercent);
+				}
+
+				if (Time > DarkSideReady)
+				{
+					DarkSideUp = true;
+					DarkSideReady = Time + ds.PowerOfTheDarkSideCD;
+				}
+
+				ExpireAtonements();
+
+				if (Time > DarkSideReady && !DarkSideUp)
+				{
+					DarkSideUp = true;
+				}
+
+				//--------- Begin Priority List ------------
+				startTime = Time;
+
+				//Maintain Purge the Wicked
+				if (ApplyPurge(sb, ds)) continue;
+
+				//Cast Shield on cooldown
+				if (CastShield(sb, ds)) continue;
+
+				//-------- Stack Atonement to 6 ---------
+				if (Atonements > 4)
+					if (CastPenance(sb, ds)) continue;
+
+				if (Atonements < TargetAtonements)
+				{ 
+					HealSpell(ds.Smend, 1);
+					AddAtonement();
+					Log(sb, ": Casting Shadow Mend");
+					continue;
+				}
+
+				DamageSpell(ds.Smite, BurstUp ? ds.BurstOfLight : 1.0f);
+				BurstUp = false;
+
+				TankHealing += ds.SmiteAbsorb.AvgEffect();
+				TotalHealing += ds.SmiteAbsorb.AvgEffect();
+				Log(sb, ": Casting Smite");
+
+			}
+
+
+			Deeps = TotalDamage / Time;
+			Heeps = TotalHealing / Time;
+			TankHeeps = TankHealing / Time;
+
+			sb.AppendLine("Period: " + F(Time) + "s, " +
+					"DPS: " + F(Deeps) + ", " +
+					"HPS: " + F(Heeps) + ", " +
+					"Tank HPS: " + F(TankHeeps) + ", " +
+					"MPS: " + F(ManaSpent / Time) + ", " +
+					"HPM: " + F(TotalHealing / ManaSpent)
+					);
+
+			return sb;
+		}
+
 	}
 }

@@ -294,17 +294,31 @@ namespace Disculator
 
 		private void Button_Click(object sender, RoutedEventArgs e)
 		{
-			FightStatus fs = new FightStatus();
-			this.RotationBox.Text = fs.LongRun_PenanceAndShield(ds).ToString();
-			this.RotationBox.Text += fs.LongRunEasyRotation(ds).ToString();
+			Disculator dOrig = ds.clone();
 
-			this.RotationBox.Text += "(Shield Discipline)\r\n";
+			FightStatus fs = new FightStatus();
+			//this.RotationBox.Text = fs.LongRun_PenanceAndShield(ds).ToString();
+			//this.RotationBox.Text += fs.LongRunEasyRotation(ds).ToString();
+
+			this.RotationBox.Text = "(Shield Discipline)\r\n";
 			ds.Shield.Mana = 11000;
 			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds).ToString();
 
 			this.RotationBox.Text += "(No Dark Side)\r\n";
 			ds.PowerOfTheDarkSideCD = 9001f;
 			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds).ToString();
+
+			this.RotationBox.Text += "(SMITEWEAVING + Shield Discipline)\r\n";
+			dOrig.Shield.Mana = 11000;
+			this.RotationBox.Text += fs.SmiteWeave(dOrig).ToString();
+
+			this.RotationBox.Text += fs.RePleaAt4(dOrig).ToString();
+
+			this.RotationBox.Text += fs.RePleaAt4_NoShieldOrPenance(dOrig).ToString();
+
+			this.RotationBox.Text += fs.SMendInsteadOfPlea(dOrig).ToString();
+
+			this.RotationBox.Text += fs.SMendInsteadOfPlea(dOrig, 8).ToString();
 		}
 	}
 }
