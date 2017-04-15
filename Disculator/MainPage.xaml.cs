@@ -26,7 +26,7 @@ namespace Disculator
 		String[] HealColumns;
 		String[] DamageColumns;
 
-		Disculator ds;
+		CharacterStats ds;
 
 		public MainPage()
 		{
@@ -76,7 +76,7 @@ namespace Disculator
 
 		private void Raycalculate()
 		{
-			ds = new Disculator();
+			ds = new CharacterStats();
 			ds.intellect = int.Parse(this.intbox.Text);
 			ds.critRating = int.Parse(this.critbox.Text);
 			ds.hasteRating = int.Parse(this.hastebox.Text);
@@ -260,28 +260,28 @@ namespace Disculator
 		private void Rotations()
 		{
 
-			FightStatus fs = new FightStatus();
+			FightSim fs = new FightSim();
 			StringBuilder sb = fs.EasyRotation(ds);
 
 			this.RotationBox.Text = sb.ToString();
 
-			Disculator dOrig = ds.clone();
+			CharacterStats dOrig = ds.clone();
 
-			Disculator dHasty = dOrig.clone();
+			CharacterStats dHasty = dOrig.clone();
 			dHasty.hasteRating += 2000;
-			fs = new FightStatus();
+			fs = new FightSim();
 			sb = fs.EasyRotation(dHasty);
 			this.RotationBox.Text += sb.ToString();
 
-			Disculator dCrit = dOrig.clone();
+			CharacterStats dCrit = dOrig.clone();
 			dCrit.critRating += 2000;
-			fs = new FightStatus();
+			fs = new FightSim();
 			sb = fs.EasyRotation(dCrit);
 			this.RotationBox.Text += sb.ToString();
 
 
 			dOrig.masteryRating += 2000;
-			fs = new FightStatus();
+			fs = new FightSim();
 			sb = fs.EasyRotation(dOrig);
 			this.RotationBox.Text += sb.ToString();
 		}
@@ -294,9 +294,9 @@ namespace Disculator
 
 		private void Button_Click(object sender, RoutedEventArgs e)
 		{
-			Disculator dOrig = ds.clone();
+			CharacterStats dOrig = ds.clone();
 
-			FightStatus fs = new FightStatus();
+			FightSim fs = new FightSim();
 			//this.RotationBox.Text = fs.LongRun_PenanceAndShield(ds).ToString();
 			//this.RotationBox.Text += fs.LongRunEasyRotation(ds).ToString();
 

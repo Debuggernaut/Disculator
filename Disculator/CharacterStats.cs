@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Disculator
 {
-	public class Disculator 
+	public class CharacterStats 
 	{
 		public int intellect;
 		public int critRating;
@@ -72,12 +72,12 @@ namespace Disculator
 
 		public int ShadowfiendSwings;
 
-		public Disculator clone()
+		public CharacterStats clone()
 		{
-			return (Disculator) this.MemberwiseClone();
+			return (CharacterStats) this.MemberwiseClone();
 		}
 
-		public Disculator()
+		public CharacterStats()
 		{
 			
 		}
