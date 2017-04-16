@@ -352,10 +352,15 @@ namespace Disculator
 
 		public StringBuilder LongRun_PenanceAndShield(CharacterStats ds)
 		{
+			return LongRun_PenanceAndShield(ds, 6);
+		}
+
+		public StringBuilder LongRun_PenanceAndShield(CharacterStats ds, int AtonementsToMaintain)
+		{
 
 			StringBuilder sb = new StringBuilder();
 
-			sb.AppendLine("Maintain 6 Atonements, use Penance and PW:Shield on cooldown");
+			sb.AppendLine("Maintain " + AtonementsToMaintain + " Atonements, use Penance and PW:Shield on cooldown");
 
 			//ds.Raycalculate(); //Allow the caller to tweak things
 			Reset();
@@ -400,9 +405,18 @@ namespace Disculator
 
 				if (!StackedAtonement)
 				{
-					CastPlea(sb, ds);
-					StackedAtonement = (Atonements >= 6);
-					Log(sb, ": Casting Plea");
+					if (Atonements >= 6)
+					{
+						HealSpell(ds.Smend, 1);
+						AddAtonement();
+						Log(sb, ": Casting Shadow Mend");
+					}
+					else
+					{
+						CastPlea(sb, ds);
+						Log(sb, ": Casting Plea");
+					}
+					StackedAtonement = (Atonements >= AtonementsToMaintain);
 					continue;
 				}
 
