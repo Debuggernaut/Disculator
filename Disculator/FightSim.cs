@@ -37,6 +37,21 @@ namespace Disculator
 
 		public bool fullLog = false;
 
+		public int Pleas;
+		public int Smends;
+		public int Smites;
+		public int Penances;
+		public int Shields;
+		public int Purges;
+
+		public bool HalfAssedDarkmoonSimulator = false;
+
+		// Note that the presence of only half an ass prevents this from modeling
+		// things such as a simultaneous Bloodlust + Power Infusion or the trinket
+		// off Chronomatic Anomaly
+		public float TempHasteBuff; 
+		public float TempHasteBuffExpiration;
+
 		public void Reset()
 		{
 			AtonementDuration = 15f;
@@ -68,6 +83,17 @@ namespace Disculator
 			}
 
 			DotExpires = 0f;
+
+
+			Pleas = 0;
+			Smends = 0;
+			Smites = 0;
+			Penances = 0;
+			Shields = 0;
+			Purges = 0;
+
+			TempHasteBuff = 1.0f;
+			TempHasteBuffExpiration = 9001f;
 		}
 
 		private String F(float input)
@@ -94,8 +120,23 @@ namespace Disculator
 
 		private void CastSpell(Spell theSpell, float bonusHaste)
 		{
-			Time += theSpell.CastTime() / bonusHaste;
+			if (Time >= TempHasteBuffExpiration)
+			{
+				TempHasteBuff = 1.0f;
+			}
+			Time += (theSpell.CastTime() / bonusHaste) / TempHasteBuff;
 			ManaSpent += theSpell.Mana;
+
+			//if (theSpell.Name.CompareTo("Plea") == 0)
+			//	Pleas++;
+			if (theSpell.Name.CompareTo("Shadow Mend (Heavy Incoming Damage)") == 0)
+				Smends++;
+			if (theSpell.Name.CompareTo("Smite") == 0)
+				Smites++;
+			//if (theSpell.Name.CompareTo("Power Word: Shield") == 0)
+			//	Shields++;
+			//if (theSpell.Name.CompareTo("Penance (Castigated)") == 0)
+			//	Penances++;
 		}
 
 		private void CastSpell(Spell theSpell)
@@ -171,6 +212,8 @@ namespace Disculator
 
 			AddAtonement();
 			BurstUp = true;
+
+			Pleas++;
 		}
 
 		private bool CastShield(StringBuilder sb, CharacterStats ds)
@@ -192,6 +235,7 @@ namespace Disculator
 				ShieldReady = Time + ds.ShieldCD;
 
 				Log(sb, ": Casting Power Word: Shield");
+				Shields++;
 				return true;
 			}
 
@@ -220,7 +264,7 @@ namespace Disculator
 				TankHealing += ds.Ptw.AtonementEffect() - ds.PtwDot.AtonementEffect();
 				TotalHealing += Atonements * (ds.Ptw.AtonementEffect() - ds.PtwDot.AtonementEffect());
 				Log(sb, ": Casting Purge the Wicked");
-
+				Purges++;
 				return true;
 			}
 			return false;
@@ -240,6 +284,7 @@ namespace Disculator
 				}
 				PenanceReady = Time + ds.PenanceCD;
 				Log(sb, ": Casting Penance");
+				Penances++;
 				return true;
 			}
 
@@ -352,15 +397,14 @@ namespace Disculator
 
 		public StringBuilder LongRun_PenanceAndShield(CharacterStats ds)
 		{
-			return LongRun_PenanceAndShield(ds, 6);
+			return LongRun_PenanceAndShield(ds, 6, 6);
 		}
 
-		public StringBuilder LongRun_PenanceAndShield(CharacterStats ds, int AtonementsToMaintain)
+		public StringBuilder LongRun_PenanceAndShield(CharacterStats ds, int AtonementsToMaintain, int MaxPleaAtonements)
 		{
-
 			StringBuilder sb = new StringBuilder();
 
-			sb.AppendLine("Maintain " + AtonementsToMaintain + " Atonements, use Penance and PW:Shield on cooldown");
+			//sb.AppendLine("Maintain " + AtonementsToMaintain + " Atonements, use plea below, shadow mend at/above " + MaxPleaAtonements + " Atonements ");
 
 			//ds.Raycalculate(); //Allow the caller to tweak things
 			Reset();
@@ -368,6 +412,9 @@ namespace Disculator
 			float startTime = 0f;
 			for (CastNum = 0, Time = 0f; Time < LONGTIME; CastNum++)
 			{
+				if (HalfAssedDarkmoonSimulator)
+					ManaSpent -= ((2438-610)/2 + 610);
+
 				//Apply DoT damage from the last round through here
 				if (DotExpires > Time)
 				{
@@ -405,7 +452,7 @@ namespace Disculator
 
 				if (!StackedAtonement)
 				{
-					if (Atonements >= 6)
+					if (Atonements >= MaxPleaAtonements)
 					{
 						HealSpell(ds.Smend, 1);
 						AddAtonement();
@@ -434,6 +481,7 @@ namespace Disculator
 			Heeps = TotalHealing / Time;
 			TankHeeps = TankHealing / Time;
 
+			sb.Append("LR " + AtonementsToMaintain + "/" + MaxPleaAtonements + ": ");
 			sb.AppendLine("Period: " + F(Time) + "s, " +
 					"DPS: " + F(Deeps) + ", " +
 					"HPS: " + F(Heeps) + ", " +
@@ -466,7 +514,7 @@ namespace Disculator
 				}
 
 				ExpireAtonements();
-				
+
 				if (Time > DarkSideReady)
 				{
 					DarkSideUp = true;
@@ -842,7 +890,7 @@ namespace Disculator
 					if (CastPenance(sb, ds)) continue;
 
 				if (Atonements < TargetAtonements)
-				{ 
+				{
 					HealSpell(ds.Smend, 1);
 					AddAtonement();
 					Log(sb, ": Casting Shadow Mend");

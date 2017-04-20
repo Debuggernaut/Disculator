@@ -68,12 +68,11 @@
 	<Pivot Background="{StaticResource darkBG}">
 		<Pivot.Title>
 			<StackPanel>
-				<TextBlock Text="Raymar's Quality Discount Disc Calculator" FontWeight="Bold" FontSize="28" Foreground="{StaticResource GoldText}" />
+				<TextBlock Text="Ray's Quality Discount Disc Calculator" FontWeight="Bold" FontSize="28" Foreground="{StaticResource GoldText}" />
 			</StackPanel>
 		</Pivot.Title>
 		<PivotItem Header="Stats">
-			<StackPanel>
-				<Button x:Name="recalc" Content="Recalculate" HorizontalAlignment="Left" VerticalAlignment="Top" Click="recalc_Click"/>
+			<StackPanel Padding="10">
 				<StackPanel Orientation="Horizontal">
 					<TextBlock TextWrapping="Wrap" Text="Int" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
 					<TextBox x:Name="intbox" Text="39262" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
@@ -98,16 +97,23 @@
 					<TextBox x:Name="verbox" Text="3394" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
 					<TextBlock x:Name="verpercentbox" TextWrapping="Wrap" Text="X%" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
 				</StackPanel>
-				<StackPanel Orientation="Horizontal">
+				<StackPanel Orientation="Horizontal" >
 					<TextBlock TextWrapping="Wrap" Text="Artifact Traits" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
-					<TextBox x:Name="pointsbox" Text="38" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
+					<TextBox x:Name="pointsbox" Text="41" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
 					<TextBlock x:Name="artifactDamageBonusPercent" TextWrapping="Wrap" Text="X%" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
 				</StackPanel>
+				<Button Margin="10" x:Name="recalc" Content="Recalculate" HorizontalAlignment="Left" VerticalAlignment="Top" Click="recalc_Click"/>
+
+				<StackPanel Orientation="Horizontal" Padding="10">
+					<TextBox x:Name="ArmoryURL" Width="450" Text="http://us.battle.net/wow/en/character/thrall/Raymaru/simple" Height="10"/>
+					<Button Margin="10" x:Name="ArmoryButton" Click="ArmoryButton_Click">Load from Armory</Button>
+				</StackPanel>
+				
 				<StackPanel Orientation="Horizontal">
 					<TextBlock TextWrapping="Wrap" Text="Mindbender Swings:" Margin="10,10,0,0" Width="150" VerticalAlignment="Center"/>
 					<TextBlock x:Name="MindbenderSwingsBox" TextWrapping="Wrap" Text="8?" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
 				</StackPanel>
-				<TextBlock x:Name="outbox" TextWrapping="Wrap" Text="" Height="310" />
+				<TextBlock x:Name="outbox" TextWrapping="Wrap" Text="" ScrollViewer.VerticalScrollMode="Auto"/>
 			</StackPanel>
 		</PivotItem>
 		<PivotItem Header="Heals">
@@ -134,10 +140,19 @@
 			<ScrollViewer VerticalAlignment="Stretch">
 				<StackPanel>
 					<Button Click="Button_Click">Long Run</Button>
+					<Button Click="StatComparisonButtonClick">Stat Comparison</Button>
 					<RelativePanel>
 						<TextBlock x:Name="RotationBox" TextWrapping="Wrap"></TextBlock>
 					</RelativePanel>
 				</StackPanel>
+			</ScrollViewer>
+		</PivotItem>
+		<PivotItem Header="Combos">
+			<ScrollViewer VerticalAlignment="Stretch">
+			</ScrollViewer>
+		</PivotItem>
+		<PivotItem Header="Budget Helper">
+			<ScrollViewer VerticalAlignment="Stretch">
 			</ScrollViewer>
 		</PivotItem>
 		<PivotItem Header="About">
