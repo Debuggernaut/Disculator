@@ -1008,5 +1008,15 @@ namespace Disculator
 			return sb;
 		}
 
+		public StringBuilder RaptureCombo(CharacterStats ds, int raidSize, 
+			bool useLightsWrath, bool useShadowfiend, bool useMindbender, 
+			bool PurgeInsteadOfSwp )
+		{
+			StringBuilder sb = new StringBuilder();
+
+
+
+			return sb;
+		}
 	}
 }

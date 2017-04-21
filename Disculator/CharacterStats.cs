@@ -135,7 +135,7 @@ namespace Disculator
 
 			float powerWordSolaceKludge = 1.15f; //For some reason, Power Word: Solace does 15% more damage than it seems like it should
 			float castigation = 4f / 3f;
-			Smite = new Spell("Smite", 2.88f * 1.15f, 1.5f, 11000, allDamageBonus, this);
+			Smite = new Spell("Smite", 2.25f * 1.15f, 1.5f, 11000, allDamageBonus, this);
 			CastigatedPenance = new Spell("Penance (Castigated)", 1.9f * 3f, 2.0f, 30800, allDamageBonus * Confession * castigation, this);
 			RegularPenance = new Spell("Penance (Standard)", 1.9f * 3f, 2.0f, 30800, allDamageBonus * Confession, this);
 			Ptw = new Spell("Purge the Wicked (total)", 4.8f * (1 + hastePercent) + 1f, 1.5f, 22000, allDamageBonus * EdgeOfDarkAndLight, this);

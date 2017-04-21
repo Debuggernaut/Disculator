@@ -593,5 +593,6 @@ namespace Disculator
 				this.outbox.Text = "Error querying armory/parsing output";
 			}
 		}
+
 	}
 }

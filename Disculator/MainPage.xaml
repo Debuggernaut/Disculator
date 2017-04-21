@@ -75,31 +75,31 @@
 			<StackPanel Padding="10">
 				<StackPanel Orientation="Horizontal">
 					<TextBlock TextWrapping="Wrap" Text="Int" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
-					<TextBox x:Name="intbox" Text="39262" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
+					<TextBox x:Name="intbox" Text="42260" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
 				</StackPanel>
 				<StackPanel Orientation="Horizontal">
 					<TextBlock TextWrapping="Wrap" Text="Crit" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
-					<TextBox x:Name="critbox" Text="6934" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
+					<TextBox x:Name="critbox" Text="7802" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
 					<TextBlock x:Name="critpercentbox" TextWrapping="Wrap" Text="X%" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
 				</StackPanel>
 				<StackPanel Orientation="Horizontal">
 					<TextBlock TextWrapping="Wrap" Text="Haste" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
-					<TextBox x:Name="hastebox" Text="4434" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
+					<TextBox x:Name="hastebox" Text="4225" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
 					<TextBlock x:Name="hastepercentbox" TextWrapping="Wrap" Text="X%" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
 				</StackPanel>
 				<StackPanel Orientation="Horizontal">
 					<TextBlock TextWrapping="Wrap" Text="Mastery" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
-					<TextBox x:Name="masterybox" Text="5388" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
+					<TextBox x:Name="masterybox" Text="6213" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
 					<TextBlock x:Name="masterypercentbox" TextWrapping="Wrap" Text="X%" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
 				</StackPanel>
 				<StackPanel Orientation="Horizontal">
 					<TextBlock TextWrapping="Wrap" Text="Versatility" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
-					<TextBox x:Name="verbox" Text="3394" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
+					<TextBox x:Name="verbox" Text="2976" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
 					<TextBlock x:Name="verpercentbox" TextWrapping="Wrap" Text="X%" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
 				</StackPanel>
 				<StackPanel Orientation="Horizontal" >
 					<TextBlock TextWrapping="Wrap" Text="Artifact Traits" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
-					<TextBox x:Name="pointsbox" Text="41" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
+					<TextBox x:Name="pointsbox" Text="42" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
 					<TextBlock x:Name="artifactDamageBonusPercent" TextWrapping="Wrap" Text="X%" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
 				</StackPanel>
 				<Button Margin="10" x:Name="recalc" Content="Recalculate" HorizontalAlignment="Left" VerticalAlignment="Top" Click="recalc_Click"/>
@@ -118,9 +118,9 @@
 		</PivotItem>
 		<PivotItem Header="Heals">
 			<ScrollViewer VerticalAlignment="Stretch">
-				<RelativePanel>
+				<StackPanel>
 					<Grid Name="HealGrid" Padding="10"></Grid>
-				</RelativePanel>
+				</StackPanel>
 			</ScrollViewer>
 		</PivotItem>
 		<PivotItem Header="Deeps">
@@ -131,16 +131,17 @@
 						<TextBox x:Name="atonementsbox" Text="6" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="15" InputScope="Number" TextAlignment="Center"/>
 						<Button x:Name="recalc2" Content="Recalculate" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="center" Click="recalc_Click"/>
 					</StackPanel>
-					<Grid Name="DmgGrid"></Grid>
 					<TextBlock TextWrapping="Wrap" Text="Healing on this page is only that done through atonement, the Smite absorb and Halo/Divine Star heals aren't counted" Margin="50,10,0,0" VerticalAlignment="Center"/>
+					<Grid Name="DmgGrid"></Grid>
 				</StackPanel>
 			</ScrollViewer>
 		</PivotItem>
 		<PivotItem Header="Rotations">
 			<ScrollViewer VerticalAlignment="Stretch">
 				<StackPanel>
-					<Button Click="Button_Click">Long Run</Button>
-					<Button Click="StatComparisonButtonClick">Stat Comparison</Button>
+					<Button Click="Button_Click">Run half-assed simulations</Button>
+					<TextBlock TextWrapping="Wrap">WARNING: This page is not meant to be very useful on its own.  Please download the source and modify it to get more useful data</TextBlock>
+					<!-- <Button Click="StatComparisonButtonClick">Stat Comparison</Button> -->
 					<RelativePanel>
 						<TextBlock x:Name="RotationBox" TextWrapping="Wrap"></TextBlock>
 					</RelativePanel>
@@ -157,28 +158,51 @@
 		</PivotItem>
 		<PivotItem Header="About">
 			<ScrollViewer VerticalAlignment="Stretch">
+
 				<StackPanel Orientation="Horizontal">
-					<TextBlock VerticalAlignment="Stretch" Width="500" TextWrapping="Wrap">OK dudes, real talk here.  The Discipline Priest is probably the most complicated spec that Blizzard has ever designed.<LineBreak/>
-<LineBreak/>
-Throughout the whole history of WoW, healing has had a pretty simple priority list.  You've got some combination of these attributes on each of 8 or fewer spellds:<LineBreak/>
-<LineBreak/>
-- Most efficient<LineBreak/>
-- Inefficient<LineBreak/>
-- High throughput<LineBreak/>
-- Low throughput<LineBreak/>
-- Raidwide AoE<LineBreak/>
-- Small AoE<LineBreak/>
-<LineBreak />
-On Legion Holy Paladins, for example, you've got:  Holy Shock (Super high throughput, super high efficiency, cooldown).  Holy Light (Low throughput, high efficiency), Flash of Light (High throughput, low efficiency), and Light of Dawn (AoE).  Plus some stuff for on the move, raid cooldowns, blah blah blah.  The important point here is that you can skim over a paragraph-long guide and basically get the jist of how to play.<LineBreak/>
-<LineBreak />
-That's not the case for Disc priests.  If you just spam shit at random, you're going to do zero healing, run out of mana, or both!<LineBreak/>
-<LineBreak />
-What I'm trying to do here is work out a set of optimal spell rotations/priority lists/strategies for what to do in low-throughput situations, tank healing, big AoE bursts, etc.<LineBreak/>
-<LineBreak />
-Right now the prevailing wisdom is that Disc priests aren't main healers, and they should lurk around in the back doing nothing for most of the time on longer fights, then pop out and Light's Wrath combo the whole raid (stack atonements with Power Word: Radiance, then blast everyone with a Light's Wrath + Shadowfiend + Penance) to top them off every couple of minutes.  Surprisingly enough, this actually works fairly well and if timed properly it will result in a Disc priest outhealing another healer, since even a dude in fresh dungeon/leveling gear can crank out 1-2M healing to everyone in the raid.  I'm hoping to find a strategy that lets us contribute meaningfully in between combos or even without big combos like that.<LineBreak />
-					<LineBreak />
-					- Raymar-TheVentureCo, Disc Priest and Casual Garbage Raider</TextBlock>
-					<TextBlock> </TextBlock>
+					<TextBlock VerticalAlignment="Stretch" Width="500" TextWrapping="Wrap">
+						<Span FontWeight="Bold" FontFamily="Calibri">
+							<Run Text="Known Issues (v1.0)"/>
+						</Span>
+						<LineBreak/>
+						<Run Text="  • WON'T FIX: This app only estimates raw healing.  That means that it'll help you predict the amount of healing you'd do if you stood perfectly still and spammed the mages and warlocks with heals even though they're already at full life for an entire fight.&#xD;&#x9;• It's up to YOU to determine how to turn theoretical raw healing into in-game effective healing.&#xD;&#xA;&#x9;• I or someone else should write a guide to expand on the calculator and help optimize effective healing.  For example, a Rapture combo will often have a much higher effective healing percentage than other rotations or combos, since the shields will hang around until some damage comes in rather than going to waste on fully-healed players.&#xD;&#xA;  • Grace (30% buff to non-Atonement healing on targets with Atonement) isn't modeled at all right now.  I might eat these words later, but it looks like Grace is generally inferior to Purge the Wicked for raid healing and raw throughput, and nigh-indispensable for tank healing.&#xD;&#xA;  • Shadow Word: Pain damage doesn't match the tooltip or behavior in-game.  I'm still looking into this.  All other damage spells seem to be accurately modeled.&#xD;&#xA;  • Halo and Divine Star's total healing numbers are incorrect, not sure what's currently the max targets/falloff rate for their diminishing returns.&#xD;&#xA;  • The armory import button doesn't load artifact traits or points invested into your artifact."/>
+						<Span FontWeight="Bold" FontFamily="Calibri">
+						<LineBreak/><LineBreak/>
+							<Run Text="About this App"/>
+							<LineBreak/>
+						</Span>
+						<LineBreak/>
+						<Span>
+							<Run Text="Throughout the whole history of WoW, healing has had a pretty simple priority list.  You've got some combination of these attributes on each of 8 or fewer spells:"/>
+						</Span>
+						<LineBreak/>
+						<Run Text="&#x9;• Most efficient&#xD;&#xA;&#x9;• Inefficient&#xD;&#xA;&#x9;• High throughput&#xD;&#xA;&#x9;• Low throughput&#xD;&#xA;&#x9;• Raidwide AoE&#xD;&#xA;&#x9;• Small AoE"/>
+						<LineBreak/>
+						<Span>
+							<Run Text="On Legion Holy Paladins, for example, you've got:  Holy Shock (Super high throughput, super high efficiency, cooldown).  Holy Light (Low throughput, high efficiency), Flash of Light (High throughput, low efficiency), and Light of Dawn (AoE).  Plus some stuff for on the move, raid cooldowns, blah blah blah.  The important point here is that you can skim over a paragraph-long guide and basically get the jist of how to play."/>
+						</Span>
+						<LineBreak/>
+						<LineBreak/>
+						<Span>
+							<Run Text="That's not the case for Disc priests.  If you just spam spells at random, you're going to do zero healing, run out of mana, or both!"/>
+						</Span>
+						<LineBreak/>
+						<LineBreak/>
+						<Span>
+							<Run Text="What I'm trying to do here is work out a set of optimal spell rotations/priority lists/strategies for what to do in low-throughput situations, tank healing, big AoE bursts, etc.  I'm basically trying to help fill in the list above with rotations/combos instead of single spells."/>
+						</Span>
+						<LineBreak/>
+						<LineBreak/>
+						<Span>
+							<Run Text="It's not readily feasible to actually predict what's going to happen in any given raid or what someone's effective healing will be, but we can at least get an idea of the raw healing throughput possible."/>
+						</Span>
+						<LineBreak/>
+						<LineBreak/>
+						<Span>
+							<Run Text="&#x9;&#x9;&#x9;&#x9;&#x9;- Raymaru-Thrall"/>
+						</Span>
+					</TextBlock>
+					<TextBlock></TextBlock>
 				</StackPanel>
 			</ScrollViewer>
 		</PivotItem>
