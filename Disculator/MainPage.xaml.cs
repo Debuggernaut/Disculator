@@ -705,7 +705,7 @@ namespace Disculator
 				StringBuilder sb = new StringBuilder();
 				float tmp = 0f;
 
-				float totalMana = 1100000 + (fightDuration * 8800f) + (wisdoms * 1100f)
+				float totalMana = 1100000 + (fightDuration * ( 8800f + wisdoms * 1100f))
 					+ (fightDuration / 60f * manaPerMinute) + oneTimeExtraMana;
 
 				sb.AppendLine("Total Mana available:" + totalMana);
