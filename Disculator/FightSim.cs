@@ -275,7 +275,7 @@ namespace Disculator
 			//Penance so long as you're not restacking Atonements
 			if (PenanceReady < Time)
 			{
-				DamageSpell(ds.CastigatedPenance, BorrowedTimeUp ? ds.BurstOfLight : 1.0f, DarkSideUp ? 1.5f : 1.0f);
+				DamageSpell(ds.CastigatedPenance, BorrowedTimeUp ? ds.BorrowedTime : 1.0f, DarkSideUp ? 1.5f : 1.0f);
 				BorrowedTimeUp = false;
 				if (DarkSideUp)
 				{
@@ -402,6 +402,11 @@ namespace Disculator
 
 		public StringBuilder LongRun_PenanceAndShield(CharacterStats ds, int AtonementsToMaintain, int MaxPleaAtonements)
 		{
+			return LongRun_PenanceAndShield(ds, AtonementsToMaintain, MaxPleaAtonements, 3);
+		}
+
+		public StringBuilder LongRun_PenanceAndShield(CharacterStats ds, int AtonementsToMaintain, int MaxPleaAtonements, int RestackThreshold)
+		{
 			StringBuilder sb = new StringBuilder();
 
 			//sb.AppendLine("Maintain " + AtonementsToMaintain + " Atonements, use plea below, shadow mend at/above " + MaxPleaAtonements + " Atonements ");
@@ -440,8 +445,8 @@ namespace Disculator
 				//Cast Shield on cooldown
 				if (CastShield(sb, ds)) continue;
 
-				//-------- Stack Atonement to 6 ---------
-				if (Atonements < 2 && StackedAtonement == true)
+				//-------- Stack Atonement to AtonementsToMaintain ---------
+				if (Atonements < RestackThreshold && StackedAtonement == true)
 				{
 					StackedAtonement = false;
 				}
@@ -467,7 +472,7 @@ namespace Disculator
 					continue;
 				}
 
-				DamageSpell(ds.Smite, BorrowedTimeUp ? ds.BurstOfLight : 1.0f);
+				DamageSpell(ds.Smite, BorrowedTimeUp ? ds.BorrowedTime : 1.0f);
 				BorrowedTimeUp = false;
 
 				TankHealing += ds.SmiteAbsorb.AvgEffect();
@@ -481,7 +486,7 @@ namespace Disculator
 			Heeps = TotalHealing / Time;
 			TankHeeps = TankHealing / Time;
 
-			sb.Append("LR " + AtonementsToMaintain + "/" + MaxPleaAtonements + ": ");
+			sb.Append("" + AtonementsToMaintain + "/" + MaxPleaAtonements + "/" + RestackThreshold + ": ");
 			sb.AppendLine("Period: " + F(Time) + "s, " +
 					"DPS: " + F(Deeps) + ", " +
 					"HPS: " + F(Heeps) + ", " +
@@ -531,7 +536,7 @@ namespace Disculator
 				{
 					if (CastPenance(sb, ds)) continue;
 
-					DamageSpell(ds.Smite, BorrowedTimeUp ? ds.BurstOfLight : 1.0f);
+					DamageSpell(ds.Smite, BorrowedTimeUp ? ds.BorrowedTime : 1.0f);
 					BorrowedTimeUp = false;
 
 					TankHealing += ds.SmiteAbsorb.AvgEffect();
@@ -556,7 +561,7 @@ namespace Disculator
 					continue;
 				}
 
-				DamageSpell(ds.Smite, BorrowedTimeUp ? ds.BurstOfLight : 1.0f);
+				DamageSpell(ds.Smite, BorrowedTimeUp ? ds.BorrowedTime : 1.0f);
 				BorrowedTimeUp = false;
 
 				TankHealing += ds.SmiteAbsorb.AvgEffect();
@@ -727,7 +732,7 @@ namespace Disculator
 					continue;
 				}
 
-				DamageSpell(ds.Smite, BorrowedTimeUp ? ds.BurstOfLight : 1.0f);
+				DamageSpell(ds.Smite, BorrowedTimeUp ? ds.BorrowedTime : 1.0f);
 				BorrowedTimeUp = false;
 
 				TankHealing += ds.SmiteAbsorb.AvgEffect();
@@ -813,7 +818,7 @@ namespace Disculator
 					DarkSideReady = Time + ds.PowerOfTheDarkSideCD;
 				}
 
-				DamageSpell(ds.Smite, BorrowedTimeUp ? ds.BurstOfLight : 1.0f);
+				DamageSpell(ds.Smite, BorrowedTimeUp ? ds.BorrowedTime : 1.0f);
 				BorrowedTimeUp = false;
 
 				TankHealing += ds.SmiteAbsorb.AvgEffect();
@@ -897,7 +902,7 @@ namespace Disculator
 					continue;
 				}
 
-				DamageSpell(ds.Smite, BorrowedTimeUp ? ds.BurstOfLight : 1.0f);
+				DamageSpell(ds.Smite, BorrowedTimeUp ? ds.BorrowedTime : 1.0f);
 				BorrowedTimeUp = false;
 
 				TankHealing += ds.SmiteAbsorb.AvgEffect();
@@ -983,7 +988,7 @@ namespace Disculator
 					continue;
 				}
 
-				DamageSpell(ds.Smite, BorrowedTimeUp ? ds.BurstOfLight : 1.0f);
+				DamageSpell(ds.Smite, BorrowedTimeUp ? ds.BorrowedTime : 1.0f);
 				BorrowedTimeUp = false;
 
 				TankHealing += ds.SmiteAbsorb.AvgEffect();

@@ -198,8 +198,8 @@
 		<PivotItem Header="Rotations">
 			<ScrollViewer VerticalAlignment="Stretch">
 				<StackPanel>
-					<Button Click="Button_Click">Run half-assed simulations</Button>
-					<TextBlock TextWrapping="Wrap">WARNING: This page is not meant to be very useful on its own.  Please download the source and modify it to get more useful data</TextBlock>
+					<!-- <Button Click="Button_Click">Run half-assed simulations</Button> -->
+					<TextBlock TextWrapping="Wrap" FontWeight="Bold">WARNING: This page is not meant to be very useful on its own.  Please download the source and modify it to get more useful data</TextBlock>
 					<!-- <Button Click="StatComparisonButtonClick">Stat Comparison</Button> -->
 					<RelativePanel>
 						<TextBlock x:Name="RotationBox" TextWrapping="Wrap"></TextBlock>

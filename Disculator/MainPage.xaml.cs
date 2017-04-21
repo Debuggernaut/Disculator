@@ -289,30 +289,42 @@ namespace Disculator
 		private void Rotations()
 		{
 
+			ds.Shield.Mana = 11000;
+
+			this.RotationBox.Text = "All rotations below assume Shield Discipline, and that all shields are fully absorbed\r\n\r\n";
+
 			FightSim fs = new FightSim();
 			StringBuilder sb = fs.EasyRotation(ds);
 
-			this.RotationBox.Text = sb.ToString();
-
-			CharacterStats dOrig = ds.clone();
-
-			CharacterStats dHasty = dOrig.clone();
-			dHasty.hasteRating += 2000;
-			fs = new FightSim();
-			sb = fs.EasyRotation(dHasty);
 			this.RotationBox.Text += sb.ToString();
 
-			CharacterStats dCrit = dOrig.clone();
-			dCrit.critRating += 2000;
-			fs = new FightSim();
-			sb = fs.EasyRotation(dCrit);
-			this.RotationBox.Text += sb.ToString();
+			this.RotationBox.Text += "\r\nMaintain 6 atonements, Penance/PW:Shield on cooldown\r\n";
+			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds).ToString();
+			this.RotationBox.Text += "\r\nSame as above, but weave Smite casts in between Plea/Shields to use every Borrowed Time proc\r\n";
+			this.RotationBox.Text += fs.SmiteWeave(ds).ToString();
 
+			this.RotationBox.Text += "\r\nBelow rotations: X/Y/Z: Stack X atonements, cast Shadow Mend instead of Plea above Y atonements, start re-stacking Atonement when your Atonement count falls below Z\r\n";
+			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 6, 1).ToString();
+			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 4, 1).ToString();
+			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 4, 3).ToString();
+			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 4, 4).ToString();
+			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 6, 4).ToString();
+			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 6, 6).ToString();
+			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 8, 3, 1).ToString();
+			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 8, 3, 3).ToString();
+			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 8, 3, 5).ToString();
 
-			dOrig.masteryRating += 2000;
-			fs = new FightSim();
-			sb = fs.EasyRotation(dOrig);
-			this.RotationBox.Text += sb.ToString();
+			this.RotationBox.Text += "\r\n\r\nSame rotations as above, but with a half-assed Darkmoon Card simulation applied:\r\n";
+			fs.HalfAssedDarkmoonSimulator = true;
+			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 6, 1).ToString();
+			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 4, 1).ToString();
+			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 4, 3).ToString();
+			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 4, 4).ToString();
+			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 6, 4).ToString();
+			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 6, 6).ToString();
+			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 8, 3, 1).ToString();
+			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 8, 3, 3).ToString();
+			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 8, 3, 5).ToString();
 		}
 
 
