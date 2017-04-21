@@ -24,14 +24,16 @@ namespace Disculator
 		public int artifactTraits;
 		public float allDamageBonus;
 
-		public float DarkestShadows = 1.1f; //10/3% Shadow Mend per point
-		public float BurstOfLight = 1.2f; //5% PW:Radiance per point
-		public float ShieldOfFaith = 1.2f; //5% bonus to PW:Shield per point
+		public float Doomsayer = 3f; //extra seconds of Rapture per point
 		public float Confession = 1.12f; //4% to Penance per point
+		public float BorrowedTime = 1.2f; //5% Smite/Penance haste after applying Atonement
+		public float ShieldOfFaith = 1.2f; //5% bonus to PW:Shield per point
 
 		public float EdgeOfDarkAndLight = 1.15f; //5% to SWP/PtW per point
+		public float BurstOfLight = 1.15f; //5% power word: radiance healing per point
+		public float DarkestShadows = 1.1f; //10/3% Shadow Mend per point
 
-		public float Skjoldr = 1.15f; //Legendary wrists, +15% to PW:Shield
+		public float AegisOfWrathAndSkjoldr = 1.15f*1.3f; //Legendary wrists, +15% to PW:Shield
 
 		public float AvgAtonements;
 
@@ -107,7 +109,7 @@ namespace Disculator
 			Plea = new Spell("Plea (0 Atonements)", 2.25f, 1.5f, 3960, 1.0f, this);
 			Smend = new Spell("Shadow Mend (Heavy Incoming Damage)", 7.5f, 1.5f, 30800, DarkestShadows, this);
 			SmiteAbsorb = new Spell("Smite Absorb", 2.25f, 1.5f, 11000, 1.0f, this);
-			Shield = new Spell("Power Word: Shield", 5.5f, 1.5f, 22000, ShieldOfFaith * Skjoldr, this);
+			Shield = new Spell("Power Word: Shield", 5.5f, 1.5f, 22000, ShieldOfFaith * AegisOfWrathAndSkjoldr, this);
 			HealSpells = new Spell[]
 			{
 				Plea,
@@ -120,15 +122,15 @@ namespace Disculator
 
 				SmiteAbsorb,
 
-				new Spell("Power Word: Radiance", 2.5f*3, 2.5f, 71500, BurstOfLight, this),
-				new Spell("Shadow Covenant (Fully Efficient Somehow)", 4.5f*5, 2.5f, 71500, BurstOfLight, this),
-				new Spell("Shadow Covenant", 4.5f*5f/2f, 1.5f, 71500, BurstOfLight, this),
-				//new Spell("Power Word: Radiance (each)", 2.5f, 2.5f, 71500, BurstOfLight, this),
+				new Spell("Power Word: Radiance", 2.5f*3, 2.5f, 71500, BorrowedTime, this),
+				new Spell("Shadow Covenant (Fully Efficient Somehow)", 4.5f*5, 2.5f, 71500, BorrowedTime, this),
+				new Spell("Shadow Covenant", 4.5f*5f/2f, 1.5f, 71500, BorrowedTime, this),
+				//new Spell("Power Word: Radiance (each)", 2.5f, 2.5f, 71500, BorrowedTime, this),
 				new Spell("Divine Star (6+ targets)", 0.9f*6, 1.5f, 27500, 1, this),
 				new Spell("Halo (6+ targets)", 2.87f*6, 1.5f, 39600, 1, this),
 
 				new Spell("Shadow Mend (Grace)", 7.55f, 1.5f, 30800, DarkestShadows * 1.3f, this),
-				new Spell("Power Word: Shield (Grace)", 5.5f, 1.5f, 22000, ShieldOfFaith*Skjoldr*1.3f, this),
+				new Spell("Power Word: Shield (Grace)", 5.5f, 1.5f, 22000, ShieldOfFaith*AegisOfWrathAndSkjoldr*1.3f, this),
 				new Spell("Penitent Penance (Grace)", 9f, 2.0f, 22000, Confession*1.3f, this),
 
 			};

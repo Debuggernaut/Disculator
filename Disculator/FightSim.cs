@@ -32,7 +32,7 @@ namespace Disculator
 		float DarkSideReady = 0f;
 		float ShieldReady = 0f;
 
-		bool BurstUp = false;
+		bool BorrowedTimeUp = false;
 		bool DarkSideUp = false;
 
 		public bool fullLog = false;
@@ -70,7 +70,7 @@ namespace Disculator
 			PenanceReady = 0f;
 			DarkSideReady = 0f;
 			ShieldReady = 0f;
-			BurstUp = false;
+			BorrowedTimeUp = false;
 
 			Deeps = 0f;
 			Heeps = 0f;
@@ -211,7 +211,7 @@ namespace Disculator
 			TotalHealing += ds.Plea.AvgEffect();
 
 			AddAtonement();
-			BurstUp = true;
+			BorrowedTimeUp = true;
 
 			Pleas++;
 		}
@@ -230,7 +230,7 @@ namespace Disculator
 				{
 					AtonementExpirations[0] = Time + AtonementDuration;
 				}
-				BurstUp = true;
+				BorrowedTimeUp = true;
 
 				ShieldReady = Time + ds.ShieldCD;
 
@@ -275,8 +275,8 @@ namespace Disculator
 			//Penance so long as you're not restacking Atonements
 			if (PenanceReady < Time)
 			{
-				DamageSpell(ds.CastigatedPenance, BurstUp ? ds.BurstOfLight : 1.0f, DarkSideUp ? 1.5f : 1.0f);
-				BurstUp = false;
+				DamageSpell(ds.CastigatedPenance, BorrowedTimeUp ? ds.BurstOfLight : 1.0f, DarkSideUp ? 1.5f : 1.0f);
+				BorrowedTimeUp = false;
 				if (DarkSideUp)
 				{
 					DarkSideReady = Time + ds.PowerOfTheDarkSideCD;
@@ -364,10 +364,10 @@ namespace Disculator
 					continue;
 				}
 
-				if (BurstUp)
+				if (BorrowedTimeUp)
 				{
 					DamageSpell(ds.Smite, ds.BurstOfLight);
-					BurstUp = false;
+					BorrowedTimeUp = false;
 				}
 				else
 				{
@@ -467,8 +467,8 @@ namespace Disculator
 					continue;
 				}
 
-				DamageSpell(ds.Smite, BurstUp ? ds.BurstOfLight : 1.0f);
-				BurstUp = false;
+				DamageSpell(ds.Smite, BorrowedTimeUp ? ds.BurstOfLight : 1.0f);
+				BorrowedTimeUp = false;
 
 				TankHealing += ds.SmiteAbsorb.AvgEffect();
 				TotalHealing += ds.SmiteAbsorb.AvgEffect();
@@ -527,12 +527,12 @@ namespace Disculator
 				//Maintain Purge the Wicked
 				if (ApplyPurge(sb, ds)) continue;
 
-				if (BurstUp)
+				if (BorrowedTimeUp)
 				{
 					if (CastPenance(sb, ds)) continue;
 
-					DamageSpell(ds.Smite, BurstUp ? ds.BurstOfLight : 1.0f);
-					BurstUp = false;
+					DamageSpell(ds.Smite, BorrowedTimeUp ? ds.BurstOfLight : 1.0f);
+					BorrowedTimeUp = false;
 
 					TankHealing += ds.SmiteAbsorb.AvgEffect();
 					TotalHealing += ds.SmiteAbsorb.AvgEffect();
@@ -556,8 +556,8 @@ namespace Disculator
 					continue;
 				}
 
-				DamageSpell(ds.Smite, BurstUp ? ds.BurstOfLight : 1.0f);
-				BurstUp = false;
+				DamageSpell(ds.Smite, BorrowedTimeUp ? ds.BurstOfLight : 1.0f);
+				BorrowedTimeUp = false;
 
 				TankHealing += ds.SmiteAbsorb.AvgEffect();
 				TotalHealing += ds.SmiteAbsorb.AvgEffect();
@@ -727,8 +727,8 @@ namespace Disculator
 					continue;
 				}
 
-				DamageSpell(ds.Smite, BurstUp ? ds.BurstOfLight : 1.0f);
-				BurstUp = false;
+				DamageSpell(ds.Smite, BorrowedTimeUp ? ds.BurstOfLight : 1.0f);
+				BorrowedTimeUp = false;
 
 				TankHealing += ds.SmiteAbsorb.AvgEffect();
 				TotalHealing += ds.SmiteAbsorb.AvgEffect();
@@ -813,8 +813,8 @@ namespace Disculator
 					DarkSideReady = Time + ds.PowerOfTheDarkSideCD;
 				}
 
-				DamageSpell(ds.Smite, BurstUp ? ds.BurstOfLight : 1.0f);
-				BurstUp = false;
+				DamageSpell(ds.Smite, BorrowedTimeUp ? ds.BurstOfLight : 1.0f);
+				BorrowedTimeUp = false;
 
 				TankHealing += ds.SmiteAbsorb.AvgEffect();
 				TotalHealing += ds.SmiteAbsorb.AvgEffect();
@@ -897,8 +897,8 @@ namespace Disculator
 					continue;
 				}
 
-				DamageSpell(ds.Smite, BurstUp ? ds.BurstOfLight : 1.0f);
-				BurstUp = false;
+				DamageSpell(ds.Smite, BorrowedTimeUp ? ds.BurstOfLight : 1.0f);
+				BorrowedTimeUp = false;
 
 				TankHealing += ds.SmiteAbsorb.AvgEffect();
 				TotalHealing += ds.SmiteAbsorb.AvgEffect();
@@ -983,8 +983,8 @@ namespace Disculator
 					continue;
 				}
 
-				DamageSpell(ds.Smite, BurstUp ? ds.BurstOfLight : 1.0f);
-				BurstUp = false;
+				DamageSpell(ds.Smite, BorrowedTimeUp ? ds.BurstOfLight : 1.0f);
+				BorrowedTimeUp = false;
 
 				TankHealing += ds.SmiteAbsorb.AvgEffect();
 				TotalHealing += ds.SmiteAbsorb.AvgEffect();

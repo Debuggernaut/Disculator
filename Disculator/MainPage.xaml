@@ -72,48 +72,107 @@
 			</StackPanel>
 		</Pivot.Title>
 		<PivotItem Header="Stats">
-			<StackPanel Padding="10">
+			<StackPanel>
 				<StackPanel Orientation="Horizontal">
-					<TextBlock TextWrapping="Wrap" Text="Int" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
-					<TextBox x:Name="intbox" Text="42260" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
-				</StackPanel>
-				<StackPanel Orientation="Horizontal">
-					<TextBlock TextWrapping="Wrap" Text="Crit" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
-					<TextBox x:Name="critbox" Text="7802" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
-					<TextBlock x:Name="critpercentbox" TextWrapping="Wrap" Text="X%" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
-				</StackPanel>
-				<StackPanel Orientation="Horizontal">
-					<TextBlock TextWrapping="Wrap" Text="Haste" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
-					<TextBox x:Name="hastebox" Text="4225" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
-					<TextBlock x:Name="hastepercentbox" TextWrapping="Wrap" Text="X%" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
-				</StackPanel>
-				<StackPanel Orientation="Horizontal">
-					<TextBlock TextWrapping="Wrap" Text="Mastery" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
-					<TextBox x:Name="masterybox" Text="6213" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
-					<TextBlock x:Name="masterypercentbox" TextWrapping="Wrap" Text="X%" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
-				</StackPanel>
-				<StackPanel Orientation="Horizontal">
-					<TextBlock TextWrapping="Wrap" Text="Versatility" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
-					<TextBox x:Name="verbox" Text="2976" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
-					<TextBlock x:Name="verpercentbox" TextWrapping="Wrap" Text="X%" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
-				</StackPanel>
-				<StackPanel Orientation="Horizontal" >
-					<TextBlock TextWrapping="Wrap" Text="Artifact Traits" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
-					<TextBox x:Name="pointsbox" Text="42" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
-					<TextBlock x:Name="artifactDamageBonusPercent" TextWrapping="Wrap" Text="X%" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
+					<StackPanel Padding="10">
+						<StackPanel Orientation="Horizontal">
+							<TextBlock TextWrapping="Wrap" Text="Int" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
+							<TextBox x:Name="intbox" Text="42260" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
+						</StackPanel>
+						<StackPanel Orientation="Horizontal">
+							<TextBlock TextWrapping="Wrap" Text="Crit" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
+							<TextBox x:Name="critbox" Text="7802" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
+							<TextBlock x:Name="critpercentbox" TextWrapping="Wrap" Text="X%" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
+						</StackPanel>
+						<StackPanel Orientation="Horizontal">
+							<TextBlock TextWrapping="Wrap" Text="Haste" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
+							<TextBox x:Name="hastebox" Text="4225" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
+							<TextBlock x:Name="hastepercentbox" TextWrapping="Wrap" Text="X%" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
+						</StackPanel>
+						<StackPanel Orientation="Horizontal">
+							<TextBlock TextWrapping="Wrap" Text="Mastery" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
+							<TextBox x:Name="masterybox" Text="6213" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
+							<TextBlock x:Name="masterypercentbox" TextWrapping="Wrap" Text="X%" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
+						</StackPanel>
+						<StackPanel Orientation="Horizontal">
+							<TextBlock TextWrapping="Wrap" Text="Versatility" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
+							<TextBox x:Name="verbox" Text="2976" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
+							<TextBlock x:Name="verpercentbox" TextWrapping="Wrap" Text="X%" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
+						</StackPanel>
+						<StackPanel Orientation="Horizontal" >
+							<TextBlock TextWrapping="Wrap" Text="Artifact Traits" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
+							<TextBox x:Name="pointsbox" Text="42" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
+							<TextBlock x:Name="artifactDamageBonusPercent" TextWrapping="Wrap" Text="X%" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
+						</StackPanel>
+					</StackPanel>
+					<StackPanel Padding="10">
+
+						<StackPanel Orientation="Horizontal">
+							<TextBlock TextWrapping="Wrap" Text="Doomsayer" Margin="10,10,0,0" Width="120" VerticalAlignment="Center"/>
+							<TextBox x:Name="box_doomsayer" Text="3" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="10" InputScope="Number" TextAlignment="Right"/>
+						</StackPanel>
+						<TextBlock VerticalAlignment="Center" TextAlignment="Center">(Rapture Duration)</TextBlock>
+
+						<StackPanel Orientation="Horizontal">
+							<TextBlock TextWrapping="Wrap" Text="Confession" Margin="10,10,0,0" Width="120" VerticalAlignment="Center"/>
+							<TextBox x:Name="box_confession" Text="3" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="10" InputScope="Number" TextAlignment="Right"/>
+						</StackPanel>
+						<TextBlock VerticalAlignment="Center" TextAlignment="Center">(4% Penance damage/pt)</TextBlock>
+
+						<StackPanel Orientation="Horizontal">
+							<TextBlock TextWrapping="Wrap" Text="Borrowed Time" Margin="10,10,0,0" Width="120" VerticalAlignment="Center"/>
+							<TextBox x:Name="box_borrowedtime" Text="3" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="10" InputScope="Number" TextAlignment="Right"/>
+						</StackPanel>
+						<TextBlock VerticalAlignment="Center" TextAlignment="Center">(Haste after atonement)</TextBlock>
+
+						<StackPanel Orientation="Horizontal">
+							<TextBlock TextWrapping="Wrap" Text="Shield of Faith" Margin="10,10,0,0" Width="120" VerticalAlignment="Center"/>
+							<TextBox x:Name="box_shieldoffaith" Text="3" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="10" InputScope="Number" TextAlignment="Right"/>
+						</StackPanel>
+						<TextBlock VerticalAlignment="Center" TextAlignment="Center">(5% to PW:S/pt)</TextBlock>
+					</StackPanel>
+					<StackPanel Padding="10">
+
+						<StackPanel Orientation="Horizontal">
+							<TextBlock Text="Edge of Dark and Light" Margin="10,10,0,0" Width="150" VerticalAlignment="Center"/>
+							<TextBox x:Name="box_edgeofdarkandlight" Text="3" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="10" InputScope="Number" TextAlignment="Right"/>
+						</StackPanel>
+						<TextBlock VerticalAlignment="Center" TextAlignment="Center">(5% Shadow Word: Pain Damage/pt)</TextBlock>
+
+						<StackPanel Orientation="Horizontal">
+							<TextBlock TextWrapping="Wrap" Text="Burst of Light" Margin="10,10,0,0" Width="150" VerticalAlignment="Center"/>
+							<TextBox x:Name="box_burstoflight" Text="3" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="10" InputScope="Number" TextAlignment="Right"/>
+						</StackPanel>
+						<TextBlock VerticalAlignment="Center" TextAlignment="Center">(Power Word: Radiance Healing)</TextBlock>
+
+						<StackPanel Orientation="Horizontal">
+							<TextBlock Text="Darkest Shadows" Margin="10,10,0,0" Width="150" VerticalAlignment="Center"/>
+							<TextBox x:Name="box_darkestshadows" Text="3" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="10" InputScope="Number" TextAlignment="Right"/>
+						</StackPanel>
+						<TextBlock VerticalAlignment="Center" TextAlignment="Center">(Shadow Mend Healing)</TextBlock>
+
+						<StackPanel Orientation="Horizontal">
+							<TextBlock Text="Aegis of Wrath" Margin="10,10,0,0" Width="150" VerticalAlignment="Center"/>
+							<TextBox x:Name="box_aegisofwrath" Text="1.3" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="10" InputScope="Number" TextAlignment="Right"/>
+						</StackPanel>
+						<TextBlock VerticalAlignment="Center" TextAlignment="Center">Power Word: Shield bonus estimate, <LineBreak/> App will scale all Power Word: Shields<LineBreak/> by this amount</TextBlock>
+
+					</StackPanel>
 				</StackPanel>
 				<Button Margin="10" x:Name="recalc" Content="Recalculate" HorizontalAlignment="Left" VerticalAlignment="Top" Click="recalc_Click"/>
 
+				<TextBlock Margin="10,0,0,0">Note: Artifact traits are not updated automatically through the armory import</TextBlock>
 				<StackPanel Orientation="Horizontal" Padding="10">
 					<TextBox x:Name="ArmoryURL" Width="450" Text="http://us.battle.net/wow/en/character/thrall/Raymaru/simple" Height="10"/>
 					<Button Margin="10" x:Name="ArmoryButton" Click="ArmoryButton_Click">Load from Armory</Button>
 				</StackPanel>
-				
+
 				<StackPanel Orientation="Horizontal">
 					<TextBlock TextWrapping="Wrap" Text="Mindbender Swings:" Margin="10,10,0,0" Width="150" VerticalAlignment="Center"/>
 					<TextBlock x:Name="MindbenderSwingsBox" TextWrapping="Wrap" Text="8?" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
 				</StackPanel>
 				<TextBlock x:Name="outbox" TextWrapping="Wrap" Text="" ScrollViewer.VerticalScrollMode="Auto"/>
+
 			</StackPanel>
 		</PivotItem>
 		<PivotItem Header="Heals">

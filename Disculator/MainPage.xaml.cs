@@ -54,16 +54,16 @@ namespace Disculator
 				"DPM",
 				"MPS"
 			};
-			
+
 			this.InitializeComponent();
-			Raycalculate();
+			ReparseStats();
 		}
 
 		private String F(float input)
 		{
-			if (input > 30*1000f)
+			if (input > 30 * 1000f)
 			{
-				return (input/1000f).ToString("#,#") + "K";
+				return (input / 1000f).ToString("#,#") + "K";
 			}
 
 			if (input < 100)
@@ -74,40 +74,69 @@ namespace Disculator
 			return input.ToString("#,#.#");
 		}
 
-		private void Raycalculate()
+		private void ReparseStats()
 		{
-			ds = new CharacterStats();
-			ds.intellect = int.Parse(this.intbox.Text);
-			ds.critRating = int.Parse(this.critbox.Text);
-			ds.hasteRating = int.Parse(this.hastebox.Text);
-			ds.masteryRating = int.Parse(this.masterybox.Text);
-			ds.verRating = int.Parse(this.verbox.Text);
+			try
+			{
 
-			ds.AvgAtonements = int.Parse(this.atonementsbox.Text);
+				ds = new CharacterStats();
+				ds.intellect = int.Parse(this.intbox.Text);
+				ds.critRating = int.Parse(this.critbox.Text);
+				ds.hasteRating = int.Parse(this.hastebox.Text);
+				ds.masteryRating = int.Parse(this.masterybox.Text);
+				ds.verRating = int.Parse(this.verbox.Text);
 
-			ds.artifactTraits = int.Parse(this.pointsbox.Text);
+				ds.AvgAtonements = int.Parse(this.atonementsbox.Text);
 
-			ds.Raycalculate();
+				ds.artifactTraits = int.Parse(this.pointsbox.Text);
 
-			this.critpercentbox.Text = ds.critPercent.ToString("P");
-			this.hastepercentbox.Text = ds.hastePercent.ToString("P");
-			this.masterypercentbox.Text = ds.masteryPercent.ToString("P");
-			this.verpercentbox.Text = ds.verPercent.ToString("P");
+				ds.Doomsayer = int.Parse(this.box_doomsayer.Text);
+				ds.Confession = int.Parse(this.box_confession.Text);
+				ds.BorrowedTime = int.Parse(this.box_borrowedtime.Text);
+				ds.ShieldOfFaith = int.Parse(this.box_shieldoffaith.Text);
 
-			this.artifactDamageBonusPercent.Text = ds.allDamageBonus.ToString("P");
+				ds.EdgeOfDarkAndLight = int.Parse(this.box_edgeofdarkandlight.Text);
+				ds.BurstOfLight = int.Parse(this.box_burstoflight.Text);
+				ds.DarkestShadows = int.Parse(this.box_darkestshadows.Text);
 
-			this.MindbenderSwingsBox.Text = ds.ShadowfiendSwings.ToString();
+				ds.Doomsayer += 7;
+				ds.Confession = 1f + (ds.Confession * 0.04f);
+				ds.BorrowedTime = 1f + (ds.BorrowedTime * 0.05f);
+				ds.ShieldOfFaith = 1f + (ds.ShieldOfFaith * 0.05f);
 
-			StringBuilder sb = new StringBuilder();
+				ds.EdgeOfDarkAndLight = 1f + (ds.EdgeOfDarkAndLight * 0.05f);
+				ds.BurstOfLight = 1f + (ds.BurstOfLight * 0.05f);
+				ds.DarkestShadows = 1f + (ds.DarkestShadows / 30f);
 
-			sb.Append("Spellpower: " + ds.scaledSpellPower.ToString("#,#") + " (int * (1 + versatility) * 1.05 * 1.10)");
+				ds.AegisOfWrathAndSkjoldr = float.Parse(this.box_aegisofwrath.Text);
 
-			this.outbox.Text = sb.ToString();
+				ds.Raycalculate();
 
-			PopulateHealGrid();
-			PopulateDamageGrid();
+				this.critpercentbox.Text = ds.critPercent.ToString("P");
+				this.hastepercentbox.Text = ds.hastePercent.ToString("P");
+				this.masterypercentbox.Text = ds.masteryPercent.ToString("P");
+				this.verpercentbox.Text = ds.verPercent.ToString("P");
 
-			Rotations();
+				this.artifactDamageBonusPercent.Text = ds.allDamageBonus.ToString("P");
+
+				this.MindbenderSwingsBox.Text = ds.ShadowfiendSwings.ToString();
+
+				StringBuilder sb = new StringBuilder();
+
+				sb.Append("Spellpower: " + ds.scaledSpellPower.ToString("#,#") + " (int * (1 + versatility) * 1.05 * 1.10)");
+
+				this.outbox.Text = sb.ToString();
+
+				PopulateHealGrid();
+				PopulateDamageGrid();
+
+				Rotations();
+
+			}
+			catch (Exception ex)
+			{
+				this.outbox.Text = "Error parsing inputs: " + ex.ToString();
+			}
 		}
 
 		private void PopulateDamageGrid()
@@ -158,7 +187,7 @@ namespace Disculator
 							t.Text = F(ds.DamageSpells[s].EffectPerSecond());
 							break;
 						case 4:
-							t.Text = F(ds.DamageSpells[s].AtonementEffect()* ds.AvgAtonements / ds.DamageSpells[s].CastTime());
+							t.Text = F(ds.DamageSpells[s].AtonementEffect() * ds.AvgAtonements / ds.DamageSpells[s].CastTime());
 							break;
 						case 5:
 							t.Text = F(ds.DamageSpells[s].AtonementEffect() * ds.AvgAtonements / ds.DamageSpells[s].Mana);
@@ -289,7 +318,7 @@ namespace Disculator
 
 		private void recalc_Click(object sender, RoutedEventArgs e)
 		{
-			Raycalculate();
+			ReparseStats();
 		}
 
 		private void Button_Click(object sender, RoutedEventArgs e)
@@ -478,19 +507,19 @@ namespace Disculator
 			d2.Raycalculate();
 			this.RotationBox.Text += "C:" + d2.critRating + ",V:" + d2.verRating + ",H:" + d2.hasteRating + ",M:" + d2.masteryRating + ", ";
 			this.RotationBox.Text += fs.LongRun_PenanceAndShield(d2, 8, 3).ToString();
-			 spamMPS = fs.ManaSpent / fs.Time;
-			 spamHPS = fs.Heeps;
+			spamMPS = fs.ManaSpent / fs.Time;
+			spamHPS = fs.Heeps;
 			this.RotationBox.Text += "C:" + d2.critRating + ",V:" + d2.verRating + ",H:" + d2.hasteRating + ",M:" + d2.masteryRating + ", ";
 			this.RotationBox.Text += fs.LongRun_PenanceAndShield(d2, 4, 4).ToString();
-			 conservativeMPS = fs.ManaSpent / fs.Time;
-			 conservativeHPS = fs.Heeps;
+			conservativeMPS = fs.ManaSpent / fs.Time;
+			conservativeHPS = fs.Heeps;
 
 			this.RotationBox.Text += "With half-assed Darkmoon Card simulation enabled:\r\n";
 			d2.Raycalculate();
 			this.RotationBox.Text += "C:" + d2.critRating + ",V:" + d2.verRating + ",H:" + d2.hasteRating + ",M:" + d2.masteryRating + ", ";
 			this.RotationBox.Text += fs.LongRun_PenanceAndShield(d2, 8, 3).ToString();
-			 spamMPS2 = fs.ManaSpent / fs.Time;
-			 spamHPS2 = fs.Heeps;
+			spamMPS2 = fs.ManaSpent / fs.Time;
+			spamHPS2 = fs.Heeps;
 
 			this.RotationBox.Text += "C:" + d2.critRating + ",V:" + d2.verRating + ",H:" + d2.hasteRating + ",M:" + d2.masteryRating + ", ";
 			this.RotationBox.Text += fs.LongRun_PenanceAndShield(d2, 4, 4).ToString();
@@ -549,7 +578,7 @@ namespace Disculator
 				httpResponse = await httpClient.GetAsync(requestUri);
 				httpResponse.EnsureSuccessStatusCode();
 				httpResponseBody = await httpResponse.Content.ReadAsStringAsync();
-				
+
 				int start, end;
 
 				start = httpResponseBody.IndexOf("\"intTotal", 0);
@@ -577,7 +606,7 @@ namespace Disculator
 				end = httpResponseBody.IndexOf(',', start);
 				this.verbox.Text = httpResponseBody.Substring(start + 1, end - start - 1);
 
-				Raycalculate();
+				ReparseStats();
 
 			}
 			catch (Exception ex)
