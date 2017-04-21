@@ -199,7 +199,7 @@
 			<ScrollViewer VerticalAlignment="Stretch">
 				<StackPanel>
 					<!-- <Button Click="Button_Click">Run half-assed simulations</Button> -->
-					<TextBlock TextWrapping="Wrap" FontWeight="Bold">WARNING: This page is not meant to be very useful on its own.  Please download the source and modify it to get more useful data</TextBlock>
+					<TextBlock TextWrapping="Wrap" FontWeight="Bold">WARNING: This page is not very useful on its own.  Please download the source and modify it to get more useful data</TextBlock>
 					<!-- <Button Click="StatComparisonButtonClick">Stat Comparison</Button> -->
 					<RelativePanel>
 						<TextBlock x:Name="RotationBox" TextWrapping="Wrap"></TextBlock>
@@ -209,10 +209,38 @@
 		</PivotItem>
 		<PivotItem Header="Combos">
 			<ScrollViewer VerticalAlignment="Stretch">
+				<StackPanel>
+					<!-- <Button Click="Button_Click">Run half-assed simulations</Button> -->
+					<TextBlock TextWrapping="Wrap" FontWeight="Bold">WARNING: This page is not very useful on its own.  Please download the source and modify it to get more useful data</TextBlock>
+					<!-- <Button Click="StatComparisonButtonClick">Stat Comparison</Button> -->
+					<RelativePanel>
+						<TextBlock x:Name="combosTextBox" TextWrapping="Wrap"></TextBlock>
+					</RelativePanel>
+				</StackPanel>
 			</ScrollViewer>
 		</PivotItem>
 		<PivotItem Header="Budget Helper">
 			<ScrollViewer VerticalAlignment="Stretch">
+				<StackPanel>
+					<StackPanel Orientation="Horizontal">
+						<TextBlock Margin="10">Fight Duration (seconds):</TextBlock>
+						<TextBox x:Name="fightDurationBox" Text="600" Margin="10" Width="15" InputScope="Number" TextAlignment="Center"/>
+						<TextBlock Margin="10">Raid Size:</TextBlock>
+						<TextBox x:Name="raidSizeBox" Text="20" Margin="10" Width="15" InputScope="Number" TextAlignment="Center"/>
+					</StackPanel>
+					<StackPanel Orientation="Horizontal">
+						<TextBlock Margin="10">Greater Blessing of Wisdom buffs:</TextBlock>
+						<TextBox x:Name="wisdomsBox" Text="0" Margin="10" Width="15" InputScope="Number" TextAlignment="Center"/>
+						<TextBlock Margin="10">Extra Mana per Minute:</TextBlock>
+						<TextBox x:Name="extraManaPerMinuteBox" Text="35000" Margin="10" Width="80" InputScope="Number" TextAlignment="Center"/>
+					</StackPanel>
+					<StackPanel Orientation="Horizontal">
+						<Button Margin="10" Click="Budget_Recalculate">Recalculate Below</Button>
+						<TextBlock Margin="10">Extra Mana (total fight):</TextBlock>
+						<TextBox x:Name="extraManaBox" Text="160000" Margin="10" Width="125" InputScope="Number" TextAlignment="Center"/>
+					</StackPanel>
+					<TextBlock x:Name="budgetTextBox" TextWrapping="Wrap"></TextBlock>
+				</StackPanel>
 			</ScrollViewer>
 		</PivotItem>
 		<PivotItem Header="About">

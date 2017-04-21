@@ -28,6 +28,21 @@ namespace Disculator
 
 		CharacterStats ds;
 
+		private float MPS_000 = 0f;
+		private float HPS_000 = 0f;
+
+		private float MPS_Filler = 0f;
+		private float HPS_Filler = 0f;
+
+		private float MPS_835 = 0f;
+		private float HPS_835 = 0f;
+
+		private float MPS_644 = 0f;
+		private float HPS_644 = 0f;
+
+		private float MPS_661 = 0f;
+		private float HPS_661 = 0f;
+
 		public MainPage()
 		{
 			HealColumns = new String[]
@@ -131,7 +146,9 @@ namespace Disculator
 				PopulateDamageGrid();
 
 				Rotations();
+				Combos();
 
+				Budget_Recalculate();
 			}
 			catch (Exception ex)
 			{
@@ -288,13 +305,14 @@ namespace Disculator
 
 		private void Rotations()
 		{
-
 			ds.Shield.Mana = 11000;
 
 			this.RotationBox.Text = "All rotations below assume Shield Discipline, and that all shields are fully absorbed\r\n\r\n";
 
 			FightSim fs = new FightSim();
 			StringBuilder sb = fs.EasyRotation(ds);
+			MPS_Filler = fs.ManaSpent / fs.Time;
+			HPS_Filler = fs.Heeps;
 
 			this.RotationBox.Text += sb.ToString();
 
@@ -316,15 +334,47 @@ namespace Disculator
 
 			this.RotationBox.Text += "\r\n\r\nSame rotations as above, but with a half-assed Darkmoon Card simulation applied:\r\n";
 			fs.HalfAssedDarkmoonSimulator = true;
+
+			this.RotationBox.Text += fs.EasyRotation(ds);
+			MPS_Filler = fs.ManaSpent / fs.Time;
+			HPS_Filler = fs.Heeps;
+
 			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 6, 1).ToString();
+			MPS_661 = fs.ManaSpent / fs.Time;
+			HPS_661 = fs.Heeps;
 			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 4, 1).ToString();
 			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 4, 3).ToString();
 			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 4, 4).ToString();
+			MPS_644 = fs.ManaSpent / fs.Time;
+			HPS_644 = fs.Heeps;
 			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 6, 4).ToString();
 			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 6, 6).ToString();
 			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 8, 3, 1).ToString();
 			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 8, 3, 3).ToString();
 			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 8, 3, 5).ToString();
+			MPS_835 = fs.ManaSpent / fs.Time;
+			HPS_835 = fs.Heeps;
+
+			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 10, 3, 5).ToString();
+			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 10, 3, 8).ToString();
+		}
+
+		private void Combos()
+		{
+
+			ds.Shield.Mana = 11000;
+
+			this.combosTextBox.Text = "This is a list of maneuvers you can perform to optimize the use of cooldowns.\r\n\r\n";
+
+			FightSim fs = new FightSim();
+			fs.HalfAssedDarkmoonSimulator = true;
+
+			this.combosTextBox.Text += "Rapture Combos: \r\n";
+			this.combosTextBox.Text += "  Apply Purge the Wicked, cast Rapture, stack as many shields as possible, then cast Penance/Smite/Purge until the Atonements fall off.\r\n";
+
+			this.combosTextBox.Text += fs.RaptureCombo(ds, 20, true, true, false, true).ToString();
+			this.combosTextBox.Text += fs.RaptureCombo(ds, 20, false, true, false, true).ToString();
+			this.combosTextBox.Text += fs.RaptureCombo(ds, 20, false, false, false, true).ToString();
 		}
 
 
@@ -635,5 +685,90 @@ namespace Disculator
 			}
 		}
 
+		private void Budget_Recalculate(object sender, RoutedEventArgs e)
+		{
+			Budget_Recalculate();
+		}
+
+		private void Budget_Recalculate()
+		{
+			try
+			{
+				float fightDuration = float.Parse(this.fightDurationBox.Text);
+				float wisdoms = float.Parse(this.wisdomsBox.Text);
+				float manaPerMinute = float.Parse(this.extraManaPerMinuteBox.Text);
+				float oneTimeExtraMana = float.Parse(this.extraManaBox.Text);
+				int raidSize = int.Parse(this.raidSizeBox.Text);
+				int radianceCasts = (int)Math.Ceiling(raidSize / 3f);
+				float comboDuration = (radianceCasts - 2) * this.ds.Radiance.CastTime() + 15f;
+
+				StringBuilder sb = new StringBuilder();
+				float tmp = 0f;
+
+				float totalMana = 1100000 + (fightDuration * 8800f) + (wisdoms * 1100f)
+					+ (fightDuration / 60f * manaPerMinute) + oneTimeExtraMana;
+
+				sb.AppendLine("Total Mana available:" + totalMana);
+				sb.AppendLine("Average MPS:" + totalMana / fightDuration);
+				sb.AppendLine("Mana for one full-raid PW:R stacking (no innervate): " + (radianceCasts * 71500f));
+				sb.AppendLine("Mana after one stacking: " + (totalMana - (radianceCasts * 71500f)));
+				sb.AppendLine("PW:R Combo Duration:" + comboDuration);
+				sb.AppendLine("Average MPS left after one combo:" + (totalMana - (radianceCasts * 71500f)) / (fightDuration - comboDuration));
+				sb.AppendLine("Average MPS left after two combos:" + (totalMana - 2f * (radianceCasts * 71500f)) / (fightDuration - 2f * comboDuration));
+				sb.AppendLine("Average MPS left after three combos:" + (totalMana - 3f * (radianceCasts * 71500f)) / (fightDuration - 3f * comboDuration));
+				//TODO: Estimate combo HPS
+
+				float manaLeft = (totalMana - 1f * (radianceCasts * 71500f));
+				float timeLeft = fightDuration - comboDuration;
+
+				tmp = manaLeft / MPS_835;
+				if (tmp > timeLeft)
+					tmp = timeLeft;
+
+				sb.AppendLine("Possible 8/3/5 time after one combo with zero mana usage otherwise: " + tmp);
+				sb.AppendLine("Total 8/3/5 Healing: " + F(tmp * HPS_835));
+				sb.AppendLine("* Average 8/3/5 + Downtime HPS: " + F((tmp * HPS_835) / timeLeft));
+
+				//Find the most 835 time you can get with "Filler" instead of downtime
+				// MPS_Filler * Tfiller + MPS_835*T835 = manaLeft
+				// Tfiller + T835 = timeLeft
+				// => Tfiller = timeLeft - T835
+				// => MPS_F * ( timeLeft - T835) + MPS_835*T835 = manaLeft
+				// => T835 * (MPS_835 - MPS_F) + MPS_F * timeLeft = manaLeft
+				// => T835 = ( manaLeft - (MPS_Filler * timeLeft) ) / (MPS_835 - MPS_Filler)
+
+				float time_835 = (manaLeft - (MPS_Filler * timeLeft)) / (MPS_835 - MPS_Filler);
+				float time_Filler = timeLeft - time_835;
+
+				sb.Append("Possible 8/3/5 time after one combo with no downtime:");
+				if (time_835 <= 0)
+				{
+					sb.AppendLine(" None, will go OOM low mana filler alone");
+
+					tmp = manaLeft / MPS_Filler;
+					if (tmp > timeLeft)
+						tmp = timeLeft;
+
+					sb.AppendLine("* Possible Filler time after one combo with zero mana usage otherwise: " + tmp);
+					sb.AppendLine("* Total Filler Healing: " + F(tmp * HPS_Filler));
+
+				}
+				else
+				{
+					sb.AppendLine(" " + time_835);
+
+					sb.AppendLine("* Total 8/3/5 Healing: " + F(time_835 * HPS_835));
+					sb.AppendLine("* Average 8/3/5 + Filler HPS: " + F((time_835 * HPS_835 + time_Filler*HPS_Filler)/timeLeft));
+				}
+
+				this.budgetTextBox.Text = sb.ToString();
+
+
+			}
+			catch (Exception ex)
+			{
+				this.budgetTextBox.Text = "Error parsing inputs: " + ex.ToString();
+			}
+		}
 	}
 }

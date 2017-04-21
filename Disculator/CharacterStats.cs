@@ -44,6 +44,7 @@ namespace Disculator
 		public Spell Smend;
 		public Spell SmiteAbsorb;
 		public Spell Shield;
+		public Spell Radiance;
 
 		public Spell Smite;
 		public Spell CastigatedPenance;
@@ -110,6 +111,7 @@ namespace Disculator
 			Smend = new Spell("Shadow Mend (Heavy Incoming Damage)", 7.5f, 1.5f, 30800, DarkestShadows, this);
 			SmiteAbsorb = new Spell("Smite Absorb", 2.25f, 1.5f, 11000, 1.0f, this);
 			Shield = new Spell("Power Word: Shield", 5.5f, 1.5f, 22000, ShieldOfFaith * AegisOfWrathAndSkjoldr, this);
+			Radiance = new Spell("Power Word: Radiance", 2.5f * 3, 2.5f, 71500, BorrowedTime, this);
 			HealSpells = new Spell[]
 			{
 				Plea,
@@ -122,7 +124,7 @@ namespace Disculator
 
 				SmiteAbsorb,
 
-				new Spell("Power Word: Radiance", 2.5f*3, 2.5f, 71500, BorrowedTime, this),
+				Radiance,
 				new Spell("Shadow Covenant (Fully Efficient Somehow)", 4.5f*5, 2.5f, 71500, BorrowedTime, this),
 				new Spell("Shadow Covenant", 4.5f*5f/2f, 1.5f, 71500, BorrowedTime, this),
 				//new Spell("Power Word: Radiance (each)", 2.5f, 2.5f, 71500, BorrowedTime, this),
@@ -142,8 +144,8 @@ namespace Disculator
 			RegularPenance = new Spell("Penance (Standard)", 1.9f * 3f, 2.0f, 30800, allDamageBonus * Confession, this);
 			Ptw = new Spell("Purge the Wicked (total)", 4.8f * (1 + hastePercent) + 1f, 1.5f, 22000, allDamageBonus * EdgeOfDarkAndLight, this);
 			Swp = new Spell("Shadow Word: Pain (total)", 3.42f * (1 + hastePercent) + 0.38f, 1.5f, 24200, allDamageBonus * EdgeOfDarkAndLight, this);
-			PtwDot = new Spell("Purge the Wicked (DoT)", 4.8f * (1 + hastePercent), 1.5f, 22000, allDamageBonus * EdgeOfDarkAndLight, this);
-			SwpDot = new Spell("Shadow Word: Pain (DoT)", 3.42f * (1 + hastePercent), 1.5f, 24200, allDamageBonus * EdgeOfDarkAndLight, this);
+			PtwDot = new Spell("Purge the Wicked (DoT)", 4.8f * (1 + hastePercent), 20f, 22000, allDamageBonus * EdgeOfDarkAndLight, this);
+			SwpDot = new Spell("Shadow Word: Pain (DoT)", 3.42f * (1 + hastePercent), 18f, 24200, allDamageBonus * EdgeOfDarkAndLight, this);
 
 			PtwDPS = PtwDot.AvgEffect() / 20f;
 			SwpDPS = SwpDot.AvgEffect() / 18f;
@@ -153,14 +155,17 @@ namespace Disculator
 			ShadowfiendSwing = new Spell("Shadowfiend (One Swing)", 2.0f, 12f / 8f / (1 + hastePercent), -5500, allDamageBonus, this);
 
 			Mindbender = new Spell("Mindbender (Full Duration)", ShadowfiendSwings * 1.5f, 1.5f, -5500 * ShadowfiendSwings, allDamageBonus, this);
-			Shadowfiend = new Spell("Shadowfiend (Full Duration)", ShadowfiendSwings * 2.0f, 1.5f, 0, allDamageBonus, this);
+
+			//For combo calculations
+			Shadowfiend = new Spell("Shadowfiend (DPS while active)", ShadowfiendSwings * 2.0f, 12f, 0, allDamageBonus, this);
 
 			DamageSpells = new Spell[]
 			{
 				Smite, CastigatedPenance, RegularPenance, Ptw, Swp, LightsWrath,
 				PtwDot, SwpDot,
 				MindbenderSwing, ShadowfiendSwing,
-				Mindbender, Shadowfiend,
+				Mindbender,
+				new Spell("Shadowfiend (Full Duration)", ShadowfiendSwings * 2.0f, 1.5f, 0, allDamageBonus, this),
 				new Spell("Power Word: Solace", powerWordSolaceKludge*3f, 1.5f, -11000, allDamageBonus, this),
 				new Spell("Divine Star", 1.45f, 1.5f, 27500, allDamageBonus, this),
 				new Spell("Halo", 4.31f, 1.5f, 1, allDamageBonus, this),

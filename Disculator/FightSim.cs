@@ -49,7 +49,7 @@ namespace Disculator
 		// Note that the presence of only half an ass prevents this from modeling
 		// things such as a simultaneous Bloodlust + Power Infusion or the trinket
 		// off Chronomatic Anomaly
-		public float TempHasteBuff; 
+		public float TempHasteBuff;
 		public float TempHasteBuffExpiration;
 
 		public void Reset()
@@ -158,10 +158,14 @@ namespace Disculator
 		{
 			CastSpell(theSpell, bonusHaste);
 
-			TotalDamage += theSpell.AvgEffect() * bonusDamage;
+			float sinsBonus = 1f + (0.01f * Atonements);
+
+			float damageThisTime = theSpell.AvgEffect() * bonusDamage * sinsBonus;
+
+			TotalDamage += damageThisTime;
 			//Assumes we always have an atonement up on at least one tank
-			TankHealing += theSpell.AtonementEffect() * bonusDamage;
-			TotalHealing += Atonements * theSpell.AtonementEffect() * bonusDamage;
+			TankHealing += theSpell.AtonementRate() * damageThisTime;
+			TotalHealing += Atonements * theSpell.AtonementRate() * damageThisTime;
 		}
 
 		private void HealSpell(Spell theSpell, int targets)
@@ -183,6 +187,7 @@ namespace Disculator
 				}
 			}
 			Atonements++;
+			BorrowedTimeUp = true;
 		}
 
 		private void ExpireAtonements()
@@ -211,7 +216,6 @@ namespace Disculator
 			TotalHealing += ds.Plea.AvgEffect();
 
 			AddAtonement();
-			BorrowedTimeUp = true;
 
 			Pleas++;
 		}
@@ -222,15 +226,7 @@ namespace Disculator
 			if (Time > ShieldReady)
 			{
 				HealSpell(ds.Shield, 1);
-				if (Atonements == 0)
-				{
-					AddAtonement();
-				}
-				else
-				{
-					AtonementExpirations[0] = Time + AtonementDuration;
-				}
-				BorrowedTimeUp = true;
+				AddAtonement();
 
 				ShieldReady = Time + ds.ShieldCD;
 
@@ -366,7 +362,7 @@ namespace Disculator
 
 				if (BorrowedTimeUp)
 				{
-					DamageSpell(ds.Smite, ds.BurstOfLight);
+					DamageSpell(ds.Smite, ds.BorrowedTime);
 					BorrowedTimeUp = false;
 				}
 				else
@@ -418,14 +414,17 @@ namespace Disculator
 			for (CastNum = 0, Time = 0f; Time < LONGTIME; CastNum++)
 			{
 				if (HalfAssedDarkmoonSimulator)
-					ManaSpent -= ((2438-610)/2 + 610);
+					ManaSpent -= ((2438 - 610) / 2 + 610);
+
+				float sinsBonus = 1f + (0.01f * Atonements);
 
 				//Apply DoT damage from the last round through here
 				if (DotExpires > Time)
 				{
-					TotalDamage += ds.PtwDPS * (Time - startTime);
-					TankHealing += ds.PtwDPS * (Time - startTime) * 0.4f * (1 + ds.masteryPercent);
-					TankHealing += Atonements * ds.PtwDPS * (Time - startTime) * 0.4f * (1 + ds.masteryPercent);
+					float dotDamageThisRound = ds.PtwDPS * (Time - startTime) * sinsBonus;
+					TotalDamage += dotDamageThisRound;
+					TankHealing += dotDamageThisRound * 0.4f * (1 + ds.masteryPercent);
+					TotalHealing += dotDamageThisRound * 0.4f * (1 + ds.masteryPercent) * Atonements;
 				}
 
 				ExpireAtonements();
@@ -502,7 +501,7 @@ namespace Disculator
 		{
 			StringBuilder sb = new StringBuilder();
 
-			sb.AppendLine("Maintain 6 Atonements, use Penance and PW:Shield on cooldown, but use every Burst of Light");
+			sb.AppendLine("Maintain 6 Atonements, use Penance and PW:Shield on cooldown, but use every Borrowed Time");
 
 			//ds.Raycalculate(); //Allow the caller to tweak things
 			Reset();
@@ -590,12 +589,15 @@ namespace Disculator
 		{
 			StringBuilder sb = new StringBuilder();
 
-			sb.AppendLine("Let Atonement fall off, plea to 6, hit PtW, spam Smite");
+			sb.AppendLine("Filler Rotation: Let Atonement fall off, plea to 6, hit PtW, spam Smite (NO PENANCE)");
 
 			Reset();
 
 			for (CastNum = 0, Time = 0f; Time < (AtonementDuration + ds.Plea.CastTime() * 6); CastNum++)
 			{
+				if (HalfAssedDarkmoonSimulator)
+					ManaSpent -= ((2438 - 610) / 2 + 610);
+
 				if (!StackedAtonement)
 				{
 					AtonementExpirations[Atonements] = Time + AtonementDuration;
@@ -1013,13 +1015,134 @@ namespace Disculator
 			return sb;
 		}
 
-		public StringBuilder RaptureCombo(CharacterStats ds, int raidSize, 
-			bool useLightsWrath, bool useShadowfiend, bool useMindbender, 
-			bool PurgeInsteadOfSwp )
+		public StringBuilder RaptureCombo(CharacterStats ds, int raidSize,
+			bool useLightsWrath, bool useShadowfiend, bool useMindbender,
+			bool PurgeInsteadOfSwp)
 		{
 			StringBuilder sb = new StringBuilder();
 
+			sb.Append("Rapture Combo, LW:" + (useLightsWrath ? "Y" : "N") + ",SF:" + (useShadowfiend ? "Y" : "N") + ":");
 
+			if (useMindbender)
+			{
+				throw new Exception("Mindbender not supported yet");
+			}
+			if (!PurgeInsteadOfSwp)
+			{
+				throw new Exception("Shadow Word: Pain not supported yet");
+			}
+
+			Reset();
+
+			//Used to track the duration of the most recent loop for the purposes of 
+			// applying SW:P/Fiend damage
+			float startTime = 0f;
+
+			float raptureExpires = 0f;
+			float fiendExpires = 0f;
+			bool fiendUsed = false;
+			for (CastNum = 0, Time = 0f; Time < LONGTIME; CastNum++)
+			{
+				if (HalfAssedDarkmoonSimulator)
+					ManaSpent -= ((2438 - 610) / 2 + 610);
+
+				float sinsBonus = 1f + (0.01f * Atonements);
+
+				//Apply DoT damage from the last round through here
+				if (DotExpires > Time)
+				{
+					float dotDamageThisRound = ds.PtwDPS * (Time - startTime) * sinsBonus;
+					TotalDamage += dotDamageThisRound;
+					TankHealing += dotDamageThisRound * 0.4f * (1 + ds.masteryPercent);
+					TotalHealing += dotDamageThisRound * 0.4f * (1 + ds.masteryPercent) * Atonements;
+				}
+
+				//Apply Shadow Fiend DPS
+				if (fiendExpires > Time)
+				{
+					float fiendDamageThisRound = ds.Shadowfiend.EffectPerSecond() * sinsBonus * (Time - startTime);
+					TotalDamage += fiendDamageThisRound;
+					TankHealing += fiendDamageThisRound * 0.4f * (1 + ds.masteryPercent);
+					TotalHealing += fiendDamageThisRound * 0.4f * (1 + ds.masteryPercent) * Atonements;
+				}
+
+				ExpireAtonements();
+				
+				startTime = Time;
+				
+				if (raptureExpires == 0f)
+				{
+					//Apply Purge the Wicked first
+					if (ApplyPurge(sb, ds)) continue;
+
+					//Cast Rapture
+					raptureExpires = Time + ds.Doomsayer;
+				}
+				else
+				{
+					if (raptureExpires < Time)
+					{
+						//OK, combo's over, everyone go home
+						if (Atonements <= 5)
+							break;
+					}
+					else
+					{
+						//Reset Power Word: Shield's cooldown
+						// while Rapture is still up
+						ShieldReady = 0;
+					}
+				}
+
+				//Cast one more Power Word: Shield after Rapture ends
+				// if PW:S has been cast without Rapture at least once,
+				// ShieldReady time will be greater than 0
+				if (ShieldReady == 0)
+				{
+					if (CastShield(sb, ds)) continue;
+				}
+
+				if (ApplyPurge(sb, ds)) continue;
+
+				if (useLightsWrath)
+				{
+					DamageSpell(ds.LightsWrath, 1.0f, 1f + (Atonements * 0.1f));
+
+					useLightsWrath = false;
+					continue;
+				}
+
+				//TODO: Mindbender support
+				if (useShadowfiend && !fiendUsed)
+				{
+					//Cast Shadowfiend
+					fiendUsed = true;
+					fiendExpires = Time + 12f;
+				}
+
+				if (CastPenance(sb, ds)) continue;
+
+				DamageSpell(ds.Smite, BorrowedTimeUp ? ds.BorrowedTime : 1.0f);
+				BorrowedTimeUp = false;
+
+				TankHealing += ds.SmiteAbsorb.AvgEffect();
+				TotalHealing += ds.SmiteAbsorb.AvgEffect();
+				Log(sb, ": Casting Smite");
+
+				startTime = Time;
+			}
+
+			Deeps = TotalDamage / Time;
+			Heeps = TotalHealing / Time;
+			TankHeeps = TankHealing / Time;
+
+			sb.AppendLine(" Duration: " + F(Time) + "s, " +
+					"DPS: " + F(Deeps) + ", " +
+					"HPS: " + F(Heeps) + ", " +
+					"Tank HPS: " + F(TankHeeps) + ", " +
+					"MPS: " + F(ManaSpent / Time) + ", " +
+					"HPM: " + F(TotalHealing / ManaSpent)
+					);
 
 			return sb;
 		}
