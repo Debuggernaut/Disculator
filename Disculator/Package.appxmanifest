@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
-  <Identity Name="d2981ed2-3621-48f0-bcaa-bef3e011c70b" Publisher="CN=Raymar" Version="1.0.0.0" />
+  <Identity Name="HardModeCode.Disculator" Publisher="CN=54721724-ECC9-49B5-B345-E420195C13AC" Version="1.1.11.0" />
   <mp:PhoneIdentity PhoneProductId="d2981ed2-3621-48f0-bcaa-bef3e011c70b" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>Disculator</DisplayName>
-    <PublisherDisplayName>Hard Mode Code, LLC</PublisherDisplayName>
+    <PublisherDisplayName>Hard Mode Code</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
   <Dependencies>
@@ -15,7 +15,7 @@
   </Resources>
   <Applications>
     <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="Disculator.App">
-      <uap:VisualElements DisplayName="Disculator" Square150x150Logo="" Square44x44Logo="Assets\Square44x44Logo.png" Description="Calculator for Disc Priests in WoW (Not affiliated with Blizzard/Vivendi)" BackgroundColor="transparent">
+      <uap:VisualElements DisplayName="Disculator" Square150x150Logo="Assets\Square150x150Logo.png" Square44x44Logo="Assets\Square44x44Logo.png" Description="Calculator for Disc Priests in WoW (Not affiliated with Blizzard/Vivendi)" BackgroundColor="transparent">
         <uap:DefaultTile ShortName="Disculator" Square310x310Logo="Assets\Square310x310Logo.png" Wide310x150Logo="Assets\Wide310x150Logo.png" Square71x71Logo="Assets\Square71x71Logo.png">
           <uap:ShowNameOnTiles>
             <uap:ShowOn Tile="wide310x150Logo" />
