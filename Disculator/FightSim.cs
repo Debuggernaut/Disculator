@@ -8,7 +8,7 @@ namespace Disculator
 {
 	class FightSim
 	{
-		public float AtonementDuration = 15f;
+		public float AtonementDuration = 18f;
 
 		public int CastNum = 0;
 		public float Time = 0f;
@@ -54,7 +54,7 @@ namespace Disculator
 
 		public void Reset()
 		{
-			AtonementDuration = 15f;
+			//AtonementDuration = 15f;
 
 			CastNum = 0;
 			Time = 0f;

@@ -316,6 +316,7 @@ namespace Disculator
 			this.RotationBox.Text = "All rotations below assume Shield Discipline, and that all shields are fully absorbed\r\n\r\n";
 
 			FightSim fs = new FightSim();
+			fs.AtonementDuration = 15f;
 			StringBuilder sb = fs.EasyRotation(ds);
 			MPS_Filler = fs.ManaSpent / fs.Time;
 			HPS_Filler = fs.Heeps;
@@ -378,6 +379,25 @@ namespace Disculator
 			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 8, 3, 7).ToString();
 			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 8, 3, 8).ToString();
 			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 9, 3, 9).ToString();
+
+			this.RotationBox.Text += "\r\n\r\nSame rotations as above, but with a Contrition and the Darkmoon card:\r\n";
+			fs.HalfAssedDarkmoonSimulator = true;
+			fs.AtonementDuration = 18f;
+			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 4, 1).ToString();
+			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 4, 4).ToString();
+			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 6, 4).ToString();
+			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 8, 3, 3).ToString();
+			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 8, 3, 5).ToString();
+
+			this.RotationBox.Text += "\r\n\r\n(No contrition)\r\n";
+			fs.HalfAssedDarkmoonSimulator = true;
+			fs.AtonementDuration = 15f;
+			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 4, 1).ToString();
+			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 4, 4).ToString();
+			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 6, 4).ToString();
+			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 8, 3, 3).ToString();
+			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 8, 3, 5).ToString();
+
 		}
 
 		private void Combos()
