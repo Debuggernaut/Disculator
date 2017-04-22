@@ -28,9 +28,6 @@ namespace Disculator
 
 		CharacterStats ds;
 
-		private float MPS_000 = 0f;
-		private float HPS_000 = 0f;
-
 		private float MPS_Filler = 0f;
 		private float HPS_Filler = 0f;
 
