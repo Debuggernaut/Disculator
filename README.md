@@ -1,6 +1,8 @@
 # Disculator
 Disc Priest calculator for WoW
 
+UPDATE: Installable binary now available in the Windows Store!
+https://www.microsoft.com/en-us/store/p/disculator/9n52k2570s15
 
 Hello, my esteemed Priestly friends!
 
