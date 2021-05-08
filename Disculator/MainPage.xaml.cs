@@ -104,40 +104,40 @@ namespace Disculator
 				ds.masteryRating = int.Parse(this.masterybox.Text);
 				ds.verRating = int.Parse(this.verbox.Text);
 
-				ds.AvgAtonements = int.Parse(this.atonementsbox.Text);
+				//ds.AvgAtonements = int.Parse(this.atonementsbox.Text);
 
-				ds.artifactTraits = int.Parse(this.pointsbox.Text);
+				//ds.artifactTraits = int.Parse(this.pointsbox.Text);
 
-				ds.Doomsayer = int.Parse(this.box_doomsayer.Text);
-				ds.Confession = int.Parse(this.box_confession.Text);
-				ds.BorrowedTime = int.Parse(this.box_borrowedtime.Text);
-				ds.ShieldOfFaith = int.Parse(this.box_shieldoffaith.Text);
+				//ds.Doomsayer = int.Parse(this.box_doomsayer.Text);
+				//ds.Confession = int.Parse(this.box_confession.Text);
+				//ds.BorrowedTime = int.Parse(this.box_borrowedtime.Text);
+				//ds.ShieldOfFaith = int.Parse(this.box_shieldoffaith.Text);
 
-				ds.EdgeOfDarkAndLight = int.Parse(this.box_edgeofdarkandlight.Text);
-				ds.BurstOfLight = int.Parse(this.box_burstoflight.Text);
-				ds.DarkestShadows = int.Parse(this.box_darkestshadows.Text);
+				//ds.EdgeOfDarkAndLight = int.Parse(this.box_edgeofdarkandlight.Text);
+				//ds.BurstOfLight = int.Parse(this.box_burstoflight.Text);
+				//ds.DarkestShadows = int.Parse(this.box_darkestshadows.Text);
 
-				ds.Doomsayer += 7;
-				ds.Confession = 1f + (ds.Confession * 0.04f);
-				ds.BorrowedTime = 1f + (ds.BorrowedTime * 0.05f);
-				ds.ShieldOfFaith = 1f + (ds.ShieldOfFaith * 0.05f);
+				//ds.Doomsayer += 7;
+				//ds.Confession = 1f + (ds.Confession * 0.04f);
+				//ds.BorrowedTime = 1f + (ds.BorrowedTime * 0.05f);
+				//ds.ShieldOfFaith = 1f + (ds.ShieldOfFaith * 0.05f);
 
-				ds.EdgeOfDarkAndLight = 1f + (ds.EdgeOfDarkAndLight * 0.05f);
-				ds.BurstOfLight = 1f + (ds.BurstOfLight * 0.05f);
-				ds.DarkestShadows = 1f + (ds.DarkestShadows / 30f);
+				//ds.EdgeOfDarkAndLight = 1f + (ds.EdgeOfDarkAndLight * 0.05f);
+				//ds.BurstOfLight = 1f + (ds.BurstOfLight * 0.05f);
+				//ds.DarkestShadows = 1f + (ds.DarkestShadows / 30f);
 
-				ds.AegisOfWrathAndSkjoldr = float.Parse(this.box_aegisofwrath.Text);
+				//ds.AegisOfWrathAndSkjoldr = float.Parse(this.box_aegisofwrath.Text);
 
 				ds.Raycalculate();
 
-				this.critpercentbox.Text = ds.critPercent.ToString("P");
-				this.hastepercentbox.Text = ds.hastePercent.ToString("P");
-				this.masterypercentbox.Text = ds.masteryPercent.ToString("P");
-				this.verpercentbox.Text = ds.verPercent.ToString("P");
+				this.critpercentbox.Text = ds.CritPercent.ToString("P");
+				this.hastepercentbox.Text = ds.HastePercent.ToString("P");
+				this.masterypercentbox.Text = ds.MasteryPercent.ToString("P");
+				this.verpercentbox.Text = ds.VerPercent.ToString("P");
 
-				this.artifactDamageBonusPercent.Text = ds.allDamageBonus.ToString("P");
+				//this.artifactDamageBonusPercent.Text = ds.allDamageBonus.ToString("P");
 
-				this.MindbenderSwingsBox.Text = ds.ShadowfiendSwings.ToString();
+				//this.MindbenderSwingsBox.Text = ds.ShadowfiendSwings.ToString();
 
 				StringBuilder sb = new StringBuilder();
 
@@ -207,10 +207,10 @@ namespace Disculator
 							t.Text = F(ds.DamageSpells[s].EffectPerSecond());
 							break;
 						case 4:
-							t.Text = F(ds.DamageSpells[s].AtonementEffect() * ds.AvgAtonements / ds.DamageSpells[s].CastTime());
+							//t.Text = F(ds.DamageSpells[s].AtonementEffect() * ds.AvgAtonements / ds.DamageSpells[s].CastTime());
 							break;
 						case 5:
-							t.Text = F(ds.DamageSpells[s].AtonementEffect() * ds.AvgAtonements / ds.DamageSpells[s].Mana);
+							//t.Text = F(ds.DamageSpells[s].AtonementEffect() * ds.AvgAtonements / ds.DamageSpells[s].Mana);
 							break;
 						case 6:
 							t.Text = F(ds.DamageSpells[s].Mana);
@@ -308,99 +308,21 @@ namespace Disculator
 
 		private void Rotations()
 		{
-			ds.Shield.Mana = 11000;
-
 			this.RotationBox.Text = "All rotations below assume Shield Discipline, and that all shields are fully absorbed\r\n\r\n";
 
 			FightSim fs = new FightSim();
 			fs.AtonementDuration = 15f;
-			StringBuilder sb = fs.EasyRotation(ds);
+			StringBuilder sb = fs.LongRunEasyRotation(ds);
 			MPS_Filler = fs.ManaSpent / fs.Time;
 			HPS_Filler = fs.Heeps;
 
 			this.RotationBox.Text += sb.ToString();
-
-			this.RotationBox.Text += "\r\nMaintain 6 atonements, Penance/PW:Shield on cooldown\r\n";
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds).ToString();
-			this.RotationBox.Text += "\r\nSame as above, but weave Smite casts in between Plea/Shields to use every Borrowed Time proc\r\n";
-			this.RotationBox.Text += fs.SmiteWeave(ds).ToString();
-
-			this.RotationBox.Text += "\r\nBelow rotations: X/Y/Z: Stack X atonements, cast Shadow Mend instead of Plea above Y atonements, start re-stacking Atonement when your Atonement count falls below Z\r\n";
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 6, 1).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 4, 1).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 4, 3).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 4, 4).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 6, 4).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 6, 6).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 8, 3, 1).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 8, 3, 3).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 8, 3, 5).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 10, 3, 5).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 10, 3, 8).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 11, 3, 8).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 12, 3, 8).ToString();
-
-			this.RotationBox.Text += "\r\n\r\nSame rotations as above, but with a half-assed Darkmoon Card simulation applied:\r\n";
-			fs.HalfAssedDarkmoonSimulator = true;
-
-			this.RotationBox.Text += fs.EasyRotation(ds);
-
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 6, 1).ToString();
-			MPS_661 = fs.ManaSpent / fs.Time;
-			HPS_661 = fs.Heeps;
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 4, 1).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 4, 3).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 4, 4).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 6, 4).ToString();
-			MPS_664 = fs.ManaSpent / fs.Time;
-			HPS_664 = fs.Heeps;
-			MPS_Filler = fs.ManaSpent / fs.Time;
-			HPS_Filler = fs.Heeps;
-
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 6, 6).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 8, 3, 1).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 8, 3, 5).ToString();
-			MPS_835 = fs.ManaSpent / fs.Time;
-			HPS_835 = fs.Heeps;
-
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 8, 3, 3).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 9, 3, 3).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 10, 3, 3).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 10, 3, 3).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 11, 3, 3).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 12, 3, 3).ToString();
-
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 8, 3, 4).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 8, 3, 5).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 8, 3, 6).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 8, 3, 7).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 8, 3, 8).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 9, 3, 9).ToString();
-
-			this.RotationBox.Text += "\r\n\r\nSame rotations as above, but with a Contrition and the Darkmoon card:\r\n";
-			fs.HalfAssedDarkmoonSimulator = true;
-			fs.AtonementDuration = 18f;
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 4, 1).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 4, 4).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 6, 4).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 8, 3, 3).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 8, 3, 5).ToString();
-
-			this.RotationBox.Text += "\r\n\r\n(No contrition)\r\n";
-			fs.HalfAssedDarkmoonSimulator = true;
-			fs.AtonementDuration = 15f;
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 4, 1).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 4, 4).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 6, 4).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 8, 3, 3).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 8, 3, 5).ToString();
-
 		}
 
 		private void Combos()
 		{
 
-			ds.Shield.Mana = 11000;
+			//ds.Shield.Mana = 11000;
 
 			this.combosTextBox.Text = "This is a list of maneuvers you can perform to optimize the use of cooldowns.\r\n\r\n";
 
@@ -410,9 +332,9 @@ namespace Disculator
 			this.combosTextBox.Text += "Rapture Combos: \r\n";
 			this.combosTextBox.Text += "  Apply Purge the Wicked, cast Rapture, stack as many shields as possible, then cast Penance/Smite/Purge until the Atonements fall off.\r\n";
 
-			this.combosTextBox.Text += fs.RaptureCombo(ds, 20, true, true, false, true).ToString();
-			this.combosTextBox.Text += fs.RaptureCombo(ds, 20, false, true, false, true).ToString();
-			this.combosTextBox.Text += fs.RaptureCombo(ds, 20, false, false, false, true).ToString();
+			//this.combosTextBox.Text += fs.RaptureCombo(ds, 20, true, true, false, true).ToString();
+			//this.combosTextBox.Text += fs.RaptureCombo(ds, 20, false, true, false, true).ToString();
+			//this.combosTextBox.Text += fs.RaptureCombo(ds, 20, false, false, false, true).ToString();
 		}
 
 
@@ -425,221 +347,96 @@ namespace Disculator
 		{
 			CharacterStats dOrig = ds.clone();
 
-			FightSim fs = new FightSim();
-			//this.RotationBox.Text = fs.LongRun_PenanceAndShield(ds).ToString();
-			//this.RotationBox.Text += fs.LongRunEasyRotation(ds).ToString();
+			//FightSim fs = new FightSim();
+			////this.RotationBox.Text = fs.LongRun_PenanceAndShield(ds).ToString();
+			////this.RotationBox.Text += fs.LongRunEasyRotation(ds).ToString();
 
-			this.RotationBox.Text = "(Shield Discipline)\r\n";
-			ds.Shield.Mana = 11000;
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds).ToString();
+			//this.RotationBox.Text = "(Shield Discipline)\r\n";
+			//ds.Shield.Mana = 11000;
+			//this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds).ToString();
 
-			this.RotationBox.Text += "(No Dark Side)\r\n";
-			ds.PowerOfTheDarkSideCD = 9001f;
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds).ToString();
+			//this.RotationBox.Text += "(No Dark Side)\r\n";
+			//ds.PowerOfTheDarkSideCD = 9001f;
+			//this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds).ToString();
 
-			this.RotationBox.Text += "(SMITEWEAVING + Shield Discipline)\r\n";
-			dOrig.Shield.Mana = 11000;
-			this.RotationBox.Text += fs.SmiteWeave(dOrig).ToString();
+			//this.RotationBox.Text += "(SMITEWEAVING + Shield Discipline)\r\n";
+			//dOrig.Shield.Mana = 11000;
+			//this.RotationBox.Text += fs.SmiteWeave(dOrig).ToString();
 
-			this.RotationBox.Text += fs.RePleaAt4(dOrig).ToString();
+			//this.RotationBox.Text += fs.RePleaAt4(dOrig).ToString();
 
-			this.RotationBox.Text += fs.RePleaAt4_NoShieldOrPenance(dOrig).ToString();
+			//this.RotationBox.Text += fs.RePleaAt4_NoShieldOrPenance(dOrig).ToString();
 
-			this.RotationBox.Text += fs.SMendInsteadOfPlea(dOrig).ToString();
+			//this.RotationBox.Text += fs.SMendInsteadOfPlea(dOrig).ToString();
 
-			this.RotationBox.Text += fs.SMendInsteadOfPlea(dOrig, 8).ToString();
+			//this.RotationBox.Text += fs.SMendInsteadOfPlea(dOrig, 8).ToString();
 
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 6).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 3, 6).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 4, 6).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 5, 6).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 7, 6).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 8, 6).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 3).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 4).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 5).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 7, 3).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 7, 4).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 7, 5).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 8, 3).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 8, 4).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 8, 5).ToString();
+			//this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 6).ToString();
+			//this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 3, 6).ToString();
+			//this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 4, 6).ToString();
+			//this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 5, 6).ToString();
+			//this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 7, 6).ToString();
+			//this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 8, 6).ToString();
+			//this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 3).ToString();
+			//this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 4).ToString();
+			//this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 5).ToString();
+			//this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 7, 3).ToString();
+			//this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 7, 4).ToString();
+			//this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 7, 5).ToString();
+			//this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 8, 3).ToString();
+			//this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 8, 4).ToString();
+			//this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 8, 5).ToString();
 		}
 
 		private void StatComparisonButtonClick(object sender, RoutedEventArgs e)
 		{
 			this.RotationBox.Text = ">: D\r\n";
-			ds.Shield.Mana = 11000;
 			CharacterStats d2 = ds.clone();
 			FightSim fs = new FightSim();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 0).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 6).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 8, 3).ToString();
+			//this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 0).ToString();
+			//this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 6, 6).ToString();
+			//this.RotationBox.Text += fs.LongRun_PenanceAndShield(ds, 8, 3).ToString();
 
-			d2.critRating = 22000 / 4;
-			d2.verRating = 22000 / 4;
-			d2.hasteRating = 22000 / 4;
-			d2.masteryRating = 22000 / 4;
-			d2.Raycalculate();
-			this.RotationBox.Text += "22k split 4 ways\r\n";
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(d2, 6, 0).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(d2, 6, 6).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(d2, 8, 3).ToString();
-
-			d2.critRating = 22000 / 2;
-			d2.verRating = 11000 / 3;
-			d2.hasteRating = 11000 / 3;
-			d2.masteryRating = 11000 / 3;
-			d2.Raycalculate();
-			this.RotationBox.Text += "C:" + d2.critRating + ",V:" + d2.verRating + ",H:" + d2.hasteRating + ",M:" + d2.masteryRating + "\r\n";
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(d2, 6, 0).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(d2, 6, 6).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(d2, 8, 3).ToString();
-
-			d2.hasteRating = 22000 / 2;
-			d2.verRating = 11000 / 3;
-			d2.critRating = 11000 / 3;
-			d2.masteryRating = 11000 / 3;
-			d2.Raycalculate();
-			this.RotationBox.Text += "C:" + d2.critRating + ",V:" + d2.verRating + ",H:" + d2.hasteRating + ",M:" + d2.masteryRating + "\r\n";
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(d2, 6, 0).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(d2, 6, 6).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(d2, 8, 3).ToString();
-
-			d2.masteryRating = 22000 / 2;
-			d2.verRating = 11000 / 3;
-			d2.hasteRating = 11000 / 3;
-			d2.critRating = 11000 / 3;
-			d2.Raycalculate();
-			this.RotationBox.Text += "C:" + d2.critRating + ",V:" + d2.verRating + ",H:" + d2.hasteRating + ",M:" + d2.masteryRating + "\r\n";
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(d2, 6, 0).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(d2, 6, 6).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(d2, 8, 3).ToString();
-
-			d2.verRating = 22000 / 2;
-			d2.masteryRating = 11000 / 3;
-			d2.hasteRating = 11000 / 3;
-			d2.critRating = 11000 / 3;
-			d2.Raycalculate();
-			this.RotationBox.Text += "C:" + d2.critRating + ",V:" + d2.verRating + ",H:" + d2.hasteRating + ",M:" + d2.masteryRating + "\r\n";
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(d2, 6, 0).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(d2, 6, 6).ToString();
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(d2, 8, 3).ToString();
-
-			d2.critRating = 22000 / 3;
-			d2.verRating = 0;
-			d2.hasteRating = 22000 / 3;
-			d2.masteryRating = 22000 / 3;
-			d2.Raycalculate();
-			this.RotationBox.Text += "C:" + d2.critRating + ",V:" + d2.verRating + ",H:" + d2.hasteRating + ",M:" + d2.masteryRating + ", ";
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(d2, 8, 3).ToString();
-
-			d2.critRating = 0;
-			d2.verRating = 22000 / 3;
-			d2.hasteRating = 22000 / 3;
-			d2.masteryRating = 22000 / 3;
-			d2.Raycalculate();
-			this.RotationBox.Text += "C:" + d2.critRating + ",V:" + d2.verRating + ",H:" + d2.hasteRating + ",M:" + d2.masteryRating + ", ";
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(d2, 8, 3).ToString();
-
-			d2.critRating = 22000 / 3;
-			d2.verRating = 22000 / 3;
-			d2.hasteRating = 0;
-			d2.masteryRating = 22000 / 3;
-			d2.Raycalculate();
-			this.RotationBox.Text += "C:" + d2.critRating + ",V:" + d2.verRating + ",H:" + d2.hasteRating + ",M:" + d2.masteryRating + ", ";
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(d2, 8, 3).ToString();
-
-			d2.critRating = 22000 / 3;
-			d2.verRating = 22000 / 3;
-			d2.hasteRating = 22000 / 3;
-			d2.masteryRating = 0;
-			d2.Raycalculate();
-			this.RotationBox.Text += "C:" + d2.critRating + ",V:" + d2.verRating + ",H:" + d2.hasteRating + ",M:" + d2.masteryRating + ", ";
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(d2, 8, 3).ToString();
-
-
-			//float baseHPS = fs.Heeps;
-			//float baseHPM = fs.TotalHealing / fs.ManaSpent;
-
-			//d2.critRating += 1000;
+			//d2.critRating = 22000 / 4;
+			//d2.verRating = 22000 / 4;
+			//d2.hasteRating = 22000 / 4;
+			//d2.masteryRating = 22000 / 4;
 			//d2.Raycalculate();
-			//fs.LongRun_PenanceAndShield(d2, 8, 3);
+			//this.RotationBox.Text += "22k split 4 ways\r\n";
+			//this.RotationBox.Text += fs.LongRun_PenanceAndShield(d2, 6, 0).ToString();
+			//this.RotationBox.Text += fs.LongRun_PenanceAndShield(d2, 6, 6).ToString();
+			//this.RotationBox.Text += fs.LongRun_PenanceAndShield(d2, 8, 3).ToString();
 
-			//Conventional Wisdom
-			fs.HalfAssedDarkmoonSimulator = false;
-			d2.hasteRating = 22000 / 2;
-			d2.verRating = 0;
-			d2.critRating = 11000 / 2;
-			d2.masteryRating = 11000 / 2;
-			d2.Raycalculate();
-			this.RotationBox.Text += "C:" + d2.critRating + ",V:" + d2.verRating + ",H:" + d2.hasteRating + ",M:" + d2.masteryRating + ", ";
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(d2, 8, 3).ToString();
-			float spamMPS = fs.ManaSpent / fs.Time;
-			float spamHPS = fs.Heeps;
-			this.RotationBox.Text += "C:" + d2.critRating + ",V:" + d2.verRating + ",H:" + d2.hasteRating + ",M:" + d2.masteryRating + ", ";
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(d2, 4, 4).ToString();
-			float conservativeMPS = fs.ManaSpent / fs.Time;
-			float conservativeHPS = fs.Heeps;
+			//d2.critRating = 22000 / 2;
+			//d2.verRating = 11000 / 3;
+			//d2.hasteRating = 11000 / 3;
+			//d2.masteryRating = 11000 / 3;
+			//d2.Raycalculate();
+			//this.RotationBox.Text += "C:" + d2.critRating + ",V:" + d2.verRating + ",H:" + d2.hasteRating + ",M:" + d2.masteryRating + "\r\n";
+			//this.RotationBox.Text += fs.LongRun_PenanceAndShield(d2, 6, 0).ToString();
+			//this.RotationBox.Text += fs.LongRun_PenanceAndShield(d2, 6, 6).ToString();
+			//this.RotationBox.Text += fs.LongRun_PenanceAndShield(d2, 8, 3).ToString();
 
-			this.RotationBox.Text += "With half-assed Darkmoon Card simulation enabled:\r\n";
-			fs.HalfAssedDarkmoonSimulator = true;
-			d2.Raycalculate();
-			this.RotationBox.Text += "C:" + d2.critRating + ",V:" + d2.verRating + ",H:" + d2.hasteRating + ",M:" + d2.masteryRating + ", ";
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(d2, 8, 3).ToString();
-			float spamMPS2 = fs.ManaSpent / fs.Time;
-			float spamHPS2 = fs.Heeps;
+			//d2.hasteRating = 22000 / 2;
+			//d2.verRating = 11000 / 3;
+			//d2.critRating = 11000 / 3;
+			//d2.masteryRating = 11000 / 3;
+			//d2.Raycalculate();
+			//this.RotationBox.Text += "C:" + d2.critRating + ",V:" + d2.verRating + ",H:" + d2.hasteRating + ",M:" + d2.masteryRating + "\r\n";
+			//this.RotationBox.Text += fs.LongRun_PenanceAndShield(d2, 6, 0).ToString();
+			//this.RotationBox.Text += fs.LongRun_PenanceAndShield(d2, 6, 6).ToString();
+			//this.RotationBox.Text += fs.LongRun_PenanceAndShield(d2, 8, 3).ToString();
 
-			this.RotationBox.Text += "C:" + d2.critRating + ",V:" + d2.verRating + ",H:" + d2.hasteRating + ",M:" + d2.masteryRating + ", ";
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(d2, 4, 4).ToString();
-			float conservativeMPS2 = fs.ManaSpent / fs.Time;
-			float conservativeHPS2 = fs.Heeps;
-
-			this.RotationBox.Text += "MPS: " + (spamMPS2 - spamMPS) + ", HPM: +" +
-				(((spamHPS2 / spamMPS2) - (spamHPS / spamMPS)) / (spamHPS2 / spamMPS2)) * 100 + "%\r\n";
-
-			//No Haste
-			fs.HalfAssedDarkmoonSimulator = false;
-			d2.critRating = 22000 / 3;
-			d2.verRating = 22000 / 3;
-			d2.hasteRating = 0;
-			d2.masteryRating = 22000 / 3;
-			d2.Raycalculate();
-			this.RotationBox.Text += "C:" + d2.critRating + ",V:" + d2.verRating + ",H:" + d2.hasteRating + ",M:" + d2.masteryRating + ", ";
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(d2, 8, 3).ToString();
-			spamMPS = fs.ManaSpent / fs.Time;
-			spamHPS = fs.Heeps;
-			this.RotationBox.Text += "C:" + d2.critRating + ",V:" + d2.verRating + ",H:" + d2.hasteRating + ",M:" + d2.masteryRating + ", ";
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(d2, 4, 4).ToString();
-			conservativeMPS = fs.ManaSpent / fs.Time;
-			conservativeHPS = fs.Heeps;
-
-			this.RotationBox.Text += "With half-assed Darkmoon Card simulation enabled:\r\n";
-			d2.Raycalculate();
-			this.RotationBox.Text += "C:" + d2.critRating + ",V:" + d2.verRating + ",H:" + d2.hasteRating + ",M:" + d2.masteryRating + ", ";
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(d2, 8, 3).ToString();
-			spamMPS2 = fs.ManaSpent / fs.Time;
-			spamHPS2 = fs.Heeps;
-
-			this.RotationBox.Text += "C:" + d2.critRating + ",V:" + d2.verRating + ",H:" + d2.hasteRating + ",M:" + d2.masteryRating + ", ";
-			this.RotationBox.Text += fs.LongRun_PenanceAndShield(d2, 4, 4).ToString();
-			conservativeMPS2 = fs.ManaSpent / fs.Time;
-			conservativeHPS2 = fs.Heeps;
-
-			this.RotationBox.Text += "MPS: " + (spamMPS2 - spamMPS) + ", HPM: +" +
-				(((spamHPS2 / spamMPS2) - (spamHPS / spamMPS)) / (spamHPS2 / spamMPS2)) * 100 + "%\r\n";
-
-			//Conclusions:  Haste actually does scale your throughput up a lot faster than
-			// other stats, maybe almost twice as fast as crit/versatility/mastery.
-			//Haste is TERRIBLE for your mana efficiency vs other stats though
-			//
-			// The other stats are almost identical.  Surprisingly even Versatility is almost as good
-			// as Crit/Mastery.  The stat weight looks like Crit >= Versatility >= Mastery >>>>>>>>>>>> Haste
-			//
-			// UNLESS you won't run OOM.  With the ability to stack atonements and throw out Light's Wrath
-			// or even just Penance/Shadowfiend/Smite, though, and spike HPS up to 1M+ easily on demand with
-			// enough mana, I don't think there's any fight short enough not to either go OOM or spend the 
-			// entirety of it with the raid fully stacked with Atonement
+			//d2.masteryRating = 22000 / 2;
+			//d2.verRating = 11000 / 3;
+			//d2.hasteRating = 11000 / 3;
+			//d2.critRating = 11000 / 3;
+			//d2.Raycalculate();
+			//this.RotationBox.Text += "C:" + d2.critRating + ",V:" + d2.verRating + ",H:" + d2.hasteRating + ",M:" + d2.masteryRating + "\r\n";
+			//this.RotationBox.Text += fs.LongRun_PenanceAndShield(d2, 6, 0).ToString();
+			//this.RotationBox.Text += fs.LongRun_PenanceAndShield(d2, 6, 6).ToString();
+			//this.RotationBox.Text += fs.LongRun_PenanceAndShield(d2, 8, 3).ToString();
+			
 		}
 
 		private async void ArmoryButton_Click(object sender, RoutedEventArgs e)
@@ -730,123 +527,123 @@ namespace Disculator
 
 		private void Budget_Recalculate()
 		{
-			try
-			{
-				float fightDuration = float.Parse(this.fightDurationBox.Text);
-				float wisdoms = float.Parse(this.wisdomsBox.Text);
-				float manaPerMinute = float.Parse(this.extraManaPerMinuteBox.Text);
-				float oneTimeExtraMana = float.Parse(this.extraManaBox.Text);
-				int raidSize = int.Parse(this.raidSizeBox.Text);
-				int radianceCasts = (int)Math.Ceiling(raidSize / 3f);
-				float comboDuration = (radianceCasts - 2) * this.ds.Radiance.CastTime() + 15f;
+			//try
+			//{
+			//	float fightDuration = float.Parse(this.fightDurationBox.Text);
+			//	float wisdoms = float.Parse(this.wisdomsBox.Text);
+			//	float manaPerMinute = float.Parse(this.extraManaPerMinuteBox.Text);
+			//	float oneTimeExtraMana = float.Parse(this.extraManaBox.Text);
+			//	int raidSize = int.Parse(this.raidSizeBox.Text);
+			//	int radianceCasts = (int)Math.Ceiling(raidSize / 3f);
+			//	float comboDuration = (radianceCasts - 2) * this.ds.Radiance.CastTime() + 15f;
 
-				//TODO:
-				float combohealing = 2 * 1000 * 1000 * raidSize;
-				float comboMana = radianceCasts * 71500f + (15f * ds.Smite.ManaPerSecond());
+			//	//TODO:
+			//	float combohealing = 2 * 1000 * 1000 * raidSize;
+			//	float comboMana = radianceCasts * 71500f + (15f * ds.Smite.ManaPerSecond());
 
-				StringBuilder sb = new StringBuilder();
-				float tmp = 0f;
+			//	StringBuilder sb = new StringBuilder();
+			//	float tmp = 0f;
 
-				float totalMana = 1100000 + (fightDuration * ( 8800f + wisdoms * 1100f))
-					+ (fightDuration / 60f * manaPerMinute) + oneTimeExtraMana;
+			//	float totalMana = 1100000 + (fightDuration * ( 8800f + wisdoms * 1100f))
+			//		+ (fightDuration / 60f * manaPerMinute) + oneTimeExtraMana;
 
-				sb.AppendLine("Total Mana available:" + totalMana);
-				sb.AppendLine("Average MPS:" + totalMana / fightDuration);
-				sb.AppendLine("Mana for one full-raid PW:R stacking (no innervate): " + (radianceCasts * 71500f));
-				sb.AppendLine("PW:R Combo Duration:" + comboDuration);
+			//	sb.AppendLine("Total Mana available:" + totalMana);
+			//	sb.AppendLine("Average MPS:" + totalMana / fightDuration);
+			//	sb.AppendLine("Mana for one full-raid PW:R stacking (no innervate): " + (radianceCasts * 71500f));
+			//	sb.AppendLine("PW:R Combo Duration:" + comboDuration);
 
-				//Ah, this estimate isn't useful and doesn't really matter.. with the spreadsheet
-				// I was able to calculate that a dude in ilvl 835 gear and no haste can readily
-				// top off a mythic raid.
-				//TODO: Calculate the effects of Contrition vs Power Infusion
-				//sb.AppendLine("PW:R Combo Estimated Healing: (Currently just going with 2M per raider)" + combohealing);
-				for (float i=0; i <= 3; i++)
-				{
-					float bestHPS = 0f;
+			//	//Ah, this estimate isn't useful and doesn't really matter.. with the spreadsheet
+			//	// I was able to calculate that a dude in ilvl 835 gear and no haste can readily
+			//	// top off a mythic raid.
+			//	//TODO: Calculate the effects of Contrition vs Power Infusion
+			//	//sb.AppendLine("PW:R Combo Estimated Healing: (Currently just going with 2M per raider)" + combohealing);
+			//	for (float i=0; i <= 3; i++)
+			//	{
+			//		float bestHPS = 0f;
 
-					sb.AppendLine("");
-					sb.AppendLine("-- HPS estimates with " + (i>=1?i.ToString():"no") + " combo" + (i >= 2 ? "s" : "") + " --");
-					//TODO: Estimate combo HPS
+			//		sb.AppendLine("");
+			//		sb.AppendLine("-- HPS estimates with " + (i>=1?i.ToString():"no") + " combo" + (i >= 2 ? "s" : "") + " --");
+			//		//TODO: Estimate combo HPS
 
-					float manaLeft = totalMana - i * comboMana;
-					float timeLeft = fightDuration - i * comboDuration;
+			//		float manaLeft = totalMana - i * comboMana;
+			//		float timeLeft = fightDuration - i * comboDuration;
 
-					sb.AppendLine("Time left after combos: " + F(timeLeft));
-					sb.AppendLine("Average MPS left after combos: " + (manaLeft / timeLeft));
+			//		sb.AppendLine("Time left after combos: " + F(timeLeft));
+			//		sb.AppendLine("Average MPS left after combos: " + (manaLeft / timeLeft));
 
-					tmp = manaLeft / MPS_835;
-					if (tmp > timeLeft)
-					{
-						tmp = timeLeft;
-						sb.AppendLine(" ** Possible to spam 8/3/5 for the rest of the fight, recommend a higher throughput rotation ** ");
-						bestHPS = HPS_835;
-					}
-					else
-					{
-						sb.AppendLine("Possible 8/3/5 time after combos with zero mana usage otherwise: " + F(tmp));
+			//		tmp = manaLeft / MPS_835;
+			//		if (tmp > timeLeft)
+			//		{
+			//			tmp = timeLeft;
+			//			sb.AppendLine(" ** Possible to spam 8/3/5 for the rest of the fight, recommend a higher throughput rotation ** ");
+			//			bestHPS = HPS_835;
+			//		}
+			//		else
+			//		{
+			//			sb.AppendLine("Possible 8/3/5 time after combos with zero mana usage otherwise: " + F(tmp));
 					
-						sb.AppendLine("Average 8/3/5 + Downtime HPS: " + F((tmp * HPS_835) / timeLeft));
-						bestHPS = (tmp * HPS_835) / timeLeft;
+			//			sb.AppendLine("Average 8/3/5 + Downtime HPS: " + F((tmp * HPS_835) / timeLeft));
+			//			bestHPS = (tmp * HPS_835) / timeLeft;
 
-						//Find the most 835 time you can get with "Filler" instead of downtime
-						// MPS_Filler * Tfiller + MPS_835*T835 = manaLeft
-						// Tfiller + T835 = timeLeft
-						// => Tfiller = timeLeft - T835
-						// => MPS_F * ( timeLeft - T835) + MPS_835*T835 = manaLeft
-						// => T835 * (MPS_835 - MPS_F) + MPS_F * timeLeft = manaLeft
-						// => T835 = ( manaLeft - (MPS_Filler * timeLeft) ) / (MPS_835 - MPS_Filler)
+			//			//Find the most 835 time you can get with "Filler" instead of downtime
+			//			// MPS_Filler * Tfiller + MPS_835*T835 = manaLeft
+			//			// Tfiller + T835 = timeLeft
+			//			// => Tfiller = timeLeft - T835
+			//			// => MPS_F * ( timeLeft - T835) + MPS_835*T835 = manaLeft
+			//			// => T835 * (MPS_835 - MPS_F) + MPS_F * timeLeft = manaLeft
+			//			// => T835 = ( manaLeft - (MPS_Filler * timeLeft) ) / (MPS_835 - MPS_Filler)
 
-						float time_835 = (manaLeft - (MPS_Filler * timeLeft)) / (MPS_835 - MPS_Filler);
-						float time_Filler = timeLeft - time_835;
+			//			float time_835 = (manaLeft - (MPS_Filler * timeLeft)) / (MPS_835 - MPS_Filler);
+			//			float time_Filler = timeLeft - time_835;
 
-						sb.Append("Possible 8/3/5 time after combos with no downtime:");
-						if (time_835 <= 0)
-						{
-							sb.AppendLine("* None, will go OOM w/ filler alone");
+			//			sb.Append("Possible 8/3/5 time after combos with no downtime:");
+			//			if (time_835 <= 0)
+			//			{
+			//				sb.AppendLine("* None, will go OOM w/ filler alone");
 
-							tmp = manaLeft / MPS_Filler;
-							if (tmp > timeLeft)
-								tmp = timeLeft;
+			//				tmp = manaLeft / MPS_Filler;
+			//				if (tmp > timeLeft)
+			//					tmp = timeLeft;
 
-							sb.AppendLine("* Possible filler time : " + F(tmp));
-							//sb.AppendLine("* Total Filler Healing: " + F(tmp * HPS_Filler));
+			//				sb.AppendLine("* Possible filler time : " + F(tmp));
+			//				//sb.AppendLine("* Total Filler Healing: " + F(tmp * HPS_Filler));
 
-							if ((tmp * HPS_Filler / timeLeft) > bestHPS)
-							{
-								bestHPS = (tmp * HPS_Filler / timeLeft);
-							}
+			//				if ((tmp * HPS_Filler / timeLeft) > bestHPS)
+			//				{
+			//					bestHPS = (tmp * HPS_Filler / timeLeft);
+			//				}
 
-						}
-						else
-						{
-							sb.AppendLine(" " + time_835);
+			//			}
+			//			else
+			//			{
+			//				sb.AppendLine(" " + time_835);
 							
-							float tmp2 = (time_835 * HPS_835 + time_Filler * HPS_Filler) / timeLeft;
-							sb.AppendLine("Average 8/3/5 + Filler HPS: " + F(tmp2));
+			//				float tmp2 = (time_835 * HPS_835 + time_Filler * HPS_Filler) / timeLeft;
+			//				sb.AppendLine("Average 8/3/5 + Filler HPS: " + F(tmp2));
 
-							if (tmp2 > bestHPS)
-							{
-								bestHPS = tmp2;
-							}
-						}
-					}
+			//				if (tmp2 > bestHPS)
+			//				{
+			//					bestHPS = tmp2;
+			//				}
+			//			}
+			//		}
 
-					Leftover_HPS[(int)i] = bestHPS;
-				}
+			//		Leftover_HPS[(int)i] = bestHPS;
+			//	}
 
-				this.budgetTextBox.Text = sb.ToString();
+			//	this.budgetTextBox.Text = sb.ToString();
 
-				this.outbox.Text = "Raid size: " + raidSize + ", Duration: " + fightDuration + "\r\n";
-				this.outbox.Text += "Combos: Leftover HPS\r\n";
-				for (int i=0; i<4; i++)
-				{
-					this.outbox.Text += i + ": " + F(Leftover_HPS[i]) + "\r\n";
-				}
-			}
-			catch (Exception ex)
-			{
-				this.budgetTextBox.Text = "Error parsing inputs: " + ex.ToString();
-			}
+			//	this.outbox.Text = "Raid size: " + raidSize + ", Duration: " + fightDuration + "\r\n";
+			//	this.outbox.Text += "Combos: Leftover HPS\r\n";
+			//	for (int i=0; i<4; i++)
+			//	{
+			//		this.outbox.Text += i + ": " + F(Leftover_HPS[i]) + "\r\n";
+			//	}
+			//}
+			//catch (Exception ex)
+			//{
+			//	this.budgetTextBox.Text = "Error parsing inputs: " + ex.ToString();
+			//}
 		}
 	}
 }

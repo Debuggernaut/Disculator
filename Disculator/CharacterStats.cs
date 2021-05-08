@@ -14,66 +14,71 @@ namespace Disculator
 		public int masteryRating;
 		public int verRating;
 
-		public float critPercent;
-		public float hastePercent;
-		public float masteryPercent;
-		public float verPercent;
+		public float bonusCritPercent;
+		public float bonusHastePercent;
+		public float bonusMasteryPercent;
+		public float bonusVerPercent;
+
+		private float critPercent;
+		private float hastePercent;
+		private float masteryPercent;
+		private float verPercent;
 
 		public float scaledSpellPower;
 
-		public int artifactTraits;
-		public float allDamageBonus;
+		//public float Doomsayer = 3f; //extra seconds of Rapture per point
+		//public float Confession = 1.12f; //4% to Penance per point
+		//public float BorrowedTime = 1.2f; //5% Smite/Penance haste after applying Atonement
+		//public float ShieldOfFaith = 1.2f; //5% bonus to PW:Shield per point
 
-		public float Doomsayer = 3f; //extra seconds of Rapture per point
-		public float Confession = 1.12f; //4% to Penance per point
-		public float BorrowedTime = 1.2f; //5% Smite/Penance haste after applying Atonement
-		public float ShieldOfFaith = 1.2f; //5% bonus to PW:Shield per point
+		//public float EdgeOfDarkAndLight = 1.15f; //5% to SWP/PtW per point
+		//public float BurstOfLight = 1.15f; //5% power word: radiance healing per point
+		//public float DarkestShadows = 1.1f; //10/3% Shadow Mend per point
 
-		public float EdgeOfDarkAndLight = 1.15f; //5% to SWP/PtW per point
-		public float BurstOfLight = 1.15f; //5% power word: radiance healing per point
-		public float DarkestShadows = 1.1f; //10/3% Shadow Mend per point
-
-		public float AegisOfWrathAndSkjoldr = 1.15f*1.3f; //Legendary wrists, +15% to PW:Shield
-
-		public float AvgAtonements;
+		//public float AegisOfWrathAndSkjoldr = 1.15f*1.3f; //Legendary wrists, +15% to PW:Shield
 
 		public Spell[] HealSpells;
 		public Spell[] DamageSpells;
 
-		public Spell Plea;
-		public Spell Smend;
-		public Spell SmiteAbsorb;
-		public Spell Shield;
-		public Spell Radiance;
+		public Spell HolyShock;
+		public Spell WordOfGlory;
+		public Spell LightOfDawn;
+		public Spell HolyLight;
+		public Spell FlashOfLight;
+		public Spell AshenHallow;
+		public Spell ShockBarrier_Perfect;
+		public Spell JudgmentOfLight;
 
-		public Spell Smite;
-		public Spell CastigatedPenance;
-		public Spell RegularPenance;
-		public Spell Swp;
-		public Spell Ptw;
-		public Spell SwpDot;
-		public Spell PtwDot;
+		public Spell HolyShockDmg;
+		public Spell SotR;
+		public Spell CrusaderStrike;
+		public Spell Judgment;
+		public Spell Consecration;
+		public Spell AshenHallowDmg;
 
-		public float PtwDPS = 0f;
-		public float SwpDPS = 0f;
+		public Spell HammerOfWrath;
 
-		public float PenanceCD = 9f;
-		public float ShieldCD = 7.5f;
-		public float SolaceCD = 12f;
+		public Spell AvengingWrath;
 
-		//Modeling Power of the Dark Side as a 1m cooldown effect
-		// rather than trying to actually model procs per minute
-		public float PowerOfTheDarkSideCD = 60f;
+		public Spell SuperHolyShock;
 
-		public Spell LightsWrath;
+		public float HealingEffectiveness = 1.0f;
+		public float MasteryEffectiveness = 0.8f;
 
-		public Spell ShadowfiendSwing;
-		public Spell MindbenderSwing;
+		public float TempScaler = 1.0f;
 
-		public Spell Shadowfiend;
-		public Spell Mindbender;
-
-		public int ShadowfiendSwings;
+		public float CritPercent {
+			get => critPercent + bonusCritPercent;
+			set => critPercent = value; }
+		public float HastePercent {
+			get => hastePercent + bonusHastePercent;
+			set => hastePercent = value; }
+		public float VerPercent {
+			get => verPercent + bonusVerPercent;
+			set => verPercent = value; }
+		public float MasteryPercent {
+			get => masteryPercent + bonusMasteryPercent;
+			set => masteryPercent = value; }
 
 		public CharacterStats clone()
 		{
@@ -84,93 +89,96 @@ namespace Disculator
 		{
 			
 		}
-		
+
 		public void Raycalculate()
 		{
+			AvengingWrath = new InstantSpell("Avenging Wrath", 0f, 0f, 0f, this);
+			AvengingWrath.BaseCooldown = 120f;
+			AvengingWrath.BaseCastTime = 0f;
 
-			allDamageBonus = 1.0f;
-			for (int i = 0; i < artifactTraits; i++)
-				allDamageBonus = allDamageBonus * 1.0065f;
+			CritPercent = (critRating / 35f + 6f) / 100f;
+			HastePercent = hasteRating / 33f / 100f;
+			MasteryPercent = (masteryRating / 23f + 12f) / 100f;
+			VerPercent = verRating / 40f / 100f;
+			bonusCritPercent = 0f;
+			bonusHastePercent = 0f;
+			bonusMasteryPercent = 0f;
+			bonusVerPercent = 0f;
+			TempScaler = 1.0f;
 
-			critPercent = (critRating / 400f + 5f) / 100f;
-			hastePercent = hasteRating / 375f / 100f;
-			masteryPercent = (masteryRating * 3f / 800f + 12f) / 100f;
-			verPercent = verRating / 475f / 100f;
+			scaledSpellPower = intellect * (1 + VerPercent);
 
-			scaledSpellPower = intellect * (1 + verPercent) * 1.05f * 1.1f;
+			HolyShock				 = new InstantSpell("Holy Shock", 1.55f, 1600, -1.0f, this);
+			HolyShock.BonusCritChance = 0.3f;
+			HolyShock.BaseCooldown = 7.5f;
+			WordOfGlory				= new InstantSpell("Word of Glory", 3.15f, 0f, 3.0f, this);
+			LightOfDawn				= new InstantSpell("Light of Dawn (5 targets)", 1.05f*5, 0f, 3.0f, this);
+			LightOfDawn.TargetCount = 5;
+			HolyLight = new Spell("Holy Light", 2.6f, 2.5f, 1500, 1.0f, this);
+			FlashOfLight			 = new Spell("Flash of Light", 1.68f, 1.5f, 2200f, 1.0f, this);
+			AshenHallow				 = new Spell("Ashen Hallow (5 targets)", 0.42f*15f*5f, 1.5f, 2000f, 1.0f+HastePercent, this); //needs to scale with haste
+			AshenHallow.TargetCount = 5;
+			AshenHallow.BaseCooldown = 4f * 60f;
+			ShockBarrier_Perfect	= new InstantSpell("Shock Barrier", HolyShock.Scaler * 0.6f, 0, 0, this);
+			ShockBarrier_Perfect.BaseCastTime = 0;
+			JudgmentOfLight			 = new InstantSpell("Judgment of Light", 0.07f*25f, 300, 0, this);
+			JudgmentOfLight.BaseCooldown = 12f;
+			JudgmentOfLight.TargetCount = 5;
 
-			//Rounds up to the next number of swings
-			ShadowfiendSwings = (int)Math.Ceiling(8f * (1 + hastePercent));
+			SuperHolyShock = new InstantSpell("HS w/ 4G, 3SB, + 1/3 a Light of Dawn", HolyShock.Scaler * (1.6f) + 0.38f * 4f + LightOfDawn.Scaler / 3f, 1600f, -1f, this);
+			SuperHolyShock.BaseCastTime *= 1.3f;
 
-			//Scale cooldowns appropriately:
-			ShieldCD = 7.5f / (1 + hastePercent);
-			PowerOfTheDarkSideCD = 60f / (1 + hastePercent);
-			SolaceCD = 12f / (1 + hastePercent);
+			CrusaderStrike = new CrusaderStrike(this);
 
-			Plea = new Spell("Plea (0 Atonements)", 2.25f, 1.5f, 3960, 1.0f, this);
-			Smend = new Spell("Shadow Mend (Heavy Incoming Damage)", 7.5f, 1.5f, 30800, DarkestShadows, this);
-			SmiteAbsorb = new Spell("Smite Absorb", 2.25f, 1.5f, 11000, 1.0f, this);
-			Shield = new Spell("Power Word: Shield", 5.5f, 1.5f, 22000, ShieldOfFaith * AegisOfWrathAndSkjoldr, this);
-			Radiance = new Spell("Power Word: Radiance", 2.5f * 3, 2.5f, 71500, BorrowedTime, this);
 			HealSpells = new Spell[]
 			{
-				Plea,
-				new Spell("Plea (6 Atonements)", 2.25f, 1.5f, 3960*6, 1.0f, this),
-				Smend,
-
-				Shield,
-				new Spell("Penitent Penance", 9f, 2.0f, 22000, Confession, this),
-				new Spell("Clarity of Will", 9f, 2f, 30800, 1.0f, this),
-
-				SmiteAbsorb,
-
-				Radiance,
-				new Spell("Shadow Covenant (Fully Efficient Somehow)", 4.5f*5, 2.5f, 71500, BorrowedTime, this),
-				new Spell("Shadow Covenant", 4.5f*5f/2f, 1.5f, 71500, BorrowedTime, this),
-				//new Spell("Power Word: Radiance (each)", 2.5f, 2.5f, 71500, BorrowedTime, this),
-				new Spell("Divine Star (6+ targets)", 0.9f*6, 1.5f, 27500, 1, this),
-				new Spell("Halo (6+ targets)", 2.87f*6, 1.5f, 39600, 1, this),
-
-				new Spell("Shadow Mend (Grace)", 7.55f, 1.5f, 30800, DarkestShadows * 1.3f, this),
-				new Spell("Power Word: Shield (Grace)", 5.5f, 1.5f, 22000, ShieldOfFaith*AegisOfWrathAndSkjoldr*1.3f, this),
-				new Spell("Penitent Penance (Grace)", 9f, 2.0f, 22000, Confession*1.3f, this),
-
+				HolyShock              ,
+				WordOfGlory            ,
+				LightOfDawn            ,
+				HolyLight              ,
+				FlashOfLight           ,
+				AshenHallow            ,
+				ShockBarrier_Perfect   ,
+				JudgmentOfLight,
+				new InstantSpell("Light of the Martyr", 2.1f, 700, 0f, this),
+				new InstantSpell("Holy Prism (1 target)", 1.4f, 1300, 0f, this),
+				new InstantSpell("Holy Prism (5 targets)", 0.7f*5f, 1300, 0f, this),
+				new InstantSpell("Glimmer of Light (one hit)", 0.38f, 0, 0f, this),
+				new InstantSpell("Holy Shock w/ 4 glimmer and 3 shock barrier ticks", HolyShock.Scaler*(1.6f)+0.38f*4f, 1600f, -1f, this),
+				SuperHolyShock,
+				new Spell("Holy Light w/ Infusion", HolyLight.Scaler, HolyLight.BaseCastTime, HolyLight.Mana, 1.3f, this ),
+				new Spell("Flash of Light w/ Infusion", FlashOfLight.Scaler, FlashOfLight.BaseCastTime, FlashOfLight.Mana*2f/3f, 1.0f, this ),
+				new Spell("Crusader Strike +1/3rd Light of Dawn", 
+					LightOfDawn.Scaler/3.0f, 
+					1.5f*4f/3f,
+					CrusaderStrike.Mana,
+					-1,
+					this),
+				new Spell("Crusader Strike +1/3rd WoG", WordOfGlory.Scaler/3.0f, 1.5f*4f/3f, CrusaderStrike.Mana, -1, this),
+				new Spell("Light's Hammer (6 targets)", 0.25f*7f*6f, 1.5f, 1800f, 1.0f+HastePercent, this),
+				new Spell("Bestow Faith", 2.1f, 1.5f, 600, 1.0f, this),
 			};
 
-			float powerWordSolaceKludge = 1.15f; //For some reason, Power Word: Solace does 15% more damage than it seems like it should
-			float castigation = 4f / 3f;
-			Smite = new Spell("Smite", 2.25f * 1.15f, 1.5f, 11000, allDamageBonus, this);
-			CastigatedPenance = new Spell("Penance (Castigated)", 1.9f * 3f, 2.0f, 30800, allDamageBonus * Confession * castigation, this);
-			RegularPenance = new Spell("Penance (Standard)", 1.9f * 3f, 2.0f, 30800, allDamageBonus * Confession, this);
-			Ptw = new Spell("Purge the Wicked (total)", 4.8f * (1 + hastePercent) + 1f, 1.5f, 22000, allDamageBonus * EdgeOfDarkAndLight, this);
-			Swp = new Spell("Shadow Word: Pain (total)", 3.42f * (1 + hastePercent) + 0.38f, 1.5f, 24200, allDamageBonus * EdgeOfDarkAndLight, this);
-			PtwDot = new Spell("Purge the Wicked (DoT)", 4.8f * (1 + hastePercent), 20f, 22000, allDamageBonus * EdgeOfDarkAndLight, this);
-			SwpDot = new Spell("Shadow Word: Pain (DoT)", 3.42f * (1 + hastePercent), 18f, 24200, allDamageBonus * EdgeOfDarkAndLight, this);
-
-			PtwDPS = PtwDot.AvgEffect() / 20f;
-			SwpDPS = SwpDot.AvgEffect() / 18f;
-			LightsWrath = new Spell("Light's Wrath", 7f, 2.5f, 0, allDamageBonus, this);
-
-			MindbenderSwing = new Spell("Mindbender (One Swing)", 1.5f, 12f / 8f / (1 + hastePercent), -5500, allDamageBonus, this);
-			ShadowfiendSwing = new Spell("Shadowfiend (One Swing)", 2.0f, 12f / 8f / (1 + hastePercent), -5500, allDamageBonus, this);
-
-			Mindbender = new Spell("Mindbender (Full Duration)", ShadowfiendSwings * 1.5f, 1.5f, -5500 * ShadowfiendSwings, allDamageBonus, this);
-
-			//For combo calculations
-			Shadowfiend = new Spell("Shadowfiend (DPS while active)", ShadowfiendSwings * 2.0f, 12f, 0, allDamageBonus, this);
+			HammerOfWrath = new InstantSpell("Hammer of Wrath (no damage simulated)", 1f, 0, -1.0f, this);
+			HammerOfWrath.BaseCooldown = 7.5f;
+			HolyShockDmg = new InstantSpell("Holy Shock (damage)", 0.77f, 1600, -1.0f, this);
+			HolyShockDmg.BonusCritChance = 0.3f;
+			SotR = new InstantSpell("Shield of the Righteous", 0.44f, 0, 3.0f, this);
+			Judgment = new InstantSpell("Judgment", 1.26f, 300f, 0f, this);
+			Consecration = new InstantSpell("Consecration (1 target)", 0.97f * (1 + HastePercent), 300f, 0f, this);
+			Consecration = new InstantSpell("Consecration (5 targets)", 0.97f * 5f * (1 + HastePercent), 300f, 0f, this);
+			Consecration.BaseCooldown = 12f;
+			AshenHallowDmg = new Spell("Ashen Hallow Damage (5 targets)", 0.54f * 15f * 5f, 1.5f, 2000f, 1.0f + HastePercent, this);
 
 			DamageSpells = new Spell[]
 			{
-				Smite, CastigatedPenance, RegularPenance, Ptw, Swp, LightsWrath,
-				PtwDot, SwpDot,
-				MindbenderSwing, ShadowfiendSwing,
-				Mindbender,
-				new Spell("Shadowfiend (Full Duration)", ShadowfiendSwings * 2.0f, 1.5f, 0, allDamageBonus, this),
-				new Spell("Power Word: Solace", powerWordSolaceKludge*3f, 1.5f, -11000, allDamageBonus, this),
-				new Spell("Divine Star", 1.45f, 1.5f, 27500, allDamageBonus, this),
-				new Spell("Halo", 4.31f, 1.5f, 1, allDamageBonus, this),
-				//new Spell("Power Word: Solace", 3f, 1.5f, -11000, allDamageBonus, this),
-				//new Spell("Power Word: Solace", 3f, 1.5f, -11000, allDamageBonus, this),
+				HolyShockDmg,
+				SotR,
+				CrusaderStrike,
+				Judgment,
+				new InstantSpell("Consecration (1 target)", 0.97f * (1 + HastePercent), 300f, 0f, this),
+				Consecration,
+				AshenHallowDmg
 			};
 		}
 	}

@@ -77,31 +77,31 @@
 					<StackPanel Padding="10">
 						<StackPanel Orientation="Horizontal">
 							<TextBlock TextWrapping="Wrap" Text="Int" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
-							<TextBox x:Name="intbox" Text="42260" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
+							<TextBox x:Name="intbox" Text="1390" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
 						</StackPanel>
 						<StackPanel Orientation="Horizontal">
 							<TextBlock TextWrapping="Wrap" Text="Crit" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
-							<TextBox x:Name="critbox" Text="7802" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
+							<TextBox x:Name="critbox" Text="457" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
 							<TextBlock x:Name="critpercentbox" TextWrapping="Wrap" Text="X%" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
 						</StackPanel>
 						<StackPanel Orientation="Horizontal">
 							<TextBlock TextWrapping="Wrap" Text="Haste" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
-							<TextBox x:Name="hastebox" Text="4225" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
+							<TextBox x:Name="hastebox" Text="769" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
 							<TextBlock x:Name="hastepercentbox" TextWrapping="Wrap" Text="X%" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
 						</StackPanel>
 						<StackPanel Orientation="Horizontal">
 							<TextBlock TextWrapping="Wrap" Text="Mastery" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
-							<TextBox x:Name="masterybox" Text="6213" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
+							<TextBox x:Name="masterybox" Text="35" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
 							<TextBlock x:Name="masterypercentbox" TextWrapping="Wrap" Text="X%" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
 						</StackPanel>
 						<StackPanel Orientation="Horizontal">
 							<TextBlock TextWrapping="Wrap" Text="Versatility" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
-							<TextBox x:Name="verbox" Text="2976" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
+							<TextBox x:Name="verbox" Text="240" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
 							<TextBlock x:Name="verpercentbox" TextWrapping="Wrap" Text="X%" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
 						</StackPanel>
 						<StackPanel Orientation="Horizontal" >
 							<TextBlock TextWrapping="Wrap" Text="Artifact Traits" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
-							<TextBox x:Name="pointsbox" Text="42" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
+							<TextBox x:Name="pointsbox" Text="0" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
 							<TextBlock x:Name="artifactDamageBonusPercent" TextWrapping="Wrap" Text="X%" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
 						</StackPanel>
 					</StackPanel>
@@ -176,14 +176,14 @@
 			</StackPanel>
 		</PivotItem>
 		<PivotItem Header="Heals">
-			<ScrollViewer VerticalAlignment="Stretch">
-				<StackPanel>
+			<ScrollViewer>
+				<StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
 					<Grid Name="HealGrid" Padding="10"></Grid>
 				</StackPanel>
 			</ScrollViewer>
 		</PivotItem>
 		<PivotItem Header="Deeps">
-			<ScrollViewer VerticalAlignment="Stretch">
+			<ScrollViewer>
 				<StackPanel HorizontalAlignment="Left" VerticalAlignment="Top">
 					<StackPanel Orientation="Horizontal">
 						<TextBlock TextWrapping="Wrap" Text="Average Atonements" Margin="10,10,0,0" VerticalAlignment="Center"/>
@@ -198,6 +198,8 @@
 		<PivotItem Header="Rotations">
 			<ScrollViewer VerticalAlignment="Stretch">
 				<StackPanel>
+					<Button Margin="10" x:Name="recalc_rotScreen" Content="Recalculate" HorizontalAlignment="Left" VerticalAlignment="Top" Click="recalc_Click"/>
+
 					<!-- <Button Click="Button_Click">Run half-assed simulations</Button> -->
 					<TextBlock TextWrapping="Wrap" FontWeight="Bold">WARNING: This page is not very useful on its own.  Please download the source and modify it to get more useful data</TextBlock>
 					<!-- <Button Click="StatComparisonButtonClick">Stat Comparison</Button> -->
