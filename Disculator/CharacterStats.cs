@@ -37,6 +37,8 @@ namespace Disculator
 
 		//public float AegisOfWrathAndSkjoldr = 1.15f*1.3f; //Legendary wrists, +15% to PW:Shield
 
+		public Disculator.FightSim.Covenant SelectedCovenant;
+
 		public Spell[] HealSpells;
 		public Spell[] DamageSpells;
 
@@ -44,6 +46,8 @@ namespace Disculator
 		public Spell WordOfGlory;
 		public Spell LightOfDawn;
 		public Spell HolyLight;
+		public Spell HolyLightInfused;
+		public Spell HolyLightInflorescent;
 		public Spell FlashOfLight;
 		public Spell AshenHallow;
 		public Spell ShockBarrier_Perfect;
@@ -115,7 +119,11 @@ namespace Disculator
 			LightOfDawn				= new InstantSpell("Light of Dawn (5 targets)", 1.05f*5, 0f, 3.0f, this);
 			LightOfDawn.TargetCount = 5;
 			HolyLight = new Spell("Holy Light", 2.6f, 2.5f, 1500, 1.0f, this);
-			FlashOfLight			 = new Spell("Flash of Light", 1.68f, 1.5f, 2200f, 1.0f, this);
+			HolyLightInfused = new Spell("Holy Light w/ Infusion", HolyLight.Scaler, HolyLight.BaseCastTime, HolyLight.Mana, 1.3f, this);
+			HolyLightInflorescent = new Spell("Holy Light w/ Infusion w/ Inflorescence", HolyLight.Scaler, HolyLight.BaseCastTime, HolyLight.Mana, 1.6f, this);
+			
+
+			FlashOfLight = new Spell("Flash of Light", 1.68f, 1.5f, 2200f, 1.0f, this);
 			AshenHallow				 = new Spell("Ashen Hallow (5 targets)", 0.42f*15f*5f, 1.5f, 2000f, 1.0f+HastePercent, this); //needs to scale with haste
 			AshenHallow.TargetCount = 5;
 			AshenHallow.BaseCooldown = 4f * 60f;
@@ -135,7 +143,6 @@ namespace Disculator
 				HolyShock              ,
 				WordOfGlory            ,
 				LightOfDawn            ,
-				HolyLight              ,
 				FlashOfLight           ,
 				AshenHallow            ,
 				ShockBarrier_Perfect   ,
@@ -146,8 +153,14 @@ namespace Disculator
 				new InstantSpell("Glimmer of Light (one hit)", 0.38f, 0, 0f, this),
 				new InstantSpell("Holy Shock w/ 4 glimmer and 3 shock barrier ticks", HolyShock.Scaler*(1.6f)+0.38f*4f, 1600f, -1f, this),
 				SuperHolyShock,
-				new Spell("Holy Light w/ Infusion", HolyLight.Scaler, HolyLight.BaseCastTime, HolyLight.Mana, 1.3f, this ),
 				new Spell("Flash of Light w/ Infusion", FlashOfLight.Scaler, FlashOfLight.BaseCastTime, FlashOfLight.Mana*2f/3f, 1.0f, this ),
+				HolyLight              ,
+				HolyLightInfused,
+				HolyLightInflorescent,
+				new Spell("Holy Light w/ Infusion (9.1, +1/3 WoG)", 2.6f + WordOfGlory.Scaler/3f, 2.5f+1.5f/3f, 1500, 1.0f, this),
+				new Spell("Holy Light w/ Infusion w/ Inflo (9.1, +1/3 WoG)", 2.6f + WordOfGlory.Scaler*1f/3f*4f/3f, 2.5f+1.5f/3f*4f/3f, 1500, 1.0f, this),
+				new Spell("Holy Light w/ Infusion (9.1, LoD)", 2.6f + LightOfDawn.Scaler/3f, 2.5f+1.5f/3f, 1500, 1.0f, this),
+				new Spell("Holy Light w/ Infusion w/ Inflo (9.1, LoD)", 2.6f + LightOfDawn.Scaler*1f/3f*4f/3f, 2.5f+1.5f/3f*4f/3f, 1500, 1.0f, this),
 				new Spell("Crusader Strike +1/3rd Light of Dawn", 
 					LightOfDawn.Scaler/3.0f, 
 					1.5f*4f/3f,
@@ -161,14 +174,20 @@ namespace Disculator
 
 			HammerOfWrath = new InstantSpell("Hammer of Wrath (no damage simulated)", 1f, 0, -1.0f, this);
 			HammerOfWrath.BaseCooldown = 7.5f;
+			HammerOfWrath.Damage = true;
 			HolyShockDmg = new InstantSpell("Holy Shock (damage)", 0.77f, 1600, -1.0f, this);
 			HolyShockDmg.BonusCritChance = 0.3f;
+			HolyShockDmg.Damage = true;
 			SotR = new InstantSpell("Shield of the Righteous", 0.44f, 0, 3.0f, this);
+			SotR.Damage = true;
 			Judgment = new InstantSpell("Judgment", 1.26f, 300f, 0f, this);
+			Judgment.Damage = true;
 			Consecration = new InstantSpell("Consecration (1 target)", 0.97f * (1 + HastePercent), 300f, 0f, this);
 			Consecration = new InstantSpell("Consecration (5 targets)", 0.97f * 5f * (1 + HastePercent), 300f, 0f, this);
 			Consecration.BaseCooldown = 12f;
+			Consecration.Damage = true;
 			AshenHallowDmg = new Spell("Ashen Hallow Damage (5 targets)", 0.54f * 15f * 5f, 1.5f, 2000f, 1.0f + HastePercent, this);
+			AshenHallowDmg.Damage = true;
 
 			DamageSpells = new Spell[]
 			{

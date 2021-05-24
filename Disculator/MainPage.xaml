@@ -18,6 +18,7 @@
 			<Setter Property="FontFamily" Value="Segoe UI"/>
 			<Setter Property="FontSize" Value="16"/>
 			<Setter Property="Padding" Value="3" />
+			<Setter Property="IsTextSelectionEnabled" Value="True" />
 		</Style>
 
 		<!--A Style that extends the previous TextBlock Style-->
@@ -77,26 +78,26 @@
 					<StackPanel Padding="10">
 						<StackPanel Orientation="Horizontal">
 							<TextBlock TextWrapping="Wrap" Text="Int" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
-							<TextBox x:Name="intbox" Text="1390" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
+							<TextBox x:Name="intbox" Text="1395" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
 						</StackPanel>
 						<StackPanel Orientation="Horizontal">
 							<TextBlock TextWrapping="Wrap" Text="Crit" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
-							<TextBox x:Name="critbox" Text="457" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
+							<TextBox x:Name="critbox" Text="423" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
 							<TextBlock x:Name="critpercentbox" TextWrapping="Wrap" Text="X%" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
 						</StackPanel>
 						<StackPanel Orientation="Horizontal">
 							<TextBlock TextWrapping="Wrap" Text="Haste" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
-							<TextBox x:Name="hastebox" Text="769" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
+							<TextBox x:Name="hastebox" Text="433" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
 							<TextBlock x:Name="hastepercentbox" TextWrapping="Wrap" Text="X%" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
 						</StackPanel>
 						<StackPanel Orientation="Horizontal">
 							<TextBlock TextWrapping="Wrap" Text="Mastery" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
-							<TextBox x:Name="masterybox" Text="35" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
+							<TextBox x:Name="masterybox" Text="494" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
 							<TextBlock x:Name="masterypercentbox" TextWrapping="Wrap" Text="X%" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
 						</StackPanel>
 						<StackPanel Orientation="Horizontal">
 							<TextBlock TextWrapping="Wrap" Text="Versatility" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
-							<TextBox x:Name="verbox" Text="240" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
+							<TextBox x:Name="verbox" Text="354" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="103" InputScope="Number" TextAlignment="Right"/>
 							<TextBlock x:Name="verpercentbox" TextWrapping="Wrap" Text="X%" Margin="10,10,0,0" Width="75" VerticalAlignment="Center"/>
 						</StackPanel>
 						<StackPanel Orientation="Horizontal" >
@@ -106,6 +107,35 @@
 						</StackPanel>
 					</StackPanel>
 					<StackPanel Padding="10">
+
+						<StackPanel Orientation="Horizontal">
+							<TextBlock TextWrapping="Wrap" Text="Covenant" Margin="10,10,0,0" Width="120" VerticalAlignment="Center"/>
+							<ComboBox Width="120" x:Name="box_covenant"  HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" SelectedValue="Venthyr" >
+								<ComboBoxItem Content="Necrolord"/>
+								<ComboBoxItem Content="Venthyr" IsSelected="True"/>
+								<ComboBoxItem Content="Kyrian"/>
+								<ComboBoxItem Content="Night Fae"/>
+							</ComboBox>
+
+						</StackPanel>
+						<TextBlock VerticalAlignment="Center" TextAlignment="Center">(Rapture Duration)</TextBlock>
+
+						<StackPanel Orientation="Horizontal">
+							<TextBlock TextWrapping="Wrap" Text="Confession" Margin="10,10,0,0" Width="120" VerticalAlignment="Center"/>
+						</StackPanel>
+						<TextBlock VerticalAlignment="Center" TextAlignment="Center">(4% Penance damage/pt)</TextBlock>
+
+						<StackPanel Orientation="Horizontal">
+							<TextBlock TextWrapping="Wrap" Text="Borrowed Time" Margin="10,10,0,0" Width="120" VerticalAlignment="Center"/>
+						</StackPanel>
+						<TextBlock VerticalAlignment="Center" TextAlignment="Center">(Haste after atonement)</TextBlock>
+
+						<StackPanel Orientation="Horizontal">
+							<TextBlock TextWrapping="Wrap" Text="Shield of Faith" Margin="10,10,0,0" Width="120" VerticalAlignment="Center"/>
+						</StackPanel>
+						<TextBlock VerticalAlignment="Center" TextAlignment="Center">(5% to PW:S/pt)</TextBlock>
+					</StackPanel>
+					<StackPanel Padding="10" Visibility="Collapsed">
 
 						<StackPanel Orientation="Horizontal">
 							<TextBlock TextWrapping="Wrap" Text="Doomsayer" Margin="10,10,0,0" Width="120" VerticalAlignment="Center"/>
@@ -131,7 +161,7 @@
 						</StackPanel>
 						<TextBlock VerticalAlignment="Center" TextAlignment="Center">(5% to PW:S/pt)</TextBlock>
 					</StackPanel>
-					<StackPanel Padding="10">
+					<StackPanel Padding="10"  Visibility="Collapsed">
 
 						<StackPanel Orientation="Horizontal">
 							<TextBlock Text="Edge of Dark and Light" Margin="10,10,0,0" Width="150" VerticalAlignment="Center"/>

@@ -136,7 +136,7 @@ namespace Disculator
 
 		public float Cooldown()
 		{
-			if (this.BaseCooldown < 30f)
+			if (this.BaseCooldown < 28f)
 				return this.BaseCooldown / HasteScaler();
 			else
 				return this.BaseCooldown;
@@ -249,14 +249,42 @@ namespace Disculator
 
 			if (Damage)
 			{
+				float temp = 0;
 				float damageThisTime = this.AvgEffect();
 
 				sim.TotalDamage += damageThisTime;
+
+				if (!sim.DamagePerSpell.TryGetValue(this, out temp))
+				{
+					temp = 0;
+					sim.DamagePerSpell.Add(this, 0);
+				}
+
+				sim.DamagePerSpell[this] = temp + damageThisTime;
 			}
 			else
 			{
-				sim.TankHealing += this.AvgEffect() / TargetCount;
+				float temp = 0;
+				float tankHealing = this.AvgEffect() / TargetCount;
+				float partyHealing = this.AvgEffect();
+
+				sim.TankHealing += tankHealing;
 				sim.TotalHealing += this.AvgEffect();
+
+				if (!sim.TankHealingPerSpell.TryGetValue(this, out temp))
+				{
+					temp = 0;
+					sim.TankHealingPerSpell.Add(this, 0);
+				}
+
+				sim.TankHealingPerSpell[this] = temp + tankHealing;
+
+				if (!sim.PartyHealingPerSpell.TryGetValue(this, out temp))
+				{
+					temp = 0;
+					sim.PartyHealingPerSpell.Add(this, 0);
+				}
+				sim.PartyHealingPerSpell[this] = temp + partyHealing;
 			}
 
 			sim.LogSpell(this);
@@ -288,6 +316,7 @@ namespace Disculator
 			HolyPowerCost = -1.0f;
 			M = stats;
 			BaseCooldown = 6f;
+			Damage = true;
 		}
 
 		public override bool Cast(FightSim sim)
@@ -296,7 +325,14 @@ namespace Disculator
 			{
 				if (Ready(sim))
 				{
-					sim.M.HolyShock.AdjustCooldown(-1.5f);
+					if (FightSim.SIM_91_CHANGES)
+					{
+						sim.M.HolyShock.AdjustCooldown(-1.0f);
+					}
+					else
+					{
+						sim.M.HolyShock.AdjustCooldown(-1.5f);
+					}
 				}
 			}
 			return base.Cast(sim);

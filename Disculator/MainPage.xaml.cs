@@ -104,36 +104,15 @@ namespace Disculator
 				ds.masteryRating = int.Parse(this.masterybox.Text);
 				ds.verRating = int.Parse(this.verbox.Text);
 
-				//ds.AvgAtonements = int.Parse(this.atonementsbox.Text);
-
-				//ds.artifactTraits = int.Parse(this.pointsbox.Text);
-
-				//ds.Doomsayer = int.Parse(this.box_doomsayer.Text);
-				//ds.Confession = int.Parse(this.box_confession.Text);
-				//ds.BorrowedTime = int.Parse(this.box_borrowedtime.Text);
-				//ds.ShieldOfFaith = int.Parse(this.box_shieldoffaith.Text);
-
-				//ds.EdgeOfDarkAndLight = int.Parse(this.box_edgeofdarkandlight.Text);
-				//ds.BurstOfLight = int.Parse(this.box_burstoflight.Text);
-				//ds.DarkestShadows = int.Parse(this.box_darkestshadows.Text);
-
-				//ds.Doomsayer += 7;
-				//ds.Confession = 1f + (ds.Confession * 0.04f);
-				//ds.BorrowedTime = 1f + (ds.BorrowedTime * 0.05f);
-				//ds.ShieldOfFaith = 1f + (ds.ShieldOfFaith * 0.05f);
-
-				//ds.EdgeOfDarkAndLight = 1f + (ds.EdgeOfDarkAndLight * 0.05f);
-				//ds.BurstOfLight = 1f + (ds.BurstOfLight * 0.05f);
-				//ds.DarkestShadows = 1f + (ds.DarkestShadows / 30f);
-
-				//ds.AegisOfWrathAndSkjoldr = float.Parse(this.box_aegisofwrath.Text);
-
 				ds.Raycalculate();
 
 				this.critpercentbox.Text = ds.CritPercent.ToString("P");
 				this.hastepercentbox.Text = ds.HastePercent.ToString("P");
 				this.masterypercentbox.Text = ds.MasteryPercent.ToString("P");
 				this.verpercentbox.Text = ds.VerPercent.ToString("P");
+
+				//var test = this.box_covenant.SelectedIndex;
+				ds.SelectedCovenant = (FightSim.Covenant)this.box_covenant.SelectedIndex;
 
 				//this.artifactDamageBonusPercent.Text = ds.allDamageBonus.ToString("P");
 
@@ -308,7 +287,11 @@ namespace Disculator
 
 		private void Rotations()
 		{
-			this.RotationBox.Text = "All rotations below assume Shield Discipline, and that all shields are fully absorbed\r\n\r\n";
+			//this.RotationBox.Text = "All rotations below assume Shield Discipline, and that all shields are fully absorbed\r\n\r\n";
+			this.RotationBox.Text = "Crit: " + ds.critRating + "\n"
+			+ "Haste: " + ds.hasteRating + "\n"
+			+ "Versa: " + ds.verRating + "\n"
+			+ "Mast: " + ds.masteryRating + "\n\n";
 
 			FightSim fs = new FightSim();
 			fs.AtonementDuration = 15f;
@@ -316,7 +299,52 @@ namespace Disculator
 			MPS_Filler = fs.ManaSpent / fs.Time;
 			HPS_Filler = fs.Heeps;
 
+			float th = fs.TankHealing;
+			float ph = fs.TotalHealing;
+
 			this.RotationBox.Text += sb.ToString();
+
+			int statAmount = 100;
+
+			ds.critRating += statAmount;
+			ds.Raycalculate();
+			this.RotationBox.Text += "\n\n+crit";
+			fs = new FightSim();
+			sb = fs.LongRunEasyRotation(ds);
+			this.RotationBox.Text += sb.ToString();
+			this.RotationBox.Text += "\n Tank: " + F(100f * (fs.TankHealing - th) / th);
+			this.RotationBox.Text += "\n Party: " + F(100f * (fs.TotalHealing - ph) / ph);
+
+			ds.critRating -= statAmount;
+			ds.hasteRating += statAmount;
+			ds.Raycalculate();
+			this.RotationBox.Text += "\n\n+haste";
+			fs = new FightSim();
+			sb = fs.LongRunEasyRotation(ds);
+			this.RotationBox.Text += sb.ToString();
+			this.RotationBox.Text += "\n Tank: " + F(100f * (fs.TankHealing - th) / th);
+			this.RotationBox.Text += "\n Party: " + F(100f * (fs.TotalHealing - ph) / ph);
+
+			ds.hasteRating -= statAmount;
+			ds.verRating += statAmount;
+			ds.Raycalculate();
+			this.RotationBox.Text += "\n\n+versatility";
+			fs = new FightSim();
+			sb = fs.LongRunEasyRotation(ds);
+			this.RotationBox.Text += sb.ToString();
+			this.RotationBox.Text += "\n Tank: " + F(100f * (fs.TankHealing - th) / th);
+			this.RotationBox.Text += "\n Party: " + F(100f * (fs.TotalHealing - ph) / ph);
+
+			ds.verRating -= statAmount;
+			ds.masteryRating += statAmount;
+			ds.Raycalculate();
+			this.RotationBox.Text += "\n\n+mastery";
+			fs = new FightSim();
+			sb = fs.LongRunEasyRotation(ds);
+			this.RotationBox.Text += sb.ToString();
+			this.RotationBox.Text += "\n Tank: " + F(100f * (fs.TankHealing - th) / th);
+			this.RotationBox.Text += "\n Party: " + F(100f * (fs.TotalHealing - ph) / ph);
+
 		}
 
 		private void Combos()
@@ -644,6 +672,11 @@ namespace Disculator
 			//{
 			//	this.budgetTextBox.Text = "Error parsing inputs: " + ex.ToString();
 			//}
+		}
+
+		private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+
 		}
 	}
 }

@@ -8,6 +8,7 @@ namespace Disculator
 {
 	public class FightSim
 	{
+		public static bool SIM_91_CHANGES = false;
 		public float AtonementDuration = 18f;
 
 		public int CastNum = 0;
@@ -29,6 +30,9 @@ namespace Disculator
 		public float DotExpires = 999f;
 
 		public List<Spell> Casts;
+		public Dictionary<Spell, float> PartyHealingPerSpell;
+		public Dictionary<Spell, float> TankHealingPerSpell;
+		public Dictionary<Spell, float> DamagePerSpell;
 
 		public Spell HolyShock;
 
@@ -45,10 +49,40 @@ namespace Disculator
 
 		public bool HalfAssedDarkmoonSimulator = false;
 
-		public bool SimShockBarrier = true;
+		public enum Covenant
+		{
+			Necrolord =0,
+			Venthyr,
+			Kyrian,
+			NightFae
+		}
+
+		Covenant CurrentCovenant = Covenant.Necrolord;
+
+		//Talents
+		//45:
 		public bool SimAwakening = true;
+		public bool SimSanctifiedWrath = false;
+
 		public bool SimCrusadersMight = true;
 		public bool SimDivinePurpose = true;
+
+		//Leggos
+		public bool SimShockBarrier = false;
+
+		public bool SimMaraad = false;
+
+		public bool SimSephuz = false; //call it 40 stats at first glance, that'd be ~3% w/o crusader's might
+
+		public bool SimShadowbreaker = false; //LoD grants full mastery for 8s, WoG 50% mastery increase
+		public bool SimMagistrate = false; //judgment = 60% chance to reduce cost of holy power spender by 1
+		public bool SimInflorescence = false; //infusion of light gets an extra charge, effects increased 30%
+		public bool SimRelentless = false; //1% haste per Holy Power finisher for 12s, stacks to 5
+			//I think a flat 5% haste at all times only adds ~3% HPS if your haste is already pretty high
+			//maybe worth 250 stat points or so.. definitely no Shock Barrier
+		public bool SimDuskAndDawn = false; //basically 5% increased healing at all times
+											//looks pretty worthless compared to Shock Barrier (up to ~12% increased healing)
+		public bool SimEonar = false; //???
 
 		// Note that the presence of only half an ass prevents this from modeling
 		// things such as a simultaneous Bloodlust + Power Infusion or the trinket
@@ -64,6 +98,10 @@ namespace Disculator
 		public void Reset()
 		{
 			//AtonementDuration = 15f;
+
+			PartyHealingPerSpell = new Dictionary<Spell, float>();
+			TankHealingPerSpell = new Dictionary<Spell, float>();
+			DamagePerSpell = new Dictionary<Spell, float>();
 
 			Casts = new List<Spell>();
 			CastNum = 0;
@@ -114,10 +152,10 @@ namespace Disculator
 
 		public void UpdateBonuses()
 		{
-			if (Time >= TempHasteBuffExpiration)
-			{
-				this.M.bonusHastePercent = 0;
-			}
+			//if (Time >= TempHasteBuffExpiration)
+			//{
+			//	this.M.bonusHastePercent = 0;
+			//}
 
 			if (Time >= AvengersWrathEnds)
 			{
@@ -154,7 +192,7 @@ namespace Disculator
 		}
 
 		//10 hours straight of button-mashing, that oughtta get 'er done
-		public static float LONGTIME = 60f*60*10f;
+		public static float LONGTIME = 60f*60*90f;
 
 		Spell noSpell;
 		float totalDeadTime = 0f;
@@ -188,15 +226,50 @@ namespace Disculator
 			sb = new StringBuilder();
 			this.M = ds;
 
-			//sb.AppendLine("Maximize Holy Shocks");
-
 			Reset();
+			CurrentCovenant = ds.SelectedCovenant;
+			SimCrusadersMight = true;
+			SimShockBarrier = true;
+			SimInflorescence = false;
+
+			Spell VanqHammer = new InstantSpell("Vanquisher's Hammer", 0, 0, -1f, M);
+			VanqHammer.BaseCooldown = 30f;
+			bool vanqBuffActive = false;
+
+			Spell DivineToll = new InstantSpell("Divine Toll", M.HolyShock.Scaler * 5f, 0, -5, M);
+			DivineToll.BaseCooldown = 60f;
+			DivineToll.BonusCritChance = 0.3f;
+			if (SimShockBarrier)
+			{
+				DivineToll.Scaler = M.HolyShock.Scaler * 5f * 1.4f;
+			}
+
+			bool simShadowBreaker = false;
+			Spell WoG_Shadowbreaker = new Spell("WoG - Shadowbreaker", M.WordOfGlory.Scaler, 0f, 3f, M);
+			WoG_Shadowbreaker.ExtraScaler = (M.MasteryPercent*0.5f*M.MasteryEffectiveness+1f);
+			if (simShadowBreaker)
+			{
+				SimCrusadersMight = false;
+				SimShockBarrier = false;
+				SimInflorescence = false;
+			}
+
+			int InfusionCharges = 0;
 
 			List<Spell> PriorityList = new List<Spell>();
-			//PriorityList.Add(M.AshenHallow);
+			switch (CurrentCovenant)
+			{
+				case Covenant.Necrolord:
+					PriorityList.Add(VanqHammer);
+					break;
+				case Covenant.Venthyr:
+					PriorityList.Add(M.AshenHallow);
+					break;
+				case Covenant.Kyrian:
+					PriorityList.Add(DivineToll);
+					break;
+			}
 			PriorityList.Add(M.JudgmentOfLight);
-
-			//SimCrusadersMight = false;
 
 			if (!SimCrusadersMight)
 			{
@@ -206,11 +279,12 @@ namespace Disculator
 				BF.HolyPowerCost = -1f;
 				//PriorityList.Add(BF);
 
-				Spell LH = new Spell("Light's Hammer (warning: haste sim wrong)", 0.25f * 7f * 6f, 1.5f, 1800f, 1.0f + M.HastePercent, M);
+				Spell LH = new Spell("Light's Hammer", 0.25f * 7f * 6f, 1.5f, 1800f, 1.0f + M.HastePercent, M);
 				LH.BaseCooldown = 60f;
 				PriorityList.Add(LH);
 
 				//PriorityList.Add(M.CrusaderStrike);
+				PriorityList.Add(M.HolyLight);
 			}
 			else
 			{
@@ -242,8 +316,8 @@ namespace Disculator
 				if (SimCrusadersMight && M.CrusaderStrike.Ready(this)
 					//Save Crusader Strikes when some cooldown reduction would be wasted
 					//turns out this doesn't seem to make much difference
-					&&
-					(M.HolyShock.CooldownRemaining(this) > (M.CrusaderStrike.CastTime() + 1.5f))
+					//&&
+					//(M.HolyShock.CooldownRemaining(this) > (M.CrusaderStrike.CastTime() + 1.5f))
 					)
 				{
 					M.CrusaderStrike.Cast(this);
@@ -256,28 +330,122 @@ namespace Disculator
 					M.HolyShock.Cast(this);
 					if (SimShockBarrier)
 						M.ShockBarrier_Perfect.Cast(this);
+					if (r.Next(1,100) <= ((M.CritPercent+0.3f)*100f))
+					{
+						int InfusionCap = 1;
+						InfusionCharges++;
+						if (InfusionCharges > InfusionCap)
+						{
+							InfusionCharges = InfusionCap;
+						}
+						if (SimInflorescence)
+							InfusionCharges = 2;
+					}
 					waiting = false;
 					continue;
 				}
 
-				if (M.LightOfDawn.Ready(this) || divinePurposeAvailable)
+				//try out a high-mastery, WoG-only build with Shadowbreaker
+				if (simShadowBreaker)
 				{
-					if (divinePurposeAvailable && SimDivinePurpose)
+					if (WoG_Shadowbreaker.Ready(this) || divinePurposeAvailable)
 					{
-						//half-assed workaround to get a free Light of Dawn
-						this.HolyPower += 3;
-						divinePurposeAvailable = false;
+						if (divinePurposeAvailable && SimDivinePurpose)
+						{
+							//half-assed workaround to get a free Light of Dawn
+							this.HolyPower += 3;
+							divinePurposeAvailable = false;
+							float e = WoG_Shadowbreaker.ExtraScaler;
+							WoG_Shadowbreaker.ExtraScaler *= 1.2f;
+							WoG_Shadowbreaker.Cast(this);
+							WoG_Shadowbreaker.ExtraScaler = e;
+						}
+						else
+						{
+							WoG_Shadowbreaker.Cast(this);
+						}
+						if (vanqBuffActive)
+						{
+							Time -= M.LightOfDawn.CastTime();
+							M.LightOfDawn.Cast(this);
+							vanqBuffActive = false;
+						}
+						if (r.Next(1, 100) <= 15 && SimAwakening)
+						{
+							BeginAvengingWrath(true);
+						}
+						if (r.Next(1, 100) <= 15 && SimDivinePurpose)
+						{
+							divinePurposeAvailable = true;
+						}
+						continue;
 					}
-					M.LightOfDawn.Cast(this);
-					if (r.Next(1, 100) <= 15 && SimAwakening)
+				}
+				else
+				{
+					if (M.LightOfDawn.Ready(this) || divinePurposeAvailable)
 					{
-						BeginAvengingWrath(true);
+						if (divinePurposeAvailable && SimDivinePurpose)
+						{
+							//half-assed workaround to get a free Light of Dawn
+							this.HolyPower += 3;
+							divinePurposeAvailable = false;
+							float e = M.LightOfDawn.ExtraScaler;
+							M.LightOfDawn.ExtraScaler *= 1.2f;
+							M.LightOfDawn.Cast(this);
+							M.LightOfDawn.ExtraScaler = e;
+						}
+						else
+						{
+							M.LightOfDawn.Cast(this);
+						}
+						//TODO: Does the free bonus LoD from Vanquisher's Hammer benefit from Divine Purpose's buff as well?
+						if (vanqBuffActive)
+						{
+							//half-assed workaround to get a free Word of Glory
+							Time -= M.WordOfGlory.CastTime();
+							this.HolyPower += 3;
+							M.WordOfGlory.Cast(this);
+							vanqBuffActive = false;
+						}
+						if (r.Next(1, 100) <= 15 && SimAwakening)
+						{
+							BeginAvengingWrath(true);
+						}
+						if (r.Next(1, 100) <= 15 && SimDivinePurpose)
+						{
+							divinePurposeAvailable = true;
+						}
+						continue;
 					}
-					if (r.Next(1, 100) <= 15 && SimDivinePurpose)
+				}
+
+				if (InfusionCharges > 0 && FightSim.SIM_91_CHANGES)
+				{
+					M.HolyLight.Cast(this);
+					this.HolyPower += 1;
+					if (SimInflorescence)
 					{
-						divinePurposeAvailable = true;
+						if (r.Next(1,100) <= 30)
+						{
+							this.HolyPower += 1;
+						}
 					}
-					continue;
+					InfusionCharges--;
+					waiting = false;
+				}
+				else if (InfusionCharges > 0)
+				{
+					if (SimInflorescence)
+					{
+						M.HolyLightInflorescent.Cast(this);
+					}
+					else
+					{
+						M.HolyLightInfused.Cast(this);
+					}
+					InfusionCharges--;
+					waiting = false;
 				}
 
 				bool castSomething = false;
@@ -285,7 +453,44 @@ namespace Disculator
 				{
 					if (s.Ready(this))
 					{
-						s.Cast(this);
+						if (s.Name.Equals("Holy Light"))
+						{
+							if (InfusionCharges > 0 && FightSim.SIM_91_CHANGES)
+							{
+								M.HolyLight.Cast(this);
+								this.HolyPower += 1;
+								if (SimInflorescence)
+								{
+									if (r.Next(1, 100) <= 30)
+									{
+										this.HolyPower += 1;
+									}
+								}
+								InfusionCharges--;
+								waiting = false;
+							}
+							else if (InfusionCharges > 0)
+							{
+								if (SimInflorescence)
+								{
+									M.HolyLightInflorescent.Cast(this);
+								}
+								else
+								{
+									M.HolyLightInfused.Cast(this);
+								}
+								InfusionCharges--;
+								waiting = false;
+							}
+						}
+						else
+						{
+							s.Cast(this);
+						}
+						if (s == VanqHammer)
+						{
+							vanqBuffActive = true;
+						}
 						castSomething = true;
 						waiting = false;
 						break;
@@ -294,6 +499,7 @@ namespace Disculator
 
 				if (castSomething)
 					continue;
+
 
 				//Dead time
 				Time += 0.1f;
@@ -319,8 +525,19 @@ namespace Disculator
 
 			foreach (KeyValuePair<Spell, float> kvp in castCount)
 			{
+				float partyHealing = 0f;
+				float tankHealing = 0f;
+				float damage = 0f;
+				PartyHealingPerSpell.TryGetValue(kvp.Key, out partyHealing);
+				TankHealingPerSpell.TryGetValue(kvp.Key, out tankHealing);
+				DamagePerSpell.TryGetValue(kvp.Key, out damage);
 				sb.AppendLine(kvp.Key.Name + ": " + kvp.Value + " casts, "
-					+ F(kvp.Value / (Time/60f)) + " cpm" );
+					+ F(kvp.Value / (Time/60f)) + " cpm"
+					+ ", healing: " + F(partyHealing)
+					+ " (" + F(partyHealing/TotalHealing*100f) + "%), "
+					+ ", tank healing: " + F(tankHealing)
+					+ " (" + F(tankHealing / TankHealing * 100f) + "%), "
+					);
 			}
 
 			Deeps = TotalDamage / Time;
@@ -334,7 +551,9 @@ namespace Disculator
 			if (mps > 0f)
 				oomTime = 53000f / mps;
 
-			sb.AppendLine("Period: " + F(Time) + "s, " +
+			sb.AppendLine(
+					CurrentCovenant.ToString() + ", " + 
+					//"Period: " + F(Time) + "s, " +
 					//"DPS: " + F(Deeps) + ", " +
 					"HPS: " + F(Heeps) + ", " +
 					"Tank HPS: " + F(TankHeeps) + ", " +
